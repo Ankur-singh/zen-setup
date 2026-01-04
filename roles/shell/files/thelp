@@ -12,6 +12,8 @@ cd          - Smart cd with zoxide (remembers frequent dirs)
 ..          - Go up one directory
 mkcd <dir>  - Create directory and cd into it
 ff          - Fuzzy file finder with preview
+findf       - Find files by name
+findd       - Find directories by name
 
 GIT SHORTCUTS
 -------------
@@ -20,11 +22,14 @@ gs          - git status
 ga          - git add
 gc          - git commit
 gcm         - git commit -m "message"
+gcom        - Conventional commit (e.g., gcom feat "add feature")
 gp          - git push
 gpl         - git pull
 gl          - git log (pretty)
 gcl <url>   - Clone repo and cd into it
 gnb <name>  - Create new branch and switch
+gchanged    - Show files changed in last commit
+gundo       - Undo last commit (keep changes)
 lzg         - LazyGit (interactive git UI)
 
 DOCKER
@@ -64,10 +69,12 @@ SYSTEM
 ------
 top         - btop (beautiful process monitor)
 disk        - Show disk usage
+duh         - Disk usage sorted (current directory)
 meminfo     - Show memory info
-myip        - Show public IP
-localip     - Show local IP
+myip        - Show public IP (auto-copies to clipboard)
+localip     - Show local IP (auto-copies to clipboard)
 ports       - Show open ports
+killp       - Kill process by name
 
 UTILITIES
 ---------
@@ -75,6 +82,9 @@ extract     - Extract any archive type
 compress    - Create tar.gz archive
 backup      - Backup a file with timestamp
 serve       - Start HTTP server (default: port 8000)
+search      - Search text in files (uses ripgrep)
+hgrep       - Search command history
+count       - Count files in directory
 weather     - Check weather
 cheat <cmd> - Show cheatsheet for command
 genpass     - Generate random password

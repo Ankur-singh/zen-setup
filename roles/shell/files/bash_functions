@@ -162,6 +162,58 @@ gundo() {
   git reset --soft HEAD~1
 }
 
+# Show public IP and copy to clipboard
+myip() {
+  local ip=$(curl -s ifconfig.me)
+  echo "$ip"
+  
+  # Copy to clipboard (macOS or Linux)
+  if command -v pbcopy &> /dev/null; then
+    echo -n "$ip" | pbcopy && echo "✅ Copied to clipboard"
+  elif command -v xclip &> /dev/null; then
+    if echo -n "$ip" | xclip -selection clipboard 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  elif command -v xsel &> /dev/null; then
+    if echo -n "$ip" | xsel --clipboard --input 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  elif command -v wl-copy &> /dev/null; then
+    if echo -n "$ip" | wl-copy 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  fi
+}
+
+# Show local IP and copy to clipboard
+localip() {
+  local ip
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    ip=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "No IP found")
+  else
+    ip=$(hostname -I | cut -d" " -f1)
+  fi
+  
+  echo "$ip"
+  
+  # Copy to clipboard (macOS or Linux)
+  if command -v pbcopy &> /dev/null; then
+    echo -n "$ip" | pbcopy && echo "✅ Copied to clipboard"
+  elif command -v xclip &> /dev/null; then
+    if echo -n "$ip" | xclip -selection clipboard 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  elif command -v xsel &> /dev/null; then
+    if echo -n "$ip" | xsel --clipboard --input 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  elif command -v wl-copy &> /dev/null; then
+    if echo -n "$ip" | wl-copy 2>/dev/null; then
+      echo "✅ Copied to clipboard"
+    fi
+  fi
+}
+
 # tmux: Create or attach to session
 tm() {
   if [ -z "$1" ]; then

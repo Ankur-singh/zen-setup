@@ -27,6 +27,7 @@ apt_packages:
   - fd-find
   - tmux
   - python3-pip
+  - xclip  # Clipboard support for X11 sessions
 
 # Tools that need manual installation (not in apt)
 install_from_source:
