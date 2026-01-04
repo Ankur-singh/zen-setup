@@ -8,8 +8,7 @@ shell_name: zsh
 shell_rc_file: "{{ ansible_env.HOME }}/.zshrc"
 
 # Homebrew packages
-homebrew_taps:
-  - homebrew/cask-fonts
+# Note: homebrew/cask-fonts tap was deprecated - fonts now in main cask repo
 
 homebrew_packages:
   - eza

@@ -36,7 +36,9 @@ di          - docker images
 dex         - docker exec -it
 denter      - Enter running container
 lzd         - LazyDocker (interactive docker UI)
-docker-cleanup - Clean up all docker resources
+docker-cleanup     - Clean up all docker resources
+docker-rm-stopped  - Remove all stopped containers
+docker-rm-images   - Remove dangling images
 
 PYTHON
 ------

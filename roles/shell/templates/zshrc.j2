@@ -58,6 +58,10 @@ export LESSCHARSET='utf-8'
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
 
+# Enable completion system
+autoload -Uz compinit
+compinit
+
 # Load modular configurations
 {% if use_starship_prompt | default(false) %}
 # Starship prompt
@@ -96,9 +100,6 @@ if type brew &>/dev/null; then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
-# Enable completion system
-autoload -Uz compinit
-compinit
 
 # Completion styling
 zstyle ':completion:*' menu select

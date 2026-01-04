@@ -49,8 +49,13 @@ echo ""
 echo "🎯 Starting installation..."
 echo ""
 
-# Run the playbook
-ansible-playbook playbook.yml "$@"
+# Run the playbook (ask for sudo password on Linux)
+if [[ "$OS" == "linux" ]]; then
+    echo "⚠️  You will be prompted for your sudo password..."
+    ansible-playbook playbook.yml --ask-become-pass "$@"
+else
+    ansible-playbook playbook.yml "$@"
+fi
 
 echo ""
 echo "✅ Installation complete!"

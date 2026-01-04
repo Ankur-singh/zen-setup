@@ -2,6 +2,13 @@
 - name: Include OS-specific tasks
   include_tasks: "{{ ansible_os_family | lower }}.yml"
 
+- name: Create fastfetch config directory
+  file:
+    path: "{{ config_dir }}/fastfetch"
+    state: directory
+    mode: '0755'
+  when: install_fastfetch | default(true)
+
 - name: Install fastfetch config
   copy:
     src: fastfetch-config.jsonc

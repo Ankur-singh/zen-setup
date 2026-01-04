@@ -8,13 +8,6 @@
     executable: /bin/bash
   changed_when: false
 
-- name: Tap Homebrew repositories
-  homebrew_tap:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ homebrew_taps }}"
-  when: homebrew_taps is defined
-
 - name: Install Homebrew packages
   homebrew:
     name: "{{ homebrew_packages }}"

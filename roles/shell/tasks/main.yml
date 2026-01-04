@@ -87,3 +87,10 @@
     create: yes
   notify: reload shell
 
+- name: Create .hushlogin to suppress login messages (macOS)
+  file:
+    path: "{{ ansible_env.HOME }}/.hushlogin"
+    state: touch
+    mode: '0644'
+  when: ansible_os_family == "Darwin"
+

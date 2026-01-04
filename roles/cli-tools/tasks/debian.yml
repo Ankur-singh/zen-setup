@@ -86,19 +86,29 @@
 
 - name: Install lazygit
   block:
-    - name: Get latest lazygit version
+    - name: Try to get latest lazygit version from GitHub
       uri:
         url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
         return_content: yes
-      register: lazygit_latest
+        timeout: 10
+      register: lazygit_latest_check
+      failed_when: false
+      changed_when: false
 
-    - name: Install lazygit
+    - name: Set lazygit version (latest or fallback)
+      set_fact:
+        lazygit_version: "{{ lazygit_latest_check.json.tag_name | regex_replace('^v', '') if lazygit_latest_check.status == 200 else tool_versions.lazygit }}"
+
+    - name: Display lazygit version being installed
+      debug:
+        msg: "Installing lazygit version {{ lazygit_version }} {{ '(latest)' if lazygit_latest_check.status == 200 else '(fallback - GitHub API unavailable)' }}"
+
+    - name: Download and install lazygit
       shell: |
-        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v{{ lazygit_version }}/lazygit_{{ lazygit_version }}_Linux_x86_64.tar.gz"
         tar xf lazygit.tar.gz lazygit
-        sudo install lazygit {{ local_bin_dir }}/lazygit
-        rm lazygit lazygit.tar.gz
+        install -m 755 lazygit {{ local_bin_dir }}/lazygit
+        rm -f lazygit lazygit.tar.gz
       args:
         executable: /bin/bash
         creates: "{{ local_bin_dir }}/lazygit"
@@ -114,28 +124,62 @@
 
 - name: Install btop
   block:
-    - name: Get latest btop release
+    - name: Try to get latest btop version from GitHub
+      uri:
+        url: https://api.github.com/repos/aristocratos/btop/releases/latest
+        return_content: yes
+        timeout: 10
+      register: btop_latest_check
+      failed_when: false
+      changed_when: false
+
+    - name: Set btop version (latest or fallback)
+      set_fact:
+        btop_version: "{{ btop_latest_check.json.tag_name | regex_replace('^v', '') if btop_latest_check.status == 200 else tool_versions.btop }}"
+
+    - name: Display btop version being installed
+      debug:
+        msg: "Installing btop version {{ btop_version }} {{ '(latest)' if btop_latest_check.status == 200 else '(fallback - GitHub API unavailable)' }}"
+
+    - name: Download and install btop
       shell: |
-        BTOP_VERSION=$(curl -s https://api.github.com/repos/aristocratos/btop/releases/latest | grep -Po '"tag_name": "v\K[^"]*')
-        curl -Lo btop.tbz "https://github.com/aristocratos/btop/releases/latest/download/btop-x86_64-linux-musl.tbz"
+        curl -Lo btop.tbz "https://github.com/aristocratos/btop/releases/download/v{{ btop_version }}/btop-x86_64-linux-musl.tbz"
         tar xjf btop.tbz
-        cd btop && sudo make install PREFIX={{ ansible_env.HOME }}/.local
+        cd btop && make install PREFIX={{ ansible_env.HOME }}/.local
         cd .. && rm -rf btop btop.tbz
       args:
         executable: /bin/bash
         creates: "{{ local_bin_dir }}/btop"
+      become: yes
   when: install_btop | default(true)
 
 - name: Install fastfetch
   block:
+    - name: Try to get latest fastfetch version from GitHub
+      uri:
+        url: https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest
+        return_content: yes
+        timeout: 10
+      register: fastfetch_latest_check
+      failed_when: false
+      changed_when: false
+
+    - name: Set fastfetch version (latest or fallback)
+      set_fact:
+        fastfetch_version: "{{ fastfetch_latest_check.json.tag_name if fastfetch_latest_check.status == 200 else tool_versions.fastfetch }}"
+
+    - name: Display fastfetch version being installed
+      debug:
+        msg: "Installing fastfetch version {{ fastfetch_version }} {{ '(latest)' if fastfetch_latest_check.status == 200 else '(fallback - GitHub API unavailable)' }}"
+
     - name: Download and install fastfetch
       shell: |
-        wget -qO fastfetch.deb https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb
-        sudo dpkg -i fastfetch.deb || sudo apt-get install -f -y
-        rm fastfetch.deb
+        wget -qO fastfetch.deb "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-amd64.deb"
+        dpkg -i fastfetch.deb || apt-get install -f -y
+        rm -f fastfetch.deb
       args:
         executable: /bin/bash
         creates: /usr/bin/fastfetch
+      become: yes
   when: install_fastfetch | default(true)
-  become: yes
 

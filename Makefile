@@ -25,7 +25,12 @@ help:
 # Install on local machine
 install:
 	@echo "🚀 Installing terminal setup on localhost..."
-	ansible-playbook playbook.yml
+	@if [ "$(shell uname -s)" = "Linux" ]; then \
+		echo "⚠️  You will be prompted for your sudo password..."; \
+		ansible-playbook playbook.yml --ask-become-pass; \
+	else \
+		ansible-playbook playbook.yml; \
+	fi
 
 install-local: install
 

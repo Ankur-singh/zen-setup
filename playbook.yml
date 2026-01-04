@@ -2,14 +2,20 @@
 - name: Terminal Development Environment Setup
   hosts: all
   become: false
-  vars_files:
-    - "vars/{{ ansible_os_family | lower }}.yml"
-    - vars/common.yml
+  gather_facts: yes
 
   pre_tasks:
     - name: Detect OS
       debug:
         msg: "Setting up on {{ ansible_distribution }} ({{ ansible_os_family }})"
+    
+    - name: Load common variables
+      include_vars:
+        file: vars/common.yml
+    
+    - name: Load OS-specific variables
+      include_vars:
+        file: "vars/{{ ansible_os_family | lower }}.yml"
 
     - name: Backup existing dotfiles
       shell: |

@@ -20,12 +20,15 @@ A complete, opinionated terminal development environment setup for macOS and Lin
 - ✅ **Modular**: Use tags to install only what you need
 - ✅ **Customizable**: Variables for easy configuration
 - ✅ **Terminal-only**: No desktop apps, perfect for servers and SSH
+- ✅ **Smart versioning**: Tries latest from GitHub, falls back to pinned versions on rate limits
 
 ## 📋 Prerequisites
 
 ### For Quick Install (bootstrap.sh or make)
 
 **No prerequisites!** The bootstrap script automatically installs Ansible if needed.
+
+**Note for Linux users:** You'll be prompted for your sudo password during installation (needed for package installation).
 
 
 ### For Manual Ansible Install (Optional)
@@ -103,7 +106,12 @@ For more control or remote VMs:
 # Clone and run
 git clone https://github.com/Ankur-singh/setup.git ~/terminal-setup
 cd ~/terminal-setup
+
+# macOS
 ansible-playbook playbook.yml
+
+# Linux (will ask for sudo password)
+ansible-playbook playbook.yml --ask-become-pass
 ```
 
 **For remote VMs:**
@@ -418,7 +426,8 @@ terminal-setup/
 │   ├── darwin.yml           # macOS-specific
 │   └── debian.yml           # Linux-specific
 ├── docs/
-│   └── STARSHIP.md          # Starship prompt guide
+│   ├── STARSHIP.md          # Starship prompt guide
+│   └── VERSIONS.md          # Version management & GitHub rate limits
 └── roles/
     ├── shell/               # Shell configuration
     ├── cli-tools/           # Modern CLI tools

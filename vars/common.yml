@@ -30,3 +30,12 @@ install_fastfetch: true
 # Prompt configuration
 use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
 
+# Tool versions (fallback when GitHub API is rate-limited)
+# Update periodically from: https://github.com/<project>/releases
+tool_versions:
+  lazygit: "0.58.0"
+  btop: "1.4.6"
+  fastfetch: "2.56.1"
+  neovim: "0.11.5"
+
+# Last updated: 2026-01-04

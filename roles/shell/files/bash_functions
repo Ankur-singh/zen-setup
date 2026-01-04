@@ -65,12 +65,12 @@ gcom() {
 }
 
 # Docker: Remove all stopped containers
-drm() {
+docker-rm-stopped() {
   docker rm $(docker ps -a -q)
 }
 
 # Docker: Remove all dangling images
-drmi() {
+docker-rm-images() {
   docker rmi $(docker images -f "dangling=true" -q)
 }
 

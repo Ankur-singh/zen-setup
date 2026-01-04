@@ -9,20 +9,23 @@ autoload -U colors && colors
 # Git prompt function
 git_prompt() {
   local branch=""
-  local status=""
+  local git_status=""
+  local git_dirty=""
   
   if git rev-parse --git-dir > /dev/null 2>&1; then
     # Get branch name
     branch=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
     
     # Check if working directory is clean
-    if [[ -z $(git status --porcelain 2>/dev/null) ]]; then
-      status="%{$fg[green]%}✓%{$reset_color%}"
+    # Use 'command git' to avoid conflicts with zsh's read-only 'status' variable
+    git_dirty=$(command git status --porcelain 2>/dev/null)
+    if [[ -z "$git_dirty" ]]; then
+      git_status="%{$fg[green]%}✓%{$reset_color%}"
     else
-      status="%{$fg[red]%}✗%{$reset_color%}"
+      git_status="%{$fg[red]%}✗%{$reset_color%}"
     fi
     
-    echo " %{$fg[magenta]%}($branch)%{$reset_color%} $status"
+    echo " %{$fg[magenta]%}($branch)%{$reset_color%} $git_status"
   fi
 }
 
