@@ -63,7 +63,7 @@
     - name: Summary
       debug:
         msg: |
-          ✅ Zen installation complete!
+          🧘 ✅ Zen installation complete!
           
           Next steps:
           {% if docker_group_added is defined and docker_group_added.changed %}

@@ -1,230 +1,163 @@
 # 🧘 Zen - Complete Terminal Environment
 
-A complete, opinionated terminal development environment for macOS and Linux, inspired by [Omakub](https://github.com/basecamp/omakub). This Ansible-based setup transforms a fresh system into a beautiful, modern, and productive terminal first development environment with a single command.
+<p align="center">
+  <strong>One command. Complete terminal. Perfect harmony.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue" alt="Platform">
+  <img src="https://img.shields.io/badge/Shell-Zsh%20%7C%20Bash-green" alt="Shell">
+  <img src="https://img.shields.io/github/license/Ankur-singh/zen-setup" alt="License">
+  <img src="https://img.shields.io/github/stars/Ankur-singh/zen-setup?style=social" alt="Stars">
+</p>
+
+<p align="center">
+  Transform any macOS or Linux system into a beautiful, productive development environment in minutes.
+</p>
+
+---
 
 **Zen (全)** - meaning "complete" or "all" in Japanese - provides everything you need for a perfect terminal experience.
 
-## 🎯 Features
+## 📖 Table of Contents
 
-### Core Components
-- **Modern Shell**: Zsh (macOS) or Bash (Linux) with custom prompt, aliases, and helpful functions
-- **CLI Tools**: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch
-- **Tmux**: Pre-configured with TPM (Tmux Plugin Manager) and sensible defaults
-- **Neovim**: LazyVim configuration with LSP, treesitter, and modern plugins
-- **Git**: GitHub CLI with useful aliases and configurations
-- **Docker**: Full Docker setup with proper group management
-- **Python**: UV package manager from Astral (fast, modern Python tooling)
+- [Why Zen?](#-why-zen)
+- [Quick Start](#-quick-start)
+- [Features](#-features)
+- [What Gets Installed](#-what-gets-installed)
+- [Who Is This For?](#-who-is-this-for)
+- [Performance](#-performance)
+- [Documentation](#-documentation)
+- [FAQ](#-faq)
+- [License](#-license)
 
-### What Makes This Different
-- ✅ **Works on macOS and Linux**: Single playbook, platform-aware
-- ✅ **Remote VM support**: Deploy to multiple servers from inventory
-- ✅ **Idempotent**: Safe to run multiple times
-- ✅ **Modular**: Use tags to install only what you need
-- ✅ **Customizable**: Variables for easy configuration
-- ✅ **Terminal-only**: No desktop apps, perfect for servers and SSH
-- ✅ **Smart versioning**: Tries latest from GitHub, falls back to pinned versions on rate limits
+## 🤔 Why Zen?
 
-## 📋 Prerequisites
+**The Problem:**
+Setting up a new dev machine takes hours of manual configuration. Googling commands, installing tools one by one, configuring dotfiles, fixing PATH issues... It's tedious and error-prone. Syncing configs across multiple machines? Even worse.
 
-### For Quick Install (bootstrap.sh or make)
+**The Solution:**
+Zen provides a single, tested, reproducible setup that transforms a fresh system into a complete development environment with one command.
 
-**No prerequisites!** The bootstrap script automatically installs Ansible if needed.
-
-**Note for Linux users:** You'll be prompted for your sudo password during installation (needed for package installation).
-
-
-### For Manual Ansible Install (Optional)
-
-Only needed if you want to run Ansible commands directly:
-
-**macOS:**
-```bash
-brew install ansible
-```
-
-**Linux:**
-```bash
-sudo apt update && sudo apt install -y ansible git
-```
-
-### For Remote VMs
-- SSH access with key-based authentication
-- Sudo privileges on remote machine
+**Why Choose Zen:**
+- ✨ **Works identically** on macOS and Linux
+- 🚀 **Installs in ~5 minutes** with one command
+- 🔄 **Updates easily** with `zupdate`
+- 🎯 **Includes 50+ curated tools** and configurations
+- 📦 **Deploy to unlimited** remote servers
+- 🛡️ **Safe and reversible** - backs up everything
+- 🧩 **Modular** - install only what you need
 
 ## 🚀 Quick Start
 
-**TL;DR - One-Liner Install:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
-```
-
-**Or clone and run manually:** Clone the repo and run `./bootstrap.sh` (or `make install`).
-
-After installation, run `zhelp` to see all available commands.
-
-### Option 1: One-Liner Install (Easiest) ⭐⭐⭐
-
-Install everything with a single command:
+### Installation (30 seconds)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 ```
 
-This automatically:
-- Clones the repository to `~/.local/share/zen-setup`
-- Installs Ansible if needed
-- Runs the complete setup
-- Shows retry command if anything fails
+That's it! ☕ Grab a coffee while it installs (~5 minutes).
 
-**Custom install location:**
+### First Commands After Install
+
 ```bash
-ZEN_SETUP_DIR=~/projects/zen curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
+zhelp      # See all available commands
+lzg        # Try LazyGit (visual git interface)
+ff         # Fuzzy find files with preview
+nvim       # Open Neovim with LazyVim
+btop       # Beautiful system monitor
 ```
 
-**If installation fails:**
-The installer will show you a retry command like:
-```bash
-bash ~/.local/share/zen-setup/bootstrap.sh
-```
+<details>
+<summary><b>📚 Other installation methods</b></summary>
 
-### Option 2: Bootstrap Script (Recommended) ⭐⭐
-
-Clone first, then run - gives you a chance to customize:
+### Clone and Customize
 
 ```bash
-# Clone the repository
 git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
 cd ~/.local/share/zen-setup
 
-# (Optional) Customize variables
+# Customize variables (optional)
 nvim vars/common.yml
 
-# Run bootstrap - handles everything!
+# Install
 ./bootstrap.sh
 ```
 
-### Option 3: Makefile (Quick & Simple) ⭐
-
-If you prefer make commands:
+### Using Makefile
 
 ```bash
-# Clone the repository
-git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
-cd ~/.local/share/zen-setup
-
-# (Optional) Customize variables
-nvim vars/common.yml
-
-# Install everything
-make install
-
-# Or install specific components
-make install-shell    # Shell only
-make install-tools    # CLI tools only
-make install-tmux     # Tmux only
-make install-nvim     # Neovim only
-make install-docker   # Docker only
-make install-nvidia   # NVIDIA drivers + Container Toolkit (Linux only)
-make install-python   # Python + UV only
+make install              # Install everything
+make install-shell        # Shell only
+make install-tools        # CLI tools only
+make install-nvidia       # NVIDIA GPU support (Linux)
 ```
 
-### Option 4: Manual Ansible (Advanced)
+### Advanced Options
 
-For more control or remote VMs:
+See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
+- Remote VM deployment
+- Selective installation with tags
+- Custom install locations
+- Manual Ansible usage
 
-**For local machine:**
-```bash
-# Install Ansible first if not already installed
-# macOS: brew install ansible
-# Linux: sudo apt install ansible
+</details>
 
-# Clone and run
-git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
-cd ~/.local/share/zen-setup
+## ⚡ Features at a Glance
 
-# macOS
-ansible-playbook playbook.yml
+### Before & After Comparison
 
-# Linux (will ask for sudo password)
-ansible-playbook playbook.yml --ask-become-pass
-```
+| Feature | Before Zen | After Zen |
+|---------|-----------|-----------|
+| File listing | `ls` (basic) | `eza` (icons, git status, tree view) |
+| File search | `find` (slow) | `fd` + `fzf` (instant, fuzzy search) |
+| Text search | `grep` | `ripgrep` (10x faster) |
+| Git workflow | Manual CLI typing | `lazygit` (beautiful visual TUI) |
+| Directory nav | `cd ../../..` | `z` (smart jump to frequent dirs) |
+| View files | `cat` | `bat` (syntax highlighting) |
+| Process monitor | `top` (basic) | `btop` (beautiful, interactive) |
+| Docker mgmt | Manual commands | `lazydocker` (visual TUI) |
 
-**For remote VMs:**
-```bash
-# Add your VMs to inventory.yml
-nvim inventory.yml
+### Core Components
 
-# Run against remote hosts
-ansible-playbook playbook.yml --limit remote_vms
+| Component | What You Get |
+|-----------|-------------|
+| **Shell** | Zsh (macOS) / Bash (Linux) with 50+ aliases, 30+ functions, custom/Starship prompt |
+| **CLI Tools** | 15+ modern tools: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch |
+| **Tmux** | Pre-configured with 6 plugins, custom keybindings, session persistence |
+| **Neovim** | LazyVim with LSP, treesitter, auto-completion, beautiful UI |
+| **Git** | GitHub CLI, useful aliases, smart configurations |
+| **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
+| **Python** | UV package manager (100x faster than pip), Python 3.12 |
+| **NVIDIA** | GPU drivers + Container Toolkit for ML/AI workloads (Linux, optional) |
 
-# Or specific host
-ansible-playbook playbook.yml --limit vm1
-```
+### What Makes Zen Different
 
-**Selective installation with tags:**
-```bash
-# Only shell and CLI tools
-ansible-playbook playbook.yml --tags "shell,cli-tools"
+- ✅ **Cross-platform**: Single playbook works on macOS and Linux
+- ✅ **Remote-ready**: Deploy to unlimited VMs from inventory
+- ✅ **Idempotent**: Safe to run multiple times
+- ✅ **Modular**: Install everything or pick components with tags
+- ✅ **Customizable**: Variables for easy configuration
+- ✅ **Terminal-only**: No desktop apps, perfect for servers and SSH
+- ✅ **Smart updates**: `zupdate` keeps everything current
+- ✅ **Backup-safe**: All configs backed up before changes
 
-# Install NVIDIA drivers + Container Toolkit (Linux only)
-ansible-playbook playbook.yml --tags "nvidia" --ask-become-pass
+## 📦 What Gets Installed
 
-# Skip Docker
-ansible-playbook playbook.yml --skip-tags "docker"
-```
+<details>
+<summary><b>Shell Configuration</b></summary>
 
-### Customization (Optional)
-
-Before running any installation method, you can customize settings in `vars/common.yml`:
-
-```yaml
-git_user_name: "Your Name"
-git_user_email: "your@email.com"
-python_version: "3.12"
-install_docker: true
-install_nvidia: false             # Set to true for GPU support (Linux only)
-nvidia_install_method: auto       # 'auto' or 'manual'
-use_starship_prompt: false        # Set to true for Starship
-```
-
-### Post-installation
-
-**Restart your terminal** or run:
-```bash
-# macOS (zsh)
-source ~/.zshrc
-
-# Linux (bash)
-source ~/.bashrc
-```
-
-**For Docker** (Linux only), you need to log out and back in, or run:
-```bash
-newgrp docker
-```
-
-**For Git**, configure your identity if not set in variables:
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your@email.com"
-```
-
-**For GitHub CLI**, authenticate:
-```bash
-gh auth login
-```
-
-## 📚 What Gets Installed
-
-### Shell Configuration
 - Custom prompt with git integration (zsh on macOS, bash on Linux)
-- Optional Starship prompt support (modern, fast, cross-shell prompt)
+- Optional Starship prompt support
 - 50+ useful aliases (shared between shells)
 - 30+ helpful functions (shared between shells)
 - Better readline configuration (inputrc for bash)
 - Command-line productivity shortcuts
 
-### Modern CLI Tools
+</details>
+
+<details>
+<summary><b>Modern CLI Tools</b></summary>
 
 | Tool | Purpose | Replaces |
 |------|---------|----------|
@@ -239,24 +172,35 @@ gh auth login
 | **btop** | Beautiful process monitor | top/htop |
 | **fastfetch** | System info display | neofetch |
 
-### Tmux Setup
-- **Prefix**: `Ctrl-a` (instead of Ctrl-b)
-- **Plugins**: 
-  - TPM (Plugin Manager)
-  - tmux-sensible
-  - tmux-resurrect (save/restore sessions)
-  - tmux-continuum (auto-save sessions)
-  - tmux-yank (better copy/paste)
-  - vim-tmux-navigator (seamless vim/tmux navigation)
+Plus: jq, tree, tldr, and more!
+
+</details>
+
+<details>
+<summary><b>Tmux Setup</b></summary>
+
+**Prefix:** `Ctrl-a` (instead of default Ctrl-b)
+
+**Plugins:**
+- TPM (Plugin Manager)
+- tmux-sensible (sensible defaults)
+- tmux-resurrect (save/restore sessions)
+- tmux-continuum (auto-save sessions)
+- tmux-yank (better copy/paste)
+- vim-tmux-navigator (seamless vim/tmux navigation)
 
 **Key Bindings:**
 - `Prefix + |` - Split horizontally
 - `Prefix + -` - Split vertically
 - `Prefix + r` - Reload config
-- `Alt + Arrow` - Switch panes (no prefix needed!)
-- `Shift + Arrow` - Switch windows (no prefix needed!)
+- `Alt + Arrow` - Switch panes (no prefix!)
+- `Shift + Arrow` - Switch windows (no prefix!)
 
-### Neovim with LazyVim
+</details>
+
+<details>
+<summary><b>Neovim with LazyVim</b></summary>
+
 - LSP support for multiple languages
 - Treesitter for better syntax highlighting
 - Auto-completion
@@ -268,19 +212,33 @@ gh auth login
 - `:Lazy` - Plugin manager
 - `:Mason` - LSP/formatter installer
 
-### Docker
+</details>
+
+<details>
+<summary><b>Docker</b></summary>
+
 - Docker Engine with BuildKit
 - Docker Compose (v2)
 - User added to docker group (no sudo needed)
 - Log rotation configured
 
-### NVIDIA GPU Support (Optional, Linux only)
+</details>
+
+<details>
+<summary><b>NVIDIA GPU Support (Optional, Linux only)</b></summary>
+
 - NVIDIA drivers (auto-detected or specific version)
 - NVIDIA utilities (nvidia-settings, nvidia-prime)
 - NVIDIA Container Toolkit (only installed if Docker is present)
 - Docker configured with GPU runtime
 
-### Python with UV
+See [NVIDIA Setup Guide](docs/INSTALLATION.md#nvidia-gpu-support) for details.
+
+</details>
+
+<details>
+<summary><b>Python with UV</b></summary>
+
 - UV package manager (100x faster than pip)
 - Python 3.12 by default
 - Virtualenv support
@@ -289,305 +247,31 @@ gh auth login
 ```bash
 uv venv                 # Create virtual environment
 uv pip install <pkg>    # Install package
-uv pip list            # List installed packages
-venv                   # Create and activate venv (alias)
+venv                    # Create and activate venv (function)
 ```
 
-## 🎨 Customization
+</details>
+
+## 👥 Who Is This For?
+
+### ✅ You Should Use Zen If:
+- Want a modern terminal experience out of the box
+- Manage multiple dev machines (local + remote)
+- Work primarily in the terminal
+- Want reproducible, version-controlled configs
+- Need to onboard team members quickly
+- Love productive, beautiful tools
+- Prefer terminal-only workflows (servers, SSH)
+
+### ⚠️ Maybe Not For You If:
+- Prefer GUI applications over terminal
+- Want to learn by configuring everything manually from scratch
+- Use Windows (WSL might work, but not officially tested)
+- Already have a heavily customized setup you're deeply attached to
+- Don't want Ansible managing your configs
 
-### Adding Remote VMs
-
-Edit `inventory.yml`:
-```yaml
-remote_vms:
-  hosts:
-    vm1:
-      ansible_host: 192.168.1.100
-      ansible_user: ubuntu
-      ansible_ssh_private_key_file: ~/.ssh/id_rsa
-    vm2:
-      ansible_host: 192.168.1.101
-      ansible_user: admin
-```
-
-### Customizing Per-Host Variables
-
-Create host-specific variable files:
-```bash
-mkdir host_vars
-cat > host_vars/vm1.yml <<EOF
-install_docker: false
-python_version: "3.11"
-EOF
-```
-
-### Skip Specific Roles
-
-Use `--skip-tags`:
-```bash
-# Skip Docker installation
-ansible-playbook playbook.yml --skip-tags docker
-
-# Skip Neovim
-ansible-playbook playbook.yml --skip-tags neovim
-```
-
-### Local Customizations
-
-The shell RC file includes support for local, non-managed customizations:
-```bash
-# macOS (zsh)
-nvim ~/.zshrc.local
-
-# Linux (bash)
-nvim ~/.bashrc.local
-```
-
-These files won't be overwritten by Ansible.
-
-## 📖 Quick Reference
-
-After installation, run `zhelp` for a complete command reference. Here are the most common commands:
-
-### Common Aliases
-```bash
-ls, ll, lt    # Modern file listing with eza (icons, tree view)
-cd            # Smart directory jumping with zoxide
-..            # Go up one directory
-g             # git
-gs            # git status
-gcm "msg"     # git commit -m
-gp            # git push
-lzg           # LazyGit (interactive git UI)
-d             # docker
-dc            # docker-compose
-dps           # docker ps
-lzd           # LazyDocker (interactive docker UI)
-v, vim        # neovim
-t             # tmux
-ta            # tmux attach
-```
-
-### Tmux Quick Keys
-- **Prefix**: `Ctrl-a` (not Ctrl-b)
-- `Prefix + |` - Split window horizontally
-- `Prefix + -` - Split window vertically
-- `Prefix + r` - Reload tmux config
-- `Alt + Arrow` - Switch panes (no prefix needed!)
-- `Shift + Arrow` - Switch windows (no prefix needed!)
-
-### Neovim Quick Keys
-- `Space` - Leader key (opens command menu)
-- `:Lazy` - Plugin manager
-- `:Mason` - Install LSP servers, formatters, linters
-- `Space + e` - File explorer (neo-tree)
-- `Space + ff` - Find files (telescope)
-- `Space + /` - Search in project
-
-### Python with UV
-```bash
-# Create and activate virtual environment
-uv venv
-source .venv/bin/activate
-
-# Or use the alias
-venv  # creates and activates automatically
-
-# Install packages
-uv pip install requests flask pandas
-
-# List installed packages
-uv pip list
-
-# Freeze requirements
-uv pip freeze > requirements.txt
-```
-
-### NVIDIA GPU Support (Linux Only)
-
-The NVIDIA role is now **separate from Docker** - you can install drivers independently, and the Container Toolkit will only be installed if Docker is present.
-
-**Configuration in `vars/common.yml`:**
-
-```yaml
-install_nvidia: true                    # Enable NVIDIA support
-nvidia_install_method: auto             # 'auto' or 'manual'
-nvidia_driver_version: "580"            # Used when method is 'manual'
-```
-
-**Installation Methods:**
-- **`auto` (recommended)**: Uses `ubuntu-drivers autoinstall` to detect and install the best driver
-- **`manual`**: Installs specific driver version from graphics-drivers PPA
-
-**What gets installed:**
-1. **NVIDIA Drivers** (always installed if GPU detected)
-   - Auto-detected or specified version
-   - NVIDIA utilities (nvidia-settings, nvidia-prime)
-
-2. **NVIDIA Container Toolkit** (only if Docker is installed)
-   - Docker configured with NVIDIA runtime
-   - Enables GPU access in containers
-
-**Installation Options:**
-
-```bash
-# Option 1: Install NVIDIA only
-make install-nvidia
-
-# Option 2: Install with Ansible tags
-ansible-playbook playbook.yml --tags nvidia --ask-become-pass
-
-# Option 3: Install everything including NVIDIA
-# Set install_nvidia: true in vars/common.yml first
-./bootstrap.sh
-```
-
-**Important:** After NVIDIA driver installation, you MUST reboot before GPU will work!
-
-**Usage (if Docker is installed):**
-```bash
-# After reboot, test GPU in Docker
-docker run --rm --gpus all nvidia/cuda:12.3.0-base-ubuntu22.04 nvidia-smi
-
-# Docker Compose - runtime method:
-services:
-  myservice:
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-
-# Or with deploy syntax:
-services:
-  myservice:
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-```
-
-## 🛡️ Backup & Cleanup
-
-### What Gets Backed Up
-
-The setup automatically backs up your existing configs before making changes:
-
-- **`~/.bashrc`** → `~/.bashrc.backup.YYYYMMDD_HHMMSS`
-- **`~/.zshrc`** → `~/.zshrc.backup.YYYYMMDD_HHMMSS`
-- **`~/.tmux.conf`** → `~/.tmux.conf.backup.YYYYMMDD_HHMMSS`
-- **`~/.config/nvim/`** → `~/.config/nvim.backup.YYYYMMDD_HHMMSS`
-- **`~/.local/share/nvim/`** → `~/.local/share/nvim.backup.YYYYMMDD_HHMMSS`
-
-### Restore From Backup
-
-If you want to restore your old configuration:
-
-```bash
-# Example: restore zsh config
-cp ~/.zshrc.backup.20260104_123045 ~/.zshrc
-source ~/.zshrc
-```
-
-### Clean Up Old Backups
-
-Over time, you may accumulate multiple backup files. Use `zcleanup` to remove them:
-
-```bash
-# Interactive - shows all backups and asks for confirmation
-zcleanup
-
-# Force delete without confirmation
-zcleanup --force
-```
-
-**Example output:**
-```
-🔍 Finding backup files created by Zen...
-
-📦 Found 5 backup(s):
-
-  📄 ~/.bashrc.backup.20260101_120000 (4.2K)
-  📄 ~/.zshrc.backup.20260101_120000 (5.1K)
-  📄 ~/.tmux.conf.backup.20260101_120000 (1.3K)
-  📁 ~/.config/nvim.backup.20260101_120000 (156K)
-  📁 ~/.local/share/nvim.backup.20260101_120000 (89M)
-
-🗑️  Delete all these backups? (y/N)
-```
-
-## 🔧 Troubleshooting
-
-### Docker permission denied
-**After installation, you need to log out and back in** for docker group membership to take effect.
-
-Quick fix without logout:
-```bash
-newgrp docker
-```
-
-### Shell changes not applied
-Reload your shell configuration:
-```bash
-# macOS (zsh)
-source ~/.zshrc
-
-# Linux (bash)
-source ~/.bashrc
-```
-
-Or simply open a new terminal window.
-
-### Neovim plugins not installed
-LazyVim will auto-install plugins on first run. If they don't install:
-```bash
-nvim
-# Then press: Space (leader key) → Lazy (plugin manager) → I (install)
-```
-
-### Ansible fails with "permission denied"
-Make sure you have:
-- Sudo privileges on the target machine
-- Proper SSH key authentication for remote VMs
-- Correct `ansible_user` in inventory.yml
-
-### UV not found after installation
-Make sure `~/.local/bin` is in your PATH:
-```bash
-echo $PATH | grep ".local/bin"
-
-# If not, reload your shell:
-# macOS: source ~/.zshrc
-# Linux: source ~/.bashrc
-```
-
-### NVIDIA GPU not working in Docker
-If you've enabled NVIDIA support:
-
-1. **Check driver installation:**
-```bash
-nvidia-smi  # Should show your GPU
-```
-
-2. **If nvidia-smi fails:** You need to reboot after driver installation
-```bash
-sudo reboot
-```
-
-3. **Test Docker GPU access:**
-```bash
-docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
-```
-
-4. **Check Docker configuration:**
-```bash
-cat /etc/docker/daemon.json  # Should contain nvidia runtime config
-```
 
 ## 🔄 Updating
-
-### Quick Update (Recommended)
 
 Use the built-in `zupdate` command:
 
@@ -595,69 +279,204 @@ Use the built-in `zupdate` command:
 # Update everything
 zupdate
 
-# Update specific components only
-zupdate shell              # Shell config only
-zupdate cli-tools          # CLI tools only
-zupdate "shell,cli-tools"  # Multiple components
+# Update specific components
+zupdate shell
+zupdate "shell,cli-tools"
 ```
 
-The `zupdate` command automatically:
-- Auto-detects Zen directory location
-- Pulls latest changes from git
-- **Stops if already up to date** (no unnecessary reinstalls)
-- Runs the Ansible playbook only if there are updates
-- Shows what was updated
-- Prompts to reload your shell
+**Features:**
+- Auto-detects Zen directory
+- Stops if already up to date (no unnecessary reinstalls)
+- Platform-aware (handles macOS/Linux differences)
+- Shows what changed
 
-**If you moved the repository or installed to a non-standard location:**
+See [Update Guide](docs/INSTALLATION.md#updating) for details.
 
-Use `zsetdir` to update the location:
-```bash
-# Show current Zen directory
-zsetdir
+## 📚 Documentation
 
-# Set new location
-zsetdir ~/projects/zen
-```
+- **[Installation Guide](docs/INSTALLATION.md)** - Detailed install options, remote deployment
+- **[Commands Reference](docs/COMMANDS.md)** - Complete command list and usage
+- **[Customization Guide](docs/CUSTOMIZATION.md)** - Variables, tags, local configs
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Features Overview](FEATURES.md)** - Quick feature reference
+- **[Starship Prompt](docs/STARSHIP.md)** - Starship configuration guide
 
-The `zupdate` command automatically searches:
-- `$ZEN_SETUP_DIR` (if set via `zsetdir`)
-- `~/.local/share/zen-setup` (default installation location)
+## ❓ FAQ
 
-### Manual Update
+<details>
+<summary><b>Can I use this on my remote servers?</b></summary>
+
+Yes! Add them to `inventory.yml` and deploy with Ansible. Perfect for managing multiple servers with identical configurations.
 
 ```bash
-cd ~/.local/share/zen-setup
-git pull
-ansible-playbook playbook.yml
+# Add to inventory.yml
+remote_vms:
+  hosts:
+    vm1:
+      ansible_host: 192.168.1.100
+      ansible_user: ubuntu
+
+# Deploy
+ansible-playbook playbook.yml --limit remote_vms
+```
+</details>
+
+<details>
+<summary><b>Will this override my existing configs?</b></summary>
+
+All existing configs are automatically backed up with timestamps before any changes:
+- `~/.bashrc` → `~/.bashrc.backup.YYYYMMDD_HHMMSS`
+- `~/.zshrc` → `~/.zshrc.backup.YYYYMMDD_HHMMSS`
+- `~/.tmux.conf` → `~/.tmux.conf.backup.YYYYMMDD_HHMMSS`
+- `~/.config/nvim/` → `~/.config/nvim.backup.YYYYMMDD_HHMMSS`
+
+You can restore anytime or clean up with `zcleanup`.
+</details>
+
+<details>
+<summary><b>Can I customize what gets installed?</b></summary>
+
+Absolutely! Several ways:
+
+1. **Edit variables** before installing (`vars/common.yml`)
+2. **Use tags** to install specific components:
+   ```bash
+   ansible-playbook playbook.yml --tags "shell,cli-tools"
+   ```
+3. **Use make targets** for selective installation:
+   ```bash
+   make install-shell
+   make install-docker
+   ```
+
+See [Customization Guide](docs/CUSTOMIZATION.md) for details.
+</details>
+
+<details>
+<summary><b>How do I uninstall?</b></summary>
+
+1. **Restore backups:**
+   ```bash
+   cp ~/.zshrc.backup.YYYYMMDD_HHMMSS ~/.zshrc
+   cp ~/.config/nvim.backup.YYYYMMDD_HHMMSS ~/.config/nvim -r
+   ```
+
+2. **Remove installed tools** (optional - they won't hurt):
+   ```bash
+   # macOS
+   brew uninstall eza bat fzf ...
+   
+   # Linux
+   sudo apt remove eza bat ...
+   ```
+
+3. **Clean up backups:**
+   ```bash
+   zcleanup --force
+   ```
+</details>
+
+<details>
+<summary><b>Does this work on WSL (Windows)?</b></summary>
+
+Not officially tested, but it should work on WSL2 with Ubuntu. Follow the Linux installation instructions.
+</details>
+
+<details>
+<summary><b>Can I use this with Starship prompt?</b></summary>
+
+Yes! Set `use_starship_prompt: true` in `vars/common.yml` before installing. See [Starship Guide](docs/STARSHIP.md).
+</details>
+
+<details>
+<summary><b>Will this work with my existing tmux/vim setup?</b></summary>
+
+Your existing configs are backed up first. Zen installs LazyVim (a Neovim distribution) and a custom tmux config. You can switch back to your backups anytime.
+</details>
+
+<details>
+<summary><b>How do I update Zen?</b></summary>
+
+Simply run:
+```bash
+zupdate
 ```
 
-The playbook is idempotent, so it's safe to run multiple times.
+It auto-detects the installation location, pulls updates, and only reinstalls if there are changes.
+</details>
 
-## 📂 Project Structure
+<details>
+<summary><b>What if something breaks?</b></summary>
 
+1. **Restore from backups** (all configs are backed up)
+2. **Check troubleshooting** - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+3. **File an issue** - https://github.com/Ankur-singh/zen-setup/issues
+
+The playbook is idempotent, so you can safely re-run it anytime.
+</details>
+
+
+## 📖 Quick Command Reference
+
+### Most Common Commands
+
+```bash
+# Navigation
+z <name>    # Jump to directory
+ff          # Fuzzy find files
+..          # Go up one directory
+
+# Git
+lzg         # LazyGit (visual interface)
+gs          # git status
+gcm "msg"   # git commit -m
+
+# Docker
+lzd         # LazyDocker (visual interface)
+dps         # docker ps
+denter <id> # Enter container
+
+# Files
+ls, ll, lt  # Modern file listing
+cat <file>  # Syntax-highlighted cat (bat)
+search "x"  # Fast text search (ripgrep)
+
+# System
+btop        # System monitor
+myip        # Show public IP (copies to clipboard)
+localip     # Show local IP (copies to clipboard)
+
+# Zen Management
+zhelp       # Show all commands
+zupdate     # Update Zen
+zcleanup    # Clean backup files
 ```
-zen-setup/
-├── playbook.yml              # Main playbook
-├── inventory.yml             # Hosts inventory
-├── ansible.cfg              # Ansible configuration
-├── vars/
-│   ├── common.yml           # Common variables
-│   ├── darwin.yml           # macOS-specific
-│   └── debian.yml           # Linux-specific
-├── docs/
-│   ├── STARSHIP.md          # Starship prompt guide
-│   └── VERSIONS.md          # Version management & GitHub rate limits
-└── roles/
-    ├── shell/               # Shell configuration
-    ├── cli-tools/           # Modern CLI tools
-    ├── tmux/                # Tmux setup
-    ├── neovim/              # Neovim + LazyVim
-    ├── git/                 # Git + GitHub CLI
-    ├── docker/              # Docker Engine
-    ├── nvidia/              # NVIDIA drivers + Container Toolkit (Linux)
-    └── python/              # Python + UV
+
+For complete reference, see [docs/COMMANDS.md](docs/COMMANDS.md) or run `zhelp`.
+
+## 🔧 Quick Troubleshooting
+
+### Common Issues
+
+**Docker permission denied?**
+```bash
+newgrp docker
+# Or log out and back in
 ```
+
+**Shell changes not applied?**
+```bash
+source ~/.zshrc  # macOS
+source ~/.bashrc # Linux
+```
+
+**Neovim plugins not loading?**
+```bash
+nvim
+# Press: Space → Lazy → I (install)
+```
+
+For more solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## 📝 License
 
@@ -672,7 +491,11 @@ MIT License - feel free to use and modify as needed.
 
 ---
 
-**Happy coding!** 🚀
+<p align="center">
+  <b>🧘 Achieve terminal zen.</b><br>
+  <sub>Made with ❤️ for terminal enthusiasts</sub>
+</p>
 
-Run `zhelp` after installation to see all available commands.
-
+<p align="center">
+  <a href="https://github.com/Ankur-singh/zen-setup/stargazers">⭐ Star this repo if you find it useful!</a>
+</p>

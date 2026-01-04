@@ -2,9 +2,13 @@
 
 Quick overview of what's included in Zen - your complete terminal environment.
 
-**Zen (全)** - meaning "complete" or "all" in Japanese
+**Zen (全)** - meaning "complete" or "all" in Japanese - provides everything you need for terminal perfection.
 
-> For installation details, see [README.md](README.md)
+> **Quick Links:**
+> - [Installation Guide](docs/INSTALLATION.md)
+> - [Commands Reference](docs/COMMANDS.md)
+> - [Customization](docs/CUSTOMIZATION.md)
+> - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## 🛠️ Core Components
 

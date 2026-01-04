@@ -4,14 +4,18 @@
 
 # Default target
 help:
-	@echo "🧘 Zen - Complete Terminal Environment"
+	@echo "🧘 Zen (全) - Complete Terminal Environment"
+	@echo ""
+	@echo "Quick start:"
+	@echo "  make install        - Install Zen on localhost"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make install        - Install on localhost (default)"
+	@echo "  make install        - Full installation on localhost"
 	@echo "  make install-remote - Install on remote VMs"
 	@echo "  make check          - Check Ansible connectivity"
 	@echo "  make lint           - Lint Ansible playbooks"
 	@echo "  make tags           - List available tags"
+	@echo ""
 	@echo ""
 	@echo "Selective installation:"
 	@echo "  make install-shell  - Install only shell configuration"
@@ -25,9 +29,11 @@ help:
 
 # Install on local machine
 install:
-	@echo "🧘 Installing Zen on localhost..."
+	@echo "🧘 Installing Zen - Complete Terminal Environment"
+	@echo ""
 	@if [ "$(shell uname -s)" = "Linux" ]; then \
 		echo "⚠️  You will be prompted for your sudo password..."; \
+		echo ""; \
 		ansible-playbook playbook.yml --ask-become-pass; \
 	else \
 		ansible-playbook playbook.yml; \
