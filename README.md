@@ -1,4 +1,6 @@
-# 🧘 Zen - Complete Terminal Environment
+<p align="center">
+  <img src="docs/images/zen-logo.png" alt="Zen Setup Logo" width="600">
+</p>
 
 <p align="center">
   <strong>One command. Complete terminal. Perfect harmony.</strong>
@@ -7,8 +9,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Shell-Zsh%20%7C%20Bash-green" alt="Shell">
-  <img src="https://img.shields.io/github/license/Ankur-singh/zen-setup" alt="License">
-  <img src="https://img.shields.io/github/stars/Ankur-singh/zen-setup?style=social" alt="Stars">
+  <a href="https://deepwiki.com/Ankur-singh/zen-setup"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 <p align="center">
