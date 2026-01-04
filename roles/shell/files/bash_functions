@@ -346,26 +346,17 @@ zcleanup() {
   # Find all backup files
   local backups=()
   
+  # Set null_glob for zsh to prevent errors when no matches found
+  if [ -n "$ZSH_VERSION" ]; then
+    setopt local_options null_glob
+  fi
+  
   # Shell config backups
-  if ls ~/.bashrc.backup.* 2>/dev/null | head -1 > /dev/null; then
-    backups+=( ~/.bashrc.backup.* )
-  fi
-  if ls ~/.zshrc.backup.* 2>/dev/null | head -1 > /dev/null; then
-    backups+=( ~/.zshrc.backup.* )
-  fi
-  
-  # Tmux config backups
-  if ls ~/.tmux.conf.backup.* 2>/dev/null | head -1 > /dev/null; then
-    backups+=( ~/.tmux.conf.backup.* )
-  fi
-  
-  # Neovim config backups
-  if ls -d ~/.config/nvim.backup.* 2>/dev/null | head -1 > /dev/null; then
-    backups+=( ~/.config/nvim.backup.* )
-  fi
-  if ls -d ~/.local/share/nvim.backup.* 2>/dev/null | head -1 > /dev/null; then
-    backups+=( ~/.local/share/nvim.backup.* )
-  fi
+  for file in ~/.bashrc.backup.* ~/.zshrc.backup.* ~/.tmux.conf.backup.* ~/.config/nvim.backup.* ~/.local/share/nvim.backup.*; do
+    if [ -e "$file" ]; then
+      backups+=("$file")
+    fi
+  done
   
   # Check if any backups found
   if [ ${#backups[@]} -eq 0 ]; then
@@ -390,8 +381,15 @@ zcleanup() {
   
   # Ask for confirmation unless --force
   if [ "$force" = false ]; then
-    read -p "🗑️  Delete all these backups? (y/N) " -n 1 -r
-    echo
+    if [ -n "$ZSH_VERSION" ]; then
+      # Zsh syntax
+      echo -n "🗑️  Delete all these backups? (y/N) "
+      read -r REPLY
+    else
+      # Bash syntax
+      read -p "🗑️  Delete all these backups? (y/N) " -n 1 -r REPLY
+      echo
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       echo "❌ Cancelled. No files deleted."
       return 0
@@ -453,8 +451,15 @@ zsetdir() {
   if [ ! -f "$new_dir/playbook.yml" ]; then
     echo "⚠️  Warning: $new_dir doesn't look like a Zen repository"
     echo "   (playbook.yml not found)"
-    read -p "Continue anyway? (y/N) " -n 1 -r
-    echo
+    if [ -n "$ZSH_VERSION" ]; then
+      # Zsh syntax
+      echo -n "Continue anyway? (y/N) "
+      read -r REPLY
+    else
+      # Bash syntax
+      read -p "Continue anyway? (y/N) " -n 1 -r REPLY
+      echo
+    fi
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       return 1
     fi

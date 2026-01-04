@@ -17,8 +17,15 @@ mkdir -p "$(dirname "$INSTALL_DIR")"
 # Clone repository if not exists
 if [ -d "$INSTALL_DIR" ]; then
     echo "⚠️  Directory $INSTALL_DIR already exists"
-    read -p "Update existing installation? (y/N) " -n 1 -r
-    echo
+    if [ -n "$ZSH_VERSION" ]; then
+        # Zsh syntax
+        echo -n "Update existing installation? (y/N) "
+        read -r REPLY
+    else
+        # Bash syntax
+        read -p "Update existing installation? (y/N) " -n 1 -r REPLY
+        echo
+    fi
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         cd "$INSTALL_DIR"
         echo "📥 Pulling latest changes..."
