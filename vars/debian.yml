@@ -1,0 +1,45 @@
+---
+# Debian/Ubuntu-specific variables
+
+package_manager: apt
+
+# Shell configuration (Linux uses bash)
+shell_name: bash
+shell_rc_file: "{{ ansible_env.HOME }}/.bashrc"
+
+# APT packages
+apt_packages:
+  - curl
+  - wget
+  - git
+  - build-essential
+  - software-properties-common
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - unzip
+  - tar
+  - gzip
+  - jq
+  - htop
+  - tree
+  - ripgrep
+  - fd-find
+  - tmux
+  - python3-pip
+
+# Tools that need manual installation (not in apt)
+install_from_source:
+  - eza
+  - bat
+  - fzf
+  - zoxide
+  - lazygit
+  - btop
+  - fastfetch
+  - neovim
+  - gh
+
+# Docker installation
+docker_install_method: repository  # Install from Docker's official repository
+

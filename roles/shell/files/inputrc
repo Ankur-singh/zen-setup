@@ -1,0 +1,58 @@
+# Better readline behavior
+
+# Use Vi mode (change to "set editing-mode emacs" if you prefer emacs)
+set editing-mode emacs
+
+# Allow UTF-8 input and output
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# Show all completions at once
+set page-completions off
+
+# Be more intelligent when autocompleting - case insensitive
+set completion-ignore-case on
+
+# Treat hyphens and underscores as equivalent when completing
+set completion-map-case on
+
+# Show extra file information when completing, like `ls -F` does
+set visible-stats on
+
+# Immediately add a trailing slash when autocompleting symlinks to directories
+set mark-symlinked-directories on
+
+# Color files by types
+set colored-stats on
+
+# Color the common prefix
+set colored-completion-prefix on
+
+# Color the common prefix in menu-complete
+set menu-complete-display-prefix on
+
+# Do not autocomplete hidden files unless the pattern explicitly begins with a dot
+set match-hidden-files off
+
+# Show all autocomplete results at once
+set show-all-if-ambiguous on
+
+# If there are more than 200 possible completions, ask to show them all
+set completion-query-items 200
+
+# Allow the arrow keys to be used for history search
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Allow Ctrl-Left and Ctrl-Right to move between words
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+"\e[5C": forward-word
+"\e[5D": backward-word
+"\e\e[C": forward-word
+"\e\e[D": backward-word
+
+# Ctrl-w to delete word
+"\C-w": backward-kill-word
+

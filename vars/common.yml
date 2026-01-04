@@ -1,0 +1,32 @@
+---
+# Common variables across all platforms
+
+# Directories
+config_dir: "{{ ansible_env.HOME }}/.config"
+local_bin_dir: "{{ ansible_env.HOME }}/.local/bin"
+local_share_dir: "{{ ansible_env.HOME }}/.local/share"
+
+# Shell configuration
+shell_name: bash
+shell_rc_file: "{{ ansible_env.HOME }}/.bashrc"
+
+# Git configuration
+git_user_name: ""  # Set this or configure manually after install
+git_user_email: ""  # Set this or configure manually after install
+
+# Python configuration
+uv_version: latest
+python_version: "3.12"
+
+# Neovim configuration
+neovim_config_type: lazyvim  # Options: lazyvim, kickstart, minimal
+
+# Optional tools (set to false to skip)
+install_lazygit: true
+install_lazydocker: true
+install_btop: true
+install_fastfetch: true
+
+# Prompt configuration
+use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
+

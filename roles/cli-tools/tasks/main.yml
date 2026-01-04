@@ -1,0 +1,18 @@
+---
+- name: Include OS-specific tasks
+  include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: Install fastfetch config
+  copy:
+    src: fastfetch-config.jsonc
+    dest: "{{ config_dir }}/fastfetch/config.jsonc"
+    mode: '0644'
+  when: install_fastfetch | default(true)
+
+- name: Create btop config directory
+  file:
+    path: "{{ config_dir }}/btop"
+    state: directory
+    mode: '0755'
+  when: install_btop | default(true)
+

@@ -1,0 +1,69 @@
+# Modern bash prompt with git integration
+
+# Colors for use in PS1
+Reset='\[\033[0m\]'
+Bold='\[\033[1m\]'
+Red='\[\033[0;31m\]'
+Green='\[\033[0;32m\]'
+Yellow='\[\033[0;33m\]'
+Blue='\[\033[0;34m\]'
+Purple='\[\033[0;35m\]'
+Cyan='\[\033[0;36m\]'
+
+# Git prompt function
+__git_prompt() {
+  local branch=""
+  local git_status=""
+  
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    # Get branch name
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+    
+    # Check if working directory is clean
+    if [[ -z $(git status --porcelain 2>/dev/null) ]]; then
+      git_status="${Green}✓${Reset}"
+    else
+      git_status="${Red}✗${Reset}"
+    fi
+    
+    echo -e " ${Purple}(${branch})${Reset} ${git_status}"
+  fi
+}
+
+# Python virtualenv prompt
+__venv_prompt() {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    echo -e " ${Yellow}($(basename $VIRTUAL_ENV))${Reset}"
+  fi
+}
+
+# Build the complete prompt
+__prompt_command() {
+  local exit_code=$?
+  
+  # Start with empty prompt
+  PS1=""
+  
+  # Add exit code if last command failed
+  if [ $exit_code -ne 0 ]; then
+    PS1+="${Red}✗ ${exit_code}${Reset} "
+  fi
+  
+  # User@host
+  PS1+="${Green}\u${Reset}@${Blue}\h${Reset}"
+  
+  # Current directory
+  PS1+=" ${Cyan}\w${Reset}"
+  
+  # Git info
+  PS1+="$(__git_prompt)"
+  
+  # Python venv
+  PS1+="$(__venv_prompt)"
+  
+  # Prompt symbol on new line
+  PS1+="\n${Bold}❯${Reset} "
+}
+
+# Use PROMPT_COMMAND to set PS1
+PROMPT_COMMAND=__prompt_command

@@ -1,0 +1,52 @@
+---
+- name: Include OS-specific Python tasks
+  include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: Install UV (Astral Python package manager)
+  shell: curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    executable: /bin/bash
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/uv"
+  environment:
+    UV_INSTALL_DIR: "{{ local_bin_dir }}"
+
+- name: Ensure UV is in PATH
+  lineinfile:
+    path: "{{ shell_rc_file }}"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    create: yes
+
+- name: Create UV configuration directory
+  file:
+    path: "{{ config_dir }}/uv"
+    state: directory
+    mode: '0755'
+
+
+- name: Create UV cache directory
+  file:
+    path: "{{ ansible_env.HOME }}/.cache/uv"
+    state: directory
+    mode: '0755'
+
+- name: Display Python/UV setup message
+  debug:
+    msg: |
+      ✅ UV (Python package manager) installed!
+      
+      UV is a fast Python package manager from Astral (creators of Ruff).
+      
+      Common commands:
+        uv venv                  - Create virtual environment
+        uv pip install <pkg>     - Install package
+        uv pip list              - List installed packages
+        uv pip freeze            - Export requirements
+      
+      Useful aliases:
+        py                       - python3
+        venv                     - Create and activate venv (function)
+        uv-init                  - Create and activate venv (alias)
+        uv-activate              - Activate existing venv
+      
+      Documentation: https://docs.astral.sh/uv/
+

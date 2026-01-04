@@ -1,0 +1,141 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: Install APT packages
+  apt:
+    name: "{{ apt_packages }}"
+    state: present
+  become: yes
+  when: apt_packages is defined
+
+- name: Install eza (modern ls replacement)
+  block:
+    - name: Add eza GPG key
+      shell: |
+        sudo mkdir -p /etc/apt/keyrings
+        wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+        sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+      args:
+        executable: /bin/bash
+        creates: /etc/apt/sources.list.d/gierens.list
+
+    - name: Install eza
+      apt:
+        name: eza
+        state: present
+        update_cache: yes
+      become: yes
+
+- name: Install bat (better cat)
+  apt:
+    name: bat
+    state: present
+  become: yes
+
+- name: Create bat symlink (batcat -> bat)
+  file:
+    src: /usr/bin/batcat
+    dest: "{{ local_bin_dir }}/bat"
+    state: link
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+- name: Install fzf (fuzzy finder)
+  block:
+    - name: Clone fzf repository
+      git:
+        repo: https://github.com/junegunn/fzf.git
+        dest: "{{ ansible_env.HOME }}/.fzf"
+        depth: 1
+        version: master
+      
+    - name: Install fzf
+      shell: "{{ ansible_env.HOME }}/.fzf/install --key-bindings --completion --no-update-rc --no-bash"
+      args:
+        executable: /bin/bash
+        creates: "{{ ansible_env.HOME }}/.fzf.bash"
+
+- name: Install zoxide (smart cd)
+  shell: |
+    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  args:
+    executable: /bin/bash
+    creates: "{{ local_bin_dir }}/zoxide"
+
+- name: Install neovim (latest stable)
+  block:
+    - name: Add Neovim PPA
+      shell: |
+        sudo add-apt-repository -y ppa:neovim-ppa/unstable
+        sudo apt update
+      args:
+        executable: /bin/bash
+      become: yes
+      changed_when: false
+
+    - name: Install Neovim from PPA
+      apt:
+        name: neovim
+        state: present
+        update_cache: yes
+      become: yes
+
+- name: Install lazygit
+  block:
+    - name: Get latest lazygit version
+      uri:
+        url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
+        return_content: yes
+      register: lazygit_latest
+
+    - name: Install lazygit
+      shell: |
+        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+        tar xf lazygit.tar.gz lazygit
+        sudo install lazygit {{ local_bin_dir }}/lazygit
+        rm lazygit lazygit.tar.gz
+      args:
+        executable: /bin/bash
+        creates: "{{ local_bin_dir }}/lazygit"
+  when: install_lazygit | default(true)
+
+- name: Install lazydocker
+  shell: |
+    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+  args:
+    executable: /bin/bash
+    creates: "{{ local_bin_dir }}/lazydocker"
+  when: install_lazydocker | default(true)
+
+- name: Install btop
+  block:
+    - name: Get latest btop release
+      shell: |
+        BTOP_VERSION=$(curl -s https://api.github.com/repos/aristocratos/btop/releases/latest | grep -Po '"tag_name": "v\K[^"]*')
+        curl -Lo btop.tbz "https://github.com/aristocratos/btop/releases/latest/download/btop-x86_64-linux-musl.tbz"
+        tar xjf btop.tbz
+        cd btop && sudo make install PREFIX={{ ansible_env.HOME }}/.local
+        cd .. && rm -rf btop btop.tbz
+      args:
+        executable: /bin/bash
+        creates: "{{ local_bin_dir }}/btop"
+  when: install_btop | default(true)
+
+- name: Install fastfetch
+  block:
+    - name: Download and install fastfetch
+      shell: |
+        wget -qO fastfetch.deb https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb
+        sudo dpkg -i fastfetch.deb || sudo apt-get install -f -y
+        rm fastfetch.deb
+      args:
+        executable: /bin/bash
+        creates: /usr/bin/fastfetch
+  when: install_fastfetch | default(true)
+  become: yes
+

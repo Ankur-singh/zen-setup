@@ -1,0 +1,20 @@
+---
+- name: Check if Docker Desktop is installed (macOS)
+  stat:
+    path: /Applications/Docker.app
+  register: docker_desktop
+
+- name: Install Docker Desktop via Homebrew Cask
+  homebrew_cask:
+    name: docker
+    state: present
+  when: not docker_desktop.stat.exists
+  ignore_errors: yes
+
+- name: Display Docker Desktop message
+  debug:
+    msg: |
+      Docker Desktop installation attempted via Homebrew.
+      If it didn't install, please download from: https://www.docker.com/products/docker-desktop
+      Start Docker Desktop from Applications to complete setup.
+

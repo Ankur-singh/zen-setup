@@ -1,0 +1,43 @@
+# Ansible
+*.retry
+.ansible/
+
+# Host-specific files
+host_vars/
+group_vars/
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# Logs
+*.log
+
+# Local customizations (not tracked)
+inventory.local.yml
+vars/local.yml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+

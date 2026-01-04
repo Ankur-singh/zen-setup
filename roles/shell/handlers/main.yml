@@ -1,0 +1,5 @@
+---
+- name: reload shell
+  debug:
+    msg: "Shell configuration updated. Run 'source ~/.bashrc' to apply changes."
+

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+cat << 'EOF'
+🚀 Terminal Setup - Quick Reference
+
+NAVIGATION & FILES
+------------------
+ls, lsa     - List files with icons (lsa = show hidden)
+ll          - Detailed list view
+lt, lta     - Tree view (lta = show hidden)
+cd          - Smart cd with zoxide (remembers frequent dirs)
+..          - Go up one directory
+mkcd <dir>  - Create directory and cd into it
+ff          - Fuzzy file finder with preview
+
+GIT SHORTCUTS
+-------------
+g           - git
+gs          - git status
+ga          - git add
+gc          - git commit
+gcm         - git commit -m "message"
+gp          - git push
+gpl         - git pull
+gl          - git log (pretty)
+gcl <url>   - Clone repo and cd into it
+gnb <name>  - Create new branch and switch
+lzg         - LazyGit (interactive git UI)
+
+DOCKER
+------
+d           - docker
+dc          - docker-compose
+dps         - docker ps
+di          - docker images
+dex         - docker exec -it
+denter      - Enter running container
+lzd         - LazyDocker (interactive docker UI)
+docker-cleanup - Clean up all docker resources
+
+PYTHON
+------
+py          - python3
+uv          - UV package manager
+venv        - Create and activate venv with UV
+uv-init     - Create venv and activate
+uv-activate - Activate existing venv
+
+EDITOR
+------
+v, vim, n   - Open neovim
+nvim .      - Open neovim in current directory
+
+TMUX
+----
+t           - tmux
+ta          - tmux attach
+tn <name>   - Create new named session
+tm <name>   - Attach or create session
+
+SYSTEM
+------
+top         - btop (beautiful process monitor)
+disk        - Show disk usage
+meminfo     - Show memory info
+myip        - Show public IP
+localip     - Show local IP
+ports       - Show open ports
+
+UTILITIES
+---------
+extract     - Extract any archive type
+compress    - Create tar.gz archive
+backup      - Backup a file with timestamp
+serve       - Start HTTP server (default: port 8000)
+weather     - Check weather
+cheat <cmd> - Show cheatsheet for command
+genpass     - Generate random password
+note        - Quick note taking
+
+HELP
+----
+For detailed function help: type the function name without arguments
+Edit aliases: aliases
+Edit functions: functions
+Reload config: reload
+
+Happy coding! 🎉
+EOF
+

@@ -1,0 +1,11 @@
+---
+- name: Ensure Git is installed (macOS)
+  homebrew:
+    name: git
+    state: present
+
+- name: Ensure GitHub CLI is installed (macOS)
+  homebrew:
+    name: gh
+    state: present
+

@@ -1,0 +1,89 @@
+---
+- name: Ensure .local/bin directory exists
+  file:
+    path: "{{ local_bin_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Create shell configuration directory
+  file:
+    path: "{{ ansible_env.HOME }}/.{{ shell_name }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy shell aliases
+  copy:
+    src: bash_aliases
+    dest: "{{ ansible_env.HOME }}/.{{ shell_name }}/aliases"
+    mode: '0644'
+  notify: reload shell
+
+- name: Copy shell functions
+  copy:
+    src: bash_functions
+    dest: "{{ ansible_env.HOME }}/.{{ shell_name }}/functions"
+    mode: '0644'
+  notify: reload shell
+
+- name: Copy shell prompt (bash)
+  copy:
+    src: bash_prompt
+    dest: "{{ ansible_env.HOME }}/.bash/prompt"
+    mode: '0644'
+  when: 
+    - shell_name == "bash"
+    - not use_starship_prompt | default(false)
+  notify: reload shell
+
+- name: Copy shell prompt (zsh)
+  copy:
+    src: zsh_prompt
+    dest: "{{ ansible_env.HOME }}/.zsh/prompt"
+    mode: '0644'
+  when: 
+    - shell_name == "zsh"
+    - not use_starship_prompt | default(false)
+  notify: reload shell
+
+- name: Install and configure Starship prompt
+  include_tasks: starship.yml
+  when: use_starship_prompt | default(false)
+
+- name: Generate shell RC file (bash)
+  template:
+    src: bashrc.j2
+    dest: "{{ shell_rc_file }}"
+    mode: '0644'
+    backup: yes
+  when: shell_name == "bash"
+  notify: reload shell
+
+- name: Generate shell RC file (zsh)
+  template:
+    src: zshrc.j2
+    dest: "{{ shell_rc_file }}"
+    mode: '0644'
+    backup: yes
+  when: shell_name == "zsh"
+  notify: reload shell
+
+- name: Configure inputrc for better readline behavior (bash only)
+  copy:
+    src: inputrc
+    dest: "{{ ansible_env.HOME }}/.inputrc"
+    mode: '0644'
+  when: shell_name == "bash"
+
+- name: Create thelp script
+  copy:
+    src: thelp
+    dest: "{{ local_bin_dir }}/thelp"
+    mode: '0755'
+
+- name: Ensure .local/bin is in PATH
+  lineinfile:
+    path: "{{ shell_rc_file }}"
+    line: 'export PATH="$HOME/.local/bin:$PATH"'
+    create: yes
+  notify: reload shell
+

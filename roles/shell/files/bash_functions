@@ -1,0 +1,173 @@
+# Quick directory creation and navigation
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# Extract any archive type
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2)   tar xjf "$1"     ;;
+      *.tar.gz)    tar xzf "$1"     ;;
+      *.bz2)       bunzip2 "$1"     ;;
+      *.rar)       unrar x "$1"     ;;
+      *.gz)        gunzip "$1"      ;;
+      *.tar)       tar xf "$1"      ;;
+      *.tbz2)      tar xjf "$1"     ;;
+      *.tgz)       tar xzf "$1"     ;;
+      *.zip)       unzip "$1"       ;;
+      *.Z)         uncompress "$1"  ;;
+      *.7z)        7z x "$1"        ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Compress files/folders
+compress() {
+  tar -czf "${1%/}.tar.gz" "${1%/}"
+}
+
+# Find and kill process by name
+killp() {
+  ps aux | grep -v grep | grep "$1" | awk '{print $2}' | xargs kill -9
+}
+
+# Create a backup of a file
+backup() {
+  cp "$1"{,.backup-$(date +%Y%m%d-%H%M%S)}
+}
+
+# Quick HTTP server (Python)
+serve() {
+  local port="${1:-8000}"
+  echo "Starting HTTP server on port $port..."
+  python3 -m http.server "$port"
+}
+
+# Git clone and cd into it
+gcl() {
+  git clone "$1" && cd "$(basename "$1" .git)"
+}
+
+# Create new branch and switch to it
+gnb() {
+  git checkout -b "$1"
+}
+
+# Git commit with conventional commits
+gcom() {
+  local type="$1"
+  shift
+  git commit -m "${type}: $*"
+}
+
+# Docker: Remove all stopped containers
+drm() {
+  docker rm $(docker ps -a -q)
+}
+
+# Docker: Remove all dangling images
+drmi() {
+  docker rmi $(docker images -f "dangling=true" -q)
+}
+
+# Docker: Enter a running container
+denter() {
+  docker exec -it "$1" /bin/bash || docker exec -it "$1" /bin/sh
+}
+
+# Create Python virtual environment and activate
+venv() {
+  uv venv "$@"
+  source .venv/bin/activate
+}
+
+# Find in current directory
+findf() {
+  find . -type f -name "*$1*"
+}
+
+# Find directory
+findd() {
+  find . -type d -name "*$1*"
+}
+
+# Search in files
+search() {
+  rg -i "$1" .
+}
+
+# Quick grep through history
+hgrep() {
+  history | grep "$1"
+}
+
+# Weather check
+weather() {
+  curl -s "wttr.in/${1:-}" | head -n 7
+}
+
+# Cheat sheet for commands
+cheat() {
+  curl -s "cheat.sh/$1"
+}
+
+# Generate random password
+genpass() {
+  local length="${1:-20}"
+  openssl rand -base64 32 | cut -c1-"$length"
+}
+
+# Docker cleanup everything
+docker-cleanup() {
+  echo "🧹 Cleaning up Docker..."
+  docker system prune -af --volumes
+  echo "✅ Done!"
+}
+
+# Show disk usage of current directory sorted
+duh() {
+  du -h --max-depth=1 | sort -hr
+}
+
+# Count files in directory
+count() {
+  find "${1:-.}" -type f | wc -l
+}
+
+# Quick note taking
+note() {
+  local note_file="$HOME/.notes/$(date +%Y-%m-%d).md"
+  mkdir -p "$HOME/.notes"
+  echo "# $(date '+%Y-%m-%d %H:%M:%S')" >> "$note_file"
+  echo "" >> "$note_file"
+  if [ $# -eq 0 ]; then
+    nvim + "$note_file"
+  else
+    echo "$*" >> "$note_file"
+    echo "✅ Note saved to $note_file"
+  fi
+}
+
+# Git: Show changed files in last commit
+gchanged() {
+  git diff-tree --no-commit-id --name-only -r HEAD
+}
+
+# Git: Undo last commit but keep changes
+gundo() {
+  git reset --soft HEAD~1
+}
+
+# tmux: Create or attach to session
+tm() {
+  if [ -z "$1" ]; then
+    tmux attach || tmux new
+  else
+    tmux attach -t "$1" || tmux new -s "$1"
+  fi
+}
+

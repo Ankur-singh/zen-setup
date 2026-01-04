@@ -1,0 +1,31 @@
+---
+# Example local customization file
+# Copy this to vars/local.yml and customize as needed
+# Then include in playbook: vars_files: ["vars/local.yml"]
+
+# Git configuration
+git_user_name: "Your Name"
+git_user_email: "your@email.com"
+
+# Python version
+python_version: "3.12"
+
+# Feature flags
+install_docker: true
+install_lazygit: true
+install_lazydocker: true
+install_btop: true
+install_fastfetch: true
+
+# Neovim configuration type
+neovim_config_type: lazyvim  # Options: lazyvim, kickstart, minimal
+
+# Prompt configuration
+use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
+
+# Optional: Override tool versions
+# uv_version: "0.1.0"
+
+# Optional: Skip specific tools
+# install_optional_tools: false
+

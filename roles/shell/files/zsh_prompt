@@ -1,0 +1,70 @@
+# Modern zsh prompt with git integration
+
+# Enable prompt substitution
+setopt PROMPT_SUBST
+
+# Colors
+autoload -U colors && colors
+
+# Git prompt function
+git_prompt() {
+  local branch=""
+  local status=""
+  
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    # Get branch name
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+    
+    # Check if working directory is clean
+    if [[ -z $(git status --porcelain 2>/dev/null) ]]; then
+      status="%{$fg[green]%}✓%{$reset_color%}"
+    else
+      status="%{$fg[red]%}✗%{$reset_color%}"
+    fi
+    
+    echo " %{$fg[magenta]%}($branch)%{$reset_color%} $status"
+  fi
+}
+
+# Python virtualenv prompt
+venv_prompt() {
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    echo " %{$fg[yellow]%}($(basename $VIRTUAL_ENV))%{$reset_color%}"
+  fi
+}
+
+# Build the prompt
+build_prompt() {
+  local exit_code=$?
+  local prompt=""
+  
+  # Show exit code if last command failed
+  if [ $exit_code -ne 0 ]; then
+    prompt="%{$fg[red]%}✗ ${exit_code}%{$reset_color%} "
+  fi
+  
+  # User@host
+  prompt="${prompt}%{$fg[green]%}%n%{$reset_color%}@%{$fg[blue]%}%m%{$reset_color%}"
+  
+  # Current directory
+  prompt="${prompt} %{$fg[cyan]%}%~%{$reset_color%}"
+  
+  # Git info
+  prompt="${prompt}$(git_prompt)"
+  
+  # Python venv
+  prompt="${prompt}$(venv_prompt)"
+  
+  # Newline and prompt symbol
+  prompt="${prompt}
+%{$fg_bold[default]%}❯%{$reset_color%} "
+  
+  echo "$prompt"
+}
+
+# Set the prompt
+PROMPT='$(build_prompt)'
+
+# Right prompt (optional - shows time)
+# RPROMPT='%{$fg[cyan]%}%*%{$reset_color%}'
+
