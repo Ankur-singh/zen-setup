@@ -74,10 +74,10 @@
     mode: '0644'
   when: shell_name == "bash"
 
-- name: Create thelp script
+- name: Create zhelp script
   copy:
-    src: thelp
-    dest: "{{ local_bin_dir }}/thelp"
+    src: zhelp
+    dest: "{{ local_bin_dir }}/zhelp"
     mode: '0755'
 
 - name: Ensure .local/bin is in PATH

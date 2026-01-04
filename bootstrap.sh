@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Bootstrap script for Terminal Setup
+# Bootstrap script for Zen - Complete Terminal Environment
 # This script installs Ansible and runs the setup playbook
 
 set -e
 
-echo "🚀 Terminal Development Environment Bootstrap"
+echo "🧘 Zen - Terminal Environment Bootstrap"
 echo "=============================================="
 echo ""
 
@@ -72,7 +72,8 @@ fi
 echo "  3. Configure Git (if not already done):"
 echo "     git config --global user.name \"Your Name\""
 echo "     git config --global user.email \"your@email.com\""
-echo "  4. Run 'thelp' to see available commands"
+echo "  4. Run 'zhelp' to see available commands"
+echo "  5. Run 'zupdate' in the future to update Zen"
 echo ""
 echo "🎉 Happy coding!"
 

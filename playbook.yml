@@ -1,5 +1,5 @@
 ---
-- name: Terminal Development Environment Setup
+- name: Zen - Complete Terminal Environment
   hosts: all
   become: false
   gather_facts: yes
@@ -63,7 +63,7 @@
     - name: Summary
       debug:
         msg: |
-          ✅ Terminal setup complete!
+          ✅ Zen installation complete!
           
           Next steps:
           {% if docker_group_added is defined and docker_group_added.changed %}
@@ -93,5 +93,5 @@
           - NVIDIA drivers{% if docker_installed is defined and docker_installed %} and Container Toolkit{% endif %} (GPU support)
           {% endif %}
           
-          Run 'thelp' in your terminal to see available commands!
+          Run 'zhelp' in your terminal to see available commands!
 

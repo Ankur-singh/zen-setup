@@ -1,10 +1,10 @@
-# Makefile for Terminal Setup
+# Makefile for Zen - Complete Terminal Environment
 
 .PHONY: help install install-local install-remote check lint test tags
 
 # Default target
 help:
-	@echo "Terminal Development Environment Setup"
+	@echo "🧘 Zen - Complete Terminal Environment"
 	@echo ""
 	@echo "Available targets:"
 	@echo "  make install        - Install on localhost (default)"
@@ -25,7 +25,7 @@ help:
 
 # Install on local machine
 install:
-	@echo "🚀 Installing terminal setup on localhost..."
+	@echo "🧘 Installing Zen on localhost..."
 	@if [ "$(shell uname -s)" = "Linux" ]; then \
 		echo "⚠️  You will be prompted for your sudo password..."; \
 		ansible-playbook playbook.yml --ask-become-pass; \
@@ -37,7 +37,7 @@ install-local: install
 
 # Install on remote VMs
 install-remote:
-	@echo "🚀 Installing terminal setup on remote VMs..."
+	@echo "🧘 Installing Zen on remote VMs..."
 	ansible-playbook -i inventory.yml playbook.yml --limit remote_vms
 
 # Check connectivity

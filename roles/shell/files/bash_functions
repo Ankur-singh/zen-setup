@@ -223,3 +223,254 @@ tm() {
   fi
 }
 
+# Update Zen terminal environment from repository
+# Usage: zupdate [tags]
+# Examples:
+#   zupdate           # Update everything
+#   zupdate shell     # Update only shell config
+#   zupdate "shell,cli-tools"  # Update multiple components
+zupdate() {
+  local setup_dir=""
+  local tags="${1:-}"
+  
+  echo "🔄 Updating Zen..."
+  echo ""
+  
+  # Try to find Zen directory
+  if [ -n "$ZEN_SETUP_DIR" ] && [ -d "$ZEN_SETUP_DIR" ]; then
+    setup_dir="$ZEN_SETUP_DIR"
+  elif [ -d "$HOME/.local/share/zen-setup" ]; then
+    setup_dir="$HOME/.local/share/zen-setup"
+  else
+    echo "❌ Zen directory not found!"
+    echo ""
+    echo "💡 Checked:"
+    echo "   - \$ZEN_SETUP_DIR (not set or doesn't exist)"
+    echo "   - ~/.local/share/zen-setup (not found)"
+    echo ""
+    echo "🔧 To set your Zen directory location, use zsetdir:"
+    echo ""
+    echo "   # If you have it installed elsewhere:"
+    echo "   zsetdir /path/to/your/zen"
+    echo ""
+    echo "   # Example:"
+    echo "   zsetdir ~/projects/zen"
+    echo ""
+    echo "📥 Or install fresh:"
+    echo "   curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash"
+    return 1
+  fi
+  
+  echo "📂 Using setup directory: $setup_dir"
+  echo ""
+  
+  cd "$setup_dir" || return 1
+  
+  # Pull latest changes
+  echo "📥 Pulling latest changes from git..."
+  local git_output
+  git_output=$(git pull 2>&1)
+  local git_exit=$?
+  
+  if [ $git_exit -ne 0 ]; then
+    echo "$git_output"
+    echo "❌ Failed to pull changes"
+    return 1
+  fi
+  
+  echo "$git_output"
+  
+  # Check if already up to date
+  if echo "$git_output" | grep -q "Already up to date"; then
+    echo ""
+    echo "✅ Already up to date! No updates to install."
+    echo "💡 To force reinstall anyway, run:"
+    echo "   cd $setup_dir && ./bootstrap.sh"
+    return 0
+  fi
+  
+  echo ""
+  echo "🚀 Running Ansible playbook..."
+  
+  # Build ansible command
+  local cmd="ansible-playbook playbook.yml"
+  
+  # Add tags if provided
+  if [ -n "$tags" ]; then
+    cmd="$cmd --tags $tags"
+    echo "📦 Updating: $tags"
+  else
+    echo "📦 Updating: all components"
+  fi
+  
+  # Add --ask-become-pass for Linux
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    cmd="$cmd --ask-become-pass"
+  fi
+  
+  echo ""
+  eval "$cmd"
+  
+  local exit_code=$?
+  
+  echo ""
+  if [ $exit_code -eq 0 ]; then
+    echo "✅ Zen updated successfully!"
+    echo ""
+    echo "🔄 Reload your shell to apply changes:"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      echo "   source ~/.zshrc"
+    else
+      echo "   source ~/.bashrc"
+    fi
+  else
+    echo "❌ Update failed with exit code: $exit_code"
+    return $exit_code
+  fi
+}
+
+  # Clean up backup files created by Zen
+# Usage: zcleanup [--force]
+# Examples:
+#   zcleanup         # Interactive - shows backups and asks for confirmation
+#   zcleanup --force # Delete all backups without confirmation
+zcleanup() {
+  local force=false
+  if [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
+    force=true
+  fi
+  
+  echo "🔍 Finding backup files created by Zen..."
+  echo ""
+  
+  # Find all backup files
+  local backups=()
+  
+  # Shell config backups
+  if ls ~/.bashrc.backup.* 2>/dev/null | head -1 > /dev/null; then
+    backups+=( ~/.bashrc.backup.* )
+  fi
+  if ls ~/.zshrc.backup.* 2>/dev/null | head -1 > /dev/null; then
+    backups+=( ~/.zshrc.backup.* )
+  fi
+  
+  # Tmux config backups
+  if ls ~/.tmux.conf.backup.* 2>/dev/null | head -1 > /dev/null; then
+    backups+=( ~/.tmux.conf.backup.* )
+  fi
+  
+  # Neovim config backups
+  if ls -d ~/.config/nvim.backup.* 2>/dev/null | head -1 > /dev/null; then
+    backups+=( ~/.config/nvim.backup.* )
+  fi
+  if ls -d ~/.local/share/nvim.backup.* 2>/dev/null | head -1 > /dev/null; then
+    backups+=( ~/.local/share/nvim.backup.* )
+  fi
+  
+  # Check if any backups found
+  if [ ${#backups[@]} -eq 0 ]; then
+    echo "✅ No backup files found!"
+    return 0
+  fi
+  
+  # Display found backups
+  echo "📦 Found ${#backups[@]} backup(s):"
+  echo ""
+  for backup in "${backups[@]}"; do
+    if [ -d "$backup" ]; then
+      local size=$(du -sh "$backup" 2>/dev/null | cut -f1)
+      echo "  📁 $backup ($size)"
+    else
+      local size=$(du -h "$backup" 2>/dev/null | cut -f1)
+      echo "  📄 $backup ($size)"
+    fi
+  done
+  
+  echo ""
+  
+  # Ask for confirmation unless --force
+  if [ "$force" = false ]; then
+    read -p "🗑️  Delete all these backups? (y/N) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "❌ Cancelled. No files deleted."
+      return 0
+    fi
+  fi
+  
+  # Delete backups
+  echo ""
+  echo "🗑️  Deleting backups..."
+  for backup in "${backups[@]}"; do
+    if [ -e "$backup" ]; then
+      rm -rf "$backup"
+      echo "  ✓ Deleted: $backup"
+    fi
+  done
+  
+  echo ""
+  echo "✅ All backups cleaned up!"
+}
+
+# Set Zen directory location
+# Usage: zsetdir [directory]
+# Examples:
+#   zsetdir ~/projects/zen
+#   zsetdir  # Show current location
+zsetdir() {
+  local rc_file
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    rc_file="$HOME/.zshrc.local"
+  else
+    rc_file="$HOME/.bashrc.local"
+  fi
+  
+  if [ -z "$1" ]; then
+    # Show current location
+    if [ -n "$ZEN_SETUP_DIR" ]; then
+      echo "📂 Current Zen directory: $ZEN_SETUP_DIR"
+    else
+      echo "📂 No custom Zen directory set (using default: ~/.local/share/zen-setup)"
+    fi
+    echo ""
+    echo "💡 To set a custom location:"
+    echo "   zsetdir /path/to/your/zen"
+    return 0
+  fi
+  
+  local new_dir="$1"
+  
+  # Expand ~ to full path
+  new_dir="${new_dir/#\~/$HOME}"
+  
+  # Check if directory exists
+  if [ ! -d "$new_dir" ]; then
+    echo "❌ Directory not found: $new_dir"
+    return 1
+  fi
+  
+  # Check if it's actually a Zen repository
+  if [ ! -f "$new_dir/playbook.yml" ]; then
+    echo "⚠️  Warning: $new_dir doesn't look like a Zen repository"
+    echo "   (playbook.yml not found)"
+    read -p "Continue anyway? (y/N) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      return 1
+    fi
+  fi
+  
+  # Add to local RC file
+  echo "" >> "$rc_file"
+  echo "# Zen directory (set by zsetdir)" >> "$rc_file"
+  echo "export ZEN_SETUP_DIR=\"$new_dir\"" >> "$rc_file"
+  
+  # Set for current session
+  export ZEN_SETUP_DIR="$new_dir"
+  
+  echo "✅ Zen directory set to: $new_dir"
+  echo "📝 Saved to: $rc_file"
+  echo ""
+  echo "🔄 Reload your shell or run: source $rc_file"
+}
+

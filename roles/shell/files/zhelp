@@ -1,0 +1,112 @@
+#!/bin/bash
+
+cat << 'EOF'
+🧘 Zen - Complete Terminal Environment
+
+NAVIGATION & FILES
+------------------
+ls, lsa     - List files with icons (lsa = show hidden)
+ll          - Detailed list view
+lt, lta     - Tree view (lta = show hidden)
+cd          - Smart cd with zoxide (remembers frequent dirs)
+..          - Go up one directory
+mkcd <dir>  - Create directory and cd into it
+ff          - Fuzzy file finder with preview
+findf       - Find files by name
+findd       - Find directories by name
+
+GIT SHORTCUTS
+-------------
+g           - git
+gs          - git status
+ga          - git add
+gc          - git commit
+gcm         - git commit -m "message"
+gcom        - Conventional commit (e.g., gcom feat "add feature")
+gp          - git push
+gpl         - git pull
+gl          - git log (pretty)
+gcl <url>   - Clone repo and cd into it
+gnb <name>  - Create new branch and switch
+gchanged    - Show files changed in last commit
+gundo       - Undo last commit (keep changes)
+lzg         - LazyGit (interactive git UI)
+
+DOCKER
+------
+d           - docker
+dc          - docker-compose
+dps         - docker ps
+di          - docker images
+dex         - docker exec -it
+denter      - Enter running container
+lzd         - LazyDocker (interactive docker UI)
+docker-cleanup     - Clean up all docker resources
+docker-rm-stopped  - Remove all stopped containers
+docker-rm-images   - Remove dangling images
+
+PYTHON
+------
+py          - python3
+uv          - UV package manager
+venv        - Create and activate venv with UV
+uv-init     - Create venv and activate
+uv-activate - Activate existing venv
+
+EDITOR
+------
+v, vim, n   - Open neovim
+nvim .      - Open neovim in current directory
+
+TMUX
+----
+t           - tmux
+ta          - tmux attach
+tn <name>   - Create NEW named session (always creates)
+tm [name]   - Smart attach: tries to attach first, creates if doesn't exist
+
+SYSTEM
+------
+top         - btop (beautiful process monitor)
+disk        - Show disk usage
+duh         - Disk usage sorted (current directory)
+meminfo     - Show memory info
+myip        - Show public IP (auto-copies to clipboard)
+localip     - Show local IP (auto-copies to clipboard)
+ports       - Show open ports
+killp       - Kill process by name
+
+UTILITIES
+---------
+extract     - Extract any archive type
+compress    - Create tar.gz archive
+backup      - Backup a file with timestamp
+serve       - Start HTTP server (default: port 8000)
+search      - Search text in files (uses ripgrep)
+hgrep       - Search command history
+count       - Count files in directory
+weather     - Check weather
+cheat <cmd> - Show cheatsheet for command
+genpass     - Generate random password
+note [text] - Quick notes (saves to ~/.notes/YYYY-MM-DD.md)
+              Usage: note "your note text" OR note (opens editor)
+
+ZEN COMMANDS
+------------
+zupdate [tags]  - Update Zen from repo (skips if up to date)
+                  Examples: zupdate, zupdate shell, zupdate "shell,cli-tools"
+zsetdir [path]  - Set/show Zen directory location
+                  Examples: zsetdir ~/projects/zen, zsetdir (show current)
+zcleanup        - Clean up backup files created by Zen
+                  Examples: zcleanup, zcleanup --force
+zhelp           - Show this help message
+
+SHELL MANAGEMENT
+----------------
+aliases         - Edit aliases in editor
+functions       - Edit functions in editor
+reload          - Reload shell configuration
+
+Happy coding! 🎉
+EOF
+

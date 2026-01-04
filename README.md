@@ -1,6 +1,8 @@
-# Terminal Development Environment Setup
+# 🧘 Zen - Complete Terminal Environment
 
-A complete, opinionated terminal development environment setup for macOS and Linux, inspired by [Omakub](https://github.com/basecamp/omakub). This Ansible-based setup transforms a fresh system into a beautiful, modern, and productive development environment with a single command.
+A complete, opinionated terminal development environment for macOS and Linux, inspired by [Omakub](https://github.com/basecamp/omakub). This Ansible-based setup transforms a fresh system into a beautiful, modern, and productive terminal first development environment with a single command.
+
+**Zen (全)** - meaning "complete" or "all" in Japanese - provides everything you need for a perfect terminal experience.
 
 ## 🎯 Features
 
@@ -51,16 +53,48 @@ sudo apt update && sudo apt install -y ansible git
 
 ## 🚀 Quick Start
 
-**TL;DR:** Clone the repo and run `./bootstrap.sh` (or `make install`). That's it!
+**TL;DR - One-Liner Install:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
+```
 
-### Option 1: Bootstrap Script (Recommended) ⭐
+**Or clone and run manually:** Clone the repo and run `./bootstrap.sh` (or `make install`).
 
-The easiest way - automatically installs Ansible if needed and runs the setup:
+After installation, run `zhelp` to see all available commands.
+
+### Option 1: One-Liner Install (Easiest) ⭐⭐⭐
+
+Install everything with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
+```
+
+This automatically:
+- Clones the repository to `~/.local/share/zen-setup`
+- Installs Ansible if needed
+- Runs the complete setup
+- Shows retry command if anything fails
+
+**Custom install location:**
+```bash
+ZEN_SETUP_DIR=~/projects/zen curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
+```
+
+**If installation fails:**
+The installer will show you a retry command like:
+```bash
+bash ~/.local/share/zen-setup/bootstrap.sh
+```
+
+### Option 2: Bootstrap Script (Recommended) ⭐⭐
+
+Clone first, then run - gives you a chance to customize:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Ankur-singh/setup.git ~/terminal-setup
-cd ~/terminal-setup
+git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
+cd ~/.local/share/zen-setup
 
 # (Optional) Customize variables
 nvim vars/common.yml
@@ -69,14 +103,14 @@ nvim vars/common.yml
 ./bootstrap.sh
 ```
 
-### Option 2: Makefile (Quick & Simple) ⭐
+### Option 3: Makefile (Quick & Simple) ⭐
 
 If you prefer make commands:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Ankur-singh/setup.git ~/terminal-setup
-cd ~/terminal-setup
+git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
+cd ~/.local/share/zen-setup
 
 # (Optional) Customize variables
 nvim vars/common.yml
@@ -94,7 +128,7 @@ make install-nvidia   # NVIDIA drivers + Container Toolkit (Linux only)
 make install-python   # Python + UV only
 ```
 
-### Option 3: Manual Ansible (Advanced)
+### Option 4: Manual Ansible (Advanced)
 
 For more control or remote VMs:
 
@@ -105,8 +139,8 @@ For more control or remote VMs:
 # Linux: sudo apt install ansible
 
 # Clone and run
-git clone https://github.com/Ankur-singh/setup.git ~/terminal-setup
-cd ~/terminal-setup
+git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
+cd ~/.local/share/zen-setup
 
 # macOS
 ansible-playbook playbook.yml
@@ -313,7 +347,7 @@ These files won't be overwritten by Ansible.
 
 ## 📖 Quick Reference
 
-After installation, run `thelp` for a complete command reference. Here are the most common commands:
+After installation, run `zhelp` for a complete command reference. Here are the most common commands:
 
 ### Common Aliases
 ```bash
@@ -434,6 +468,55 @@ services:
               capabilities: [gpu]
 ```
 
+## 🛡️ Backup & Cleanup
+
+### What Gets Backed Up
+
+The setup automatically backs up your existing configs before making changes:
+
+- **`~/.bashrc`** → `~/.bashrc.backup.YYYYMMDD_HHMMSS`
+- **`~/.zshrc`** → `~/.zshrc.backup.YYYYMMDD_HHMMSS`
+- **`~/.tmux.conf`** → `~/.tmux.conf.backup.YYYYMMDD_HHMMSS`
+- **`~/.config/nvim/`** → `~/.config/nvim.backup.YYYYMMDD_HHMMSS`
+- **`~/.local/share/nvim/`** → `~/.local/share/nvim.backup.YYYYMMDD_HHMMSS`
+
+### Restore From Backup
+
+If you want to restore your old configuration:
+
+```bash
+# Example: restore zsh config
+cp ~/.zshrc.backup.20260104_123045 ~/.zshrc
+source ~/.zshrc
+```
+
+### Clean Up Old Backups
+
+Over time, you may accumulate multiple backup files. Use `zcleanup` to remove them:
+
+```bash
+# Interactive - shows all backups and asks for confirmation
+zcleanup
+
+# Force delete without confirmation
+zcleanup --force
+```
+
+**Example output:**
+```
+🔍 Finding backup files created by Zen...
+
+📦 Found 5 backup(s):
+
+  📄 ~/.bashrc.backup.20260101_120000 (4.2K)
+  📄 ~/.zshrc.backup.20260101_120000 (5.1K)
+  📄 ~/.tmux.conf.backup.20260101_120000 (1.3K)
+  📁 ~/.config/nvim.backup.20260101_120000 (156K)
+  📁 ~/.local/share/nvim.backup.20260101_120000 (89M)
+
+🗑️  Delete all these backups? (y/N)
+```
+
 ## 🔧 Troubleshooting
 
 ### Docker permission denied
@@ -504,11 +587,48 @@ cat /etc/docker/daemon.json  # Should contain nvidia runtime config
 
 ## 🔄 Updating
 
-To update installed tools and configurations:
+### Quick Update (Recommended)
+
+Use the built-in `zupdate` command:
 
 ```bash
-cd ~/terminal-setup
-git pull  # If tracking updates
+# Update everything
+zupdate
+
+# Update specific components only
+zupdate shell              # Shell config only
+zupdate cli-tools          # CLI tools only
+zupdate "shell,cli-tools"  # Multiple components
+```
+
+The `zupdate` command automatically:
+- Auto-detects Zen directory location
+- Pulls latest changes from git
+- **Stops if already up to date** (no unnecessary reinstalls)
+- Runs the Ansible playbook only if there are updates
+- Shows what was updated
+- Prompts to reload your shell
+
+**If you moved the repository or installed to a non-standard location:**
+
+Use `zsetdir` to update the location:
+```bash
+# Show current Zen directory
+zsetdir
+
+# Set new location
+zsetdir ~/projects/zen
+```
+
+The `zupdate` command automatically searches:
+- `$ZEN_SETUP_DIR` (if set via `zsetdir`)
+- `~/.local/share/zen-setup` (default installation location)
+
+### Manual Update
+
+```bash
+cd ~/.local/share/zen-setup
+git pull
 ansible-playbook playbook.yml
 ```
 
@@ -517,7 +637,7 @@ The playbook is idempotent, so it's safe to run multiple times.
 ## 📂 Project Structure
 
 ```
-terminal-setup/
+zen-setup/
 ├── playbook.yml              # Main playbook
 ├── inventory.yml             # Hosts inventory
 ├── ansible.cfg              # Ansible configuration
@@ -554,5 +674,5 @@ MIT License - feel free to use and modify as needed.
 
 **Happy coding!** 🚀
 
-Run `thelp` after installation to see all available commands.
+Run `zhelp` after installation to see all available commands.
 

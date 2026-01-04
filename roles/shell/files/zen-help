@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cat << 'EOF'
-🚀 Terminal Setup - Quick Reference
+🧘 Zen - Complete Terminal Environment
 
 NAVIGATION & FILES
 ------------------
@@ -91,12 +91,21 @@ genpass     - Generate random password
 note [text] - Quick notes (saves to ~/.notes/YYYY-MM-DD.md)
               Usage: note "your note text" OR note (opens editor)
 
-HELP
-----
-For detailed function help: type the function name without arguments
-Edit aliases: aliases
-Edit functions: functions
-Reload config: reload
+ZEN COMMANDS
+------------
+zupdate [tags]  - Update Zen from repo (skips if up to date)
+                  Examples: zupdate, zupdate shell, zupdate "shell,cli-tools"
+zsetdir [path]  - Set/show Zen directory location
+                  Examples: zsetdir ~/projects/zen, zsetdir (show current)
+zcleanup        - Clean up backup files created by Zen
+                  Examples: zcleanup, zcleanup --force
+zhelp           - Show this help message
+
+SHELL MANAGEMENT
+----------------
+aliases         - Edit aliases in editor
+functions       - Edit functions in editor
+reload          - Reload shell configuration
 
 Happy coding! 🎉
 EOF

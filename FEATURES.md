@@ -1,6 +1,8 @@
-# Features Reference
+# 🧘 Zen Features Reference
 
-Quick overview of what's included in this terminal setup.
+Quick overview of what's included in Zen - your complete terminal environment.
+
+**Zen (全)** - meaning "complete" or "all" in Japanese
 
 > For installation details, see [README.md](README.md)
 
