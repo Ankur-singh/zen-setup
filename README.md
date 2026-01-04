@@ -90,6 +90,7 @@ make install-tools    # CLI tools only
 make install-tmux     # Tmux only
 make install-nvim     # Neovim only
 make install-docker   # Docker only
+make install-nvidia   # NVIDIA drivers + Container Toolkit (Linux only)
 make install-python   # Python + UV only
 ```
 
@@ -131,6 +132,9 @@ ansible-playbook playbook.yml --limit vm1
 # Only shell and CLI tools
 ansible-playbook playbook.yml --tags "shell,cli-tools"
 
+# Install NVIDIA drivers + Container Toolkit (Linux only)
+ansible-playbook playbook.yml --tags "nvidia" --ask-become-pass
+
 # Skip Docker
 ansible-playbook playbook.yml --skip-tags "docker"
 ```
@@ -144,7 +148,9 @@ git_user_name: "Your Name"
 git_user_email: "your@email.com"
 python_version: "3.12"
 install_docker: true
-use_starship_prompt: false  # Set to true for Starship
+install_nvidia: false             # Set to true for GPU support (Linux only)
+nvidia_install_method: auto       # 'auto' or 'manual'
+use_starship_prompt: false        # Set to true for Starship
 ```
 
 ### Post-installation
@@ -233,6 +239,12 @@ gh auth login
 - Docker Compose (v2)
 - User added to docker group (no sudo needed)
 - Log rotation configured
+
+### NVIDIA GPU Support (Optional, Linux only)
+- NVIDIA drivers (auto-detected or specific version)
+- NVIDIA utilities (nvidia-settings, nvidia-prime)
+- NVIDIA Container Toolkit (only installed if Docker is present)
+- Docker configured with GPU runtime
 
 ### Python with UV
 - UV package manager (100x faster than pip)
@@ -357,6 +369,71 @@ uv pip list
 uv pip freeze > requirements.txt
 ```
 
+### NVIDIA GPU Support (Linux Only)
+
+The NVIDIA role is now **separate from Docker** - you can install drivers independently, and the Container Toolkit will only be installed if Docker is present.
+
+**Configuration in `vars/common.yml`:**
+
+```yaml
+install_nvidia: true                    # Enable NVIDIA support
+nvidia_install_method: auto             # 'auto' or 'manual'
+nvidia_driver_version: "580"            # Used when method is 'manual'
+```
+
+**Installation Methods:**
+- **`auto` (recommended)**: Uses `ubuntu-drivers autoinstall` to detect and install the best driver
+- **`manual`**: Installs specific driver version from graphics-drivers PPA
+
+**What gets installed:**
+1. **NVIDIA Drivers** (always installed if GPU detected)
+   - Auto-detected or specified version
+   - NVIDIA utilities (nvidia-settings, nvidia-prime)
+
+2. **NVIDIA Container Toolkit** (only if Docker is installed)
+   - Docker configured with NVIDIA runtime
+   - Enables GPU access in containers
+
+**Installation Options:**
+
+```bash
+# Option 1: Install NVIDIA only
+make install-nvidia
+
+# Option 2: Install with Ansible tags
+ansible-playbook playbook.yml --tags nvidia --ask-become-pass
+
+# Option 3: Install everything including NVIDIA
+# Set install_nvidia: true in vars/common.yml first
+./bootstrap.sh
+```
+
+**Important:** After NVIDIA driver installation, you MUST reboot before GPU will work!
+
+**Usage (if Docker is installed):**
+```bash
+# After reboot, test GPU in Docker
+docker run --rm --gpus all nvidia/cuda:12.3.0-base-ubuntu22.04 nvidia-smi
+
+# Docker Compose - runtime method:
+services:
+  myservice:
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
+# Or with deploy syntax:
+services:
+  myservice:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
+
 ## 🔧 Troubleshooting
 
 ### Docker permission denied
@@ -402,6 +479,29 @@ echo $PATH | grep ".local/bin"
 # Linux: source ~/.bashrc
 ```
 
+### NVIDIA GPU not working in Docker
+If you've enabled NVIDIA support:
+
+1. **Check driver installation:**
+```bash
+nvidia-smi  # Should show your GPU
+```
+
+2. **If nvidia-smi fails:** You need to reboot after driver installation
+```bash
+sudo reboot
+```
+
+3. **Test Docker GPU access:**
+```bash
+docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
+```
+
+4. **Check Docker configuration:**
+```bash
+cat /etc/docker/daemon.json  # Should contain nvidia runtime config
+```
+
 ## 🔄 Updating
 
 To update installed tools and configurations:
@@ -435,6 +535,7 @@ terminal-setup/
     ├── neovim/              # Neovim + LazyVim
     ├── git/                 # Git + GitHub CLI
     ├── docker/              # Docker Engine
+    ├── nvidia/              # NVIDIA drivers + Container Toolkit (Linux)
     └── python/              # Python + UV
 ```
 

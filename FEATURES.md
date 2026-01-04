@@ -44,6 +44,12 @@ Quick overview of what's included in this terminal setup.
 - Python 3.12 + UV package manager
 - Git + GitHub CLI
 
+**GPU Support (Optional, Linux only)**
+- NVIDIA drivers (auto-detected or manual version)
+- NVIDIA utilities (nvidia-settings, nvidia-prime)
+- NVIDIA Container Toolkit (if Docker installed)
+- Separate role, independent from Docker
+
 ## 🌐 Platform Support
 
 | Platform | Shell | Package Manager | Docker |
@@ -72,11 +78,12 @@ This setup is ideal for:
 ## ⚙️ Ansible Features
 
 - **Idempotent**: Safe to run multiple times
-- **Modular**: 7 roles, install selectively with tags
+- **Modular**: 8 roles, install selectively with tags
 - **Backup**: Existing dotfiles backed up automatically
 - **Platform-aware**: Detects OS, installs appropriate packages
 - **Inventory**: Manage multiple remote hosts
 - **Variables**: Host-specific and global configuration
+- **Smart dependencies**: NVIDIA Container Toolkit only installs if Docker present
 
 ## 🔮 Future Enhancements
 

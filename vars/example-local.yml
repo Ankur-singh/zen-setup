@@ -12,6 +12,9 @@ python_version: "3.12"
 
 # Feature flags
 install_docker: true
+install_nvidia: false          # Set to true for NVIDIA GPU support (Linux only)
+nvidia_install_method: auto    # 'auto' = ubuntu-drivers autoinstall, 'manual' = specific version
+nvidia_driver_version: "580"   # Used when nvidia_install_method is 'manual'
 install_lazygit: true
 install_lazydocker: true
 install_btop: true

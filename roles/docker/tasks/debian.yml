@@ -68,7 +68,7 @@
   become: yes
   register: docker_group_added
 
-- name: Configure Docker daemon
+- name: Configure Docker daemon (initial setup)
   copy:
     content: |
       {
@@ -83,6 +83,7 @@
       }
     dest: /etc/docker/daemon.json
     mode: '0644'
+    force: no
   become: yes
   notify: restart docker
 

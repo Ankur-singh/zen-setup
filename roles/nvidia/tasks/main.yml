@@ -1,0 +1,11 @@
+---
+# NVIDIA GPU support - driver installation and optional Container Toolkit
+# Only for Linux/Debian systems
+
+- name: Install NVIDIA drivers
+  include_tasks: driver.yml
+
+- name: Install NVIDIA Container Toolkit (if Docker is present)
+  include_tasks: container-toolkit.yml
+  when: docker_installed is defined and docker_installed
+

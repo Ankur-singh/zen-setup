@@ -19,6 +19,7 @@ help:
 	@echo "  make install-tmux   - Install only tmux"
 	@echo "  make install-nvim   - Install only neovim"
 	@echo "  make install-docker - Install only docker"
+	@echo "  make install-nvidia - Install only NVIDIA drivers + Container Toolkit"
 	@echo "  make install-python - Install only python/UV"
 	@echo "  make install-git    - Install only git"
 
@@ -59,6 +60,7 @@ tags:
 	@echo "  - neovim"
 	@echo "  - git"
 	@echo "  - docker"
+	@echo "  - nvidia / gpu"
 	@echo "  - python"
 	@echo "  - core (shell, cli-tools, tmux, git)"
 
@@ -77,6 +79,14 @@ install-nvim:
 
 install-docker:
 	ansible-playbook playbook.yml --tags docker
+
+install-nvidia:
+	@if [ "$(shell uname -s)" = "Linux" ]; then \
+		echo "🚀 Installing NVIDIA drivers and Container Toolkit..."; \
+		ansible-playbook playbook.yml --tags nvidia --ask-become-pass; \
+	else \
+		echo "⚠️  NVIDIA installation is only supported on Linux"; \
+	fi
 
 install-python:
 	ansible-playbook playbook.yml --tags python

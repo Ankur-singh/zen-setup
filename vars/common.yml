@@ -27,6 +27,11 @@ install_lazydocker: true
 install_btop: true
 install_fastfetch: true
 
+# NVIDIA GPU support (Linux only)
+install_nvidia: true                    # Set to true to install NVIDIA drivers and Container Toolkit
+nvidia_install_method: auto              # Options: 'auto' (ubuntu-drivers autoinstall) or 'manual' (specific version)
+nvidia_driver_version: "580"             # Used when nvidia_install_method is 'manual'
+
 # Prompt configuration
 use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
 

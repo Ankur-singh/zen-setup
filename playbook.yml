@@ -46,6 +46,12 @@
       tags: ['docker']
       when: install_docker | default(true)
     
+    - role: nvidia
+      tags: ['nvidia', 'gpu']
+      when: 
+        - install_nvidia | default(false)
+        - ansible_os_family == "Debian"
+    
     - role: python
       tags: ['python', 'languages']
 
@@ -58,6 +64,9 @@
           Next steps:
           {% if docker_group_added is defined and docker_group_added.changed %}
           1. Log out and back in (or run: newgrp docker) to use Docker without sudo
+          {% endif %}
+          {% if nvidia_driver_installed is defined and nvidia_driver_installed.changed %}
+          ⚠️  IMPORTANT: NVIDIA drivers installed - REBOOT YOUR SYSTEM before using GPU!
           {% endif %}
           2. Restart your terminal or run: 
              macOS: source ~/.zshrc
@@ -75,6 +84,9 @@
           - Git with GitHub CLI
           {% if install_docker | default(true) %}
           - Docker with docker-compose
+          {% endif %}
+          {% if install_nvidia | default(false) and ansible_os_family == "Debian" %}
+          - NVIDIA drivers{% if docker_installed is defined and docker_installed %} and Container Toolkit{% endif %} (GPU support)
           {% endif %}
           
           Run 'thelp' in your terminal to see available commands!
