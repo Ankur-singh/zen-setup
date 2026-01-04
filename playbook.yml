@@ -8,14 +8,17 @@
     - name: Detect OS
       debug:
         msg: "Setting up on {{ ansible_distribution }} ({{ ansible_os_family }})"
+      tags: always
     
     - name: Load common variables
       include_vars:
         file: vars/common.yml
+      tags: always
     
     - name: Load OS-specific variables
       include_vars:
         file: "vars/{{ ansible_os_family | lower }}.yml"
+      tags: always
 
     - name: Backup existing dotfiles
       shell: |
@@ -25,6 +28,7 @@
       args:
         executable: /bin/bash
       changed_when: false
+      tags: always
 
   roles:
     - role: shell

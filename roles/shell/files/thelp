@@ -57,8 +57,8 @@ TMUX
 ----
 t           - tmux
 ta          - tmux attach
-tn <name>   - Create new named session
-tm <name>   - Attach or create session
+tn <name>   - Create NEW named session (always creates)
+tm [name]   - Smart attach: tries to attach first, creates if doesn't exist
 
 SYSTEM
 ------
@@ -78,7 +78,8 @@ serve       - Start HTTP server (default: port 8000)
 weather     - Check weather
 cheat <cmd> - Show cheatsheet for command
 genpass     - Generate random password
-note        - Quick note taking
+note [text] - Quick notes (saves to ~/.notes/YYYY-MM-DD.md)
+              Usage: note "your note text" OR note (opens editor)
 
 HELP
 ----
