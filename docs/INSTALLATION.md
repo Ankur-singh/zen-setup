@@ -51,7 +51,7 @@ make install-tools    # CLI tools only
 make install-tmux     # Tmux only
 make install-nvim     # Neovim only
 make install-docker   # Docker only
-make install-nvidia   # NVIDIA drivers + Container Toolkit (Linux only)
+make install-nvidia   # NVIDIA drivers + CUDA Toolkit + Container Toolkit (Linux only)
 make install-python   # Python + UV only
 ```
 
@@ -97,7 +97,7 @@ ansible-playbook playbook.yml --limit vm1
 # Only shell and CLI tools
 ansible-playbook playbook.yml --tags "shell,cli-tools"
 
-# Install NVIDIA drivers + Container Toolkit (Linux only)
+# Install NVIDIA drivers + CUDA Toolkit + Container Toolkit (Linux only)
 ansible-playbook playbook.yml --tags "nvidia" --ask-become-pass
 
 # Skip Docker

@@ -23,7 +23,7 @@ help:
 	@echo "  make install-tmux   - Install only tmux"
 	@echo "  make install-nvim   - Install only neovim"
 	@echo "  make install-docker - Install only docker"
-	@echo "  make install-nvidia - Install only NVIDIA drivers + Container Toolkit"
+	@echo "  make install-nvidia - Install NVIDIA drivers + CUDA + Container Toolkit"
 	@echo "  make install-python - Install only python/UV"
 	@echo "  make install-git    - Install only git"
 

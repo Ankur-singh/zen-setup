@@ -130,7 +130,7 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 | **Git** | GitHub CLI, useful aliases, smart configurations |
 | **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
 | **Python** | UV package manager (100x faster than pip), Python 3.12 |
-| **NVIDIA** | GPU drivers + Container Toolkit for ML/AI workloads (Linux, optional) |
+| **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI workloads (Linux, optional) |
 
 ### What Makes Zen Different
 
@@ -229,6 +229,7 @@ Plus: jq, tree, tldr, and more!
 <summary><b>NVIDIA GPU Support (Optional, Linux only)</b></summary>
 
 - NVIDIA drivers (auto-detected or specific version)
+- NVIDIA CUDA Toolkit (nvcc compiler and libraries)
 - NVIDIA utilities (nvidia-settings, nvidia-prime)
 - NVIDIA Container Toolkit (only installed if Docker is present)
 - Docker configured with GPU runtime

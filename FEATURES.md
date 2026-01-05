@@ -52,6 +52,7 @@ Quick overview of what's included in Zen - your complete terminal environment.
 
 **GPU Support (Optional, Linux only)**
 - NVIDIA drivers (auto-detected or manual version)
+- NVIDIA CUDA Toolkit (compiler and libraries)
 - NVIDIA utilities (nvidia-settings, nvidia-prime)
 - NVIDIA Container Toolkit (if Docker installed)
 - Separate role, independent from Docker

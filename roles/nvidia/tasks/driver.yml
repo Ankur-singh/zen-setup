@@ -83,6 +83,14 @@
   become: yes
   when: nvidia_gpu_check.rc == 0
 
+- name: Install NVIDIA CUDA Toolkit
+  apt:
+    name:
+      - nvidia-cuda-toolkit
+    state: present
+  become: yes
+  when: nvidia_gpu_check.rc == 0
+
 - name: Check if reboot is required
   stat:
     path: /var/run/reboot-required
@@ -108,6 +116,13 @@
     docker_installed: "{{ docker_check.rc == 0 }}"
   when: nvidia_gpu_check.rc == 0
 
+- name: Verify CUDA installation
+  shell: nvcc --version
+  register: cuda_verify
+  failed_when: false
+  changed_when: false
+  when: nvidia_gpu_check.rc == 0
+
 - name: Display NVIDIA driver installation status
   debug:
     msg: |
@@ -117,6 +132,11 @@
       Driver Info:
       {{ nvidia_verify.stdout }}
       
+      {% if cuda_verify.rc == 0 %}
+      ✅ CUDA Toolkit installed!
+      {{ cuda_verify.stdout_lines[0] | default('') }}
+      {% endif %}
+      
       {% if docker_installed %}
       ✅ Docker detected - proceeding with Container Toolkit installation...
       {% else %}
@@ -124,13 +144,14 @@
       Install Docker first if you need GPU support in containers.
       {% endif %}
       {% else %}
-      ⚠️  NVIDIA driver has been installed but requires a system REBOOT to activate.
+      ⚠️  NVIDIA driver and CUDA Toolkit have been installed but require a system REBOOT to activate.
       
       Next steps:
         1. Reboot your system: sudo reboot
         2. After reboot, verify with: nvidia-smi
+        3. Verify CUDA with: nvcc --version
         {% if docker_installed %}
-        3. Re-run this playbook to install Container Toolkit
+        4. Re-run this playbook to install Container Toolkit
         {% endif %}
       {% endif %}
   when: nvidia_gpu_check.rc == 0
