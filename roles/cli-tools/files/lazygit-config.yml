@@ -1,0 +1,7 @@
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+  
+  # Enable diff context
+  diffContextSize: 3

@@ -69,6 +69,29 @@
     - { key: "amend", value: "commit --amend --no-edit" }
     - { key: "undo", value: "reset --soft HEAD~1" }
 
+- name: Configure git-delta (macOS only)
+  block:
+    - name: Check if delta is installed
+      command: which delta
+      register: delta_check
+      failed_when: false
+      changed_when: false
+    
+    - name: Configure delta as pager
+      git_config:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+        scope: global
+      loop:
+        - { key: "core.pager", value: "delta" }
+        - { key: "interactive.diffFilter", value: "delta --color-only" }
+        - { key: "delta.navigate", value: "true" }
+        - { key: "delta.side-by-side", value: "true" }
+        - { key: "delta.line-numbers", value: "true" }
+        - { key: "merge.conflictStyle", value: "zdiff3" }
+      when: delta_check.rc == 0
+  when: ansible_os_family == "Darwin"
+
 - name: Display Git configuration message
   debug:
     msg: |
@@ -81,4 +104,8 @@
       
       GitHub CLI (gh) is installed. Authenticate with:
          gh auth login
+      
+      {% if ansible_os_family == "Darwin" and delta_check is defined and delta_check.rc == 0 %}
+      ✨ git-delta configured for beautiful diffs!
+      {% endif %}
 

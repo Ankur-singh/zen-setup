@@ -110,13 +110,15 @@ gcam "msg"  # git commit -a -m "message"
 ```bash
 gp          # git push
 gpl         # git pull
-gd          # git diff
-gds         # git diff --staged
+gd          # git diff (uses git-delta on macOS for beautiful output)
+gds         # git diff --staged (with git-delta)
 gco         # git checkout
 gb          # git branch
 gl          # git log (pretty)
 gla         # git log --all (pretty)
 ```
+
+**Note:** On macOS, `git diff` automatically uses git-delta for syntax-highlighted, side-by-side diffs.
 
 ### Git Functions
 ```bash

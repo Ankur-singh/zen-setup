@@ -29,3 +29,28 @@
     executable: /bin/bash
     creates: "{{ ansible_env.HOME }}/.fzf.bash"
 
+- name: Install Lumen (AI-powered diff tool)
+  homebrew:
+    name: jnsahaj/lumen/lumen
+    state: present
+
+- name: Configure lazygit to use delta
+  block:
+    - name: Check if delta is installed
+      command: which delta
+      register: delta_installed
+      failed_when: false
+      changed_when: false
+    
+    - name: Ensure lazygit config directory exists (macOS)
+      file:
+        path: "{{ ansible_env.HOME }}/Library/Application Support/lazygit"
+        state: directory
+        mode: '0755'
+    
+    - name: Copy lazygit config with delta integration
+      copy:
+        src: lazygit-config.yml
+        dest: "{{ ansible_env.HOME }}/Library/Application Support/lazygit/config.yml"
+        mode: '0644'
+      when: delta_installed.rc == 0

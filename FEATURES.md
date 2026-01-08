@@ -32,6 +32,8 @@ Quick overview of what's included in Zen - your complete terminal environment.
 | lazydocker | Terminal UI for docker |
 | btop | Beautiful process monitor |
 | fastfetch | System info display |
+| git-delta | Beautiful git diffs (macOS) |
+| lumen | AI-powered diff tool (macOS) |
 | jq, tree, tldr | Common utilities |
 
 **Tmux**

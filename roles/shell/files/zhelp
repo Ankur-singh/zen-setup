@@ -25,12 +25,14 @@ gcm         - git commit -m "message"
 gcom        - Conventional commit (e.g., gcom feat "add feature")
 gp          - git push
 gpl         - git pull
+gd          - git diff (uses git-delta on macOS for beautiful diffs)
+gds         - git diff --staged
 gl          - git log (pretty)
 gcl <url>   - Clone repo and cd into it
 gnb <name>  - Create new branch and switch
 gchanged    - Show files changed in last commit
 gundo       - Undo last commit (keep changes)
-lzg         - LazyGit (interactive git UI)
+lzg         - LazyGit (interactive git UI, uses delta on macOS)
 
 DOCKER
 ------

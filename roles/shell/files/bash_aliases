@@ -50,6 +50,9 @@ alias gb='git branch'
 alias gl='git log --oneline --graph --decorate'
 alias gla='git log --oneline --graph --decorate --all'
 
+# git-delta (if available) - beautiful diff for any files
+alias diff='delta 2>/dev/null || diff'
+
 # Docker shortcuts
 alias dps='docker ps'
 alias dpsa='docker ps -a'

@@ -127,7 +127,7 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 | **CLI Tools** | 15+ modern tools: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch |
 | **Tmux** | Pre-configured with 6 plugins, custom keybindings, session persistence |
 | **Neovim** | LazyVim with LSP, treesitter, auto-completion, beautiful UI |
-| **Git** | GitHub CLI, useful aliases, smart configurations |
+| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs (macOS) |
 | **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
 | **Python** | UV package manager (100x faster than pip), Python 3.12 |
 | **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI workloads (Linux, optional) |
@@ -172,6 +172,8 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 | **lazydocker** | Terminal UI for docker | - |
 | **btop** | Beautiful process monitor | top/htop |
 | **fastfetch** | System info display | neofetch |
+| **git-delta** | Beautiful git diffs (macOS) | diff |
+| **lumen** | AI-powered diff tool (macOS) | diff |
 
 Plus: jq, tree, tldr, and more!
 

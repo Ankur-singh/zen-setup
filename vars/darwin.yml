@@ -22,6 +22,7 @@ homebrew_packages:
   - curl
   - wget
   - git
+  - git-delta
   - gh
   - tmux
   - neovim
