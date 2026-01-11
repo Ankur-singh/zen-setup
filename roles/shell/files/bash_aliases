@@ -82,8 +82,13 @@ alias aliases='nvim ~/.${SHELL##*/}/aliases && exec ${SHELL##*/}'
 alias functions='nvim ~/.${SHELL##*/}/functions && exec ${SHELL##*/}'
 alias tmuxconf='nvim ~/.tmux.conf'
 
-# Network
-alias ports='netstat -tulanp'
+# Network - platform-aware port listing
+# macOS uses lsof, Linux uses netstat
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias ports='lsof -iTCP -sTCP:LISTEN -n -P'
+else
+  alias ports='netstat -tulanp'
+fi
 
 # Misc
 alias c='clear'
@@ -94,5 +99,11 @@ alias now='date +"%T"'
 alias today='date +"%Y-%m-%d"'
 alias week='date +"%V"'
 alias reload='exec ${SHELL##*/} && echo "✅ Shell reloaded"'
-alias update-system='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+
+# System update - platform-aware
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias update-system='brew update && brew upgrade && brew cleanup'
+else
+  alias update-system='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+fi
 

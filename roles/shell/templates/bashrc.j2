@@ -4,6 +4,14 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+{% if install_blesh | default(true) %}
+# ble.sh - Bash Line Editor (syntax highlighting + autosuggestions)
+# Must be sourced at the beginning of bashrc
+if [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
+  source "$HOME/.local/share/blesh/ble.sh" --noattach
+fi
+{% endif %}
+
 # History configuration
 HISTSIZE=10000
 HISTFILESIZE=20000
@@ -132,4 +140,10 @@ if [ -t 0 ]; then
     fastfetch
   fi
 fi
+
+{% if install_blesh | default(true) %}
+# ble.sh - Attach at the end of bashrc
+# This enables syntax highlighting and autosuggestions
+[[ ${BLE_VERSION-} ]] && ble-attach
+{% endif %}
 

@@ -33,8 +33,10 @@ export TERM=xterm-256color
 
 # Path configuration
 export PATH="$HOME/.local/bin:$PATH"
+{% if ansible_os_family == "Darwin" %}
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/sbin:$PATH"
+{% endif %}
 
 # UV (Python) configuration
 export UV_SYSTEM_PYTHON=1
@@ -86,10 +88,16 @@ fi
 
 # Initialize fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+{% if ansible_os_family == "Darwin" %}
 if type brew &>/dev/null; then
   [ -f $(brew --prefix)/opt/fzf/shell/completion.zsh ] && source $(brew --prefix)/opt/fzf/shell/completion.zsh
   [ -f $(brew --prefix)/opt/fzf/shell/key-bindings.zsh ] && source $(brew --prefix)/opt/fzf/shell/key-bindings.zsh
 fi
+{% else %}
+# Linux fzf paths
+[ -f /usr/share/doc/fzf/examples/completion.zsh ] && source /usr/share/doc/fzf/examples/completion.zsh
+[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+{% endif %}
 
 # GitHub CLI completions
 if command -v gh &> /dev/null; then
@@ -101,11 +109,40 @@ if command -v uv &> /dev/null; then
   eval "$(uv generate-shell-completion zsh)"
 fi
 
-# Homebrew completion
+# Homebrew completion (macOS only)
+{% if ansible_os_family == "Darwin" %}
 if type brew &>/dev/null; then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+  # Add zsh-completions to FPATH
+  FPATH="$(brew --prefix)/share/zsh-completions:${FPATH}"
 fi
+{% endif %}
 
+# Zsh plugins
+{% if ansible_os_family == "Darwin" %}
+# macOS: Plugins installed via Homebrew
+if type brew &>/dev/null; then
+  # Autosuggestions - suggests commands as you type based on history
+  [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
+    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+  # Syntax highlighting - colors commands as you type
+  [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && \
+    source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+{% else %}
+# Linux: Plugins installed via apt
+[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+{% endif %}
+
+# Autosuggestion settings
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#888888"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 # Completion styling
 zstyle ':completion:*' menu select

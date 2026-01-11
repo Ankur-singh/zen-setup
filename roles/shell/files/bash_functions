@@ -32,7 +32,19 @@ compress() {
 
 # Find and kill process by name
 killp() {
-  ps aux | grep -v grep | grep "$1" | awk '{print $2}' | xargs kill -9
+  if [ -z "$1" ]; then
+    echo "Usage: killp <process_name>"
+    return 1
+  fi
+  local pids
+  pids=$(pgrep -f "$1" 2>/dev/null)
+  if [ -z "$pids" ]; then
+    echo "No process matching '$1' found"
+    return 1
+  fi
+  echo "Found processes: $pids"
+  echo "$pids" | xargs kill -15 2>/dev/null || echo "$pids" | xargs kill -9 2>/dev/null
+  echo "Sent termination signal to matching processes"
 }
 
 # Create a backup of a file
@@ -66,12 +78,24 @@ gcom() {
 
 # Docker: Remove all stopped containers
 docker-rm-stopped() {
-  docker rm $(docker ps -a -q)
+  local containers
+  containers=$(docker ps -aq 2>/dev/null)
+  if [ -z "$containers" ]; then
+    echo "No containers to remove"
+    return 0
+  fi
+  docker rm $containers
 }
 
 # Docker: Remove all dangling images
 docker-rm-images() {
-  docker rmi $(docker images -f "dangling=true" -q)
+  local images
+  images=$(docker images -qf "dangling=true" 2>/dev/null)
+  if [ -z "$images" ]; then
+    echo "No dangling images to remove"
+    return 0
+  fi
+  docker rmi $images
 }
 
 # Docker: Enter a running container
@@ -118,7 +142,9 @@ cheat() {
 # Generate random password
 genpass() {
   local length="${1:-20}"
-  openssl rand -base64 32 | cut -c1-"$length"
+  # Generate enough random bytes to ensure we have enough characters after base64 encoding
+  openssl rand -base64 48 | tr -dc 'a-zA-Z0-9' | head -c "$length"
+  echo
 }
 
 # Docker cleanup everything
@@ -232,99 +258,138 @@ tm() {
 zupdate() {
   local setup_dir=""
   local tags="${1:-}"
-  
-  echo "🔄 Updating Zen..."
+
+  # Colors
+  local GREEN='\033[0;32m'
+  local RED='\033[0;31m'
+  local CYAN='\033[0;36m'
+  local BOLD='\033[1m'
+  local DIM='\033[2m'
+  local NC='\033[0m'
+
+  # Disable job control notifications (zsh)
+  [[ -n "$ZSH_VERSION" ]] && setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR
+
+  # Run command with spinner (no job output)
+  _run_silent() {
+    local message=$1
+    shift
+    local frames="⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏"
+    local i=1
+    local frame
+    local pid
+    local log=$_log_file
+
+    # Run in subshell to avoid job notifications
+    ( "$@" >> "$log" 2>&1 ) &
+    pid=$!
+
+    while kill -0 "$pid" 2>/dev/null; do
+      frame=$(echo "$frames" | cut -d' ' -f$i)
+      printf "\r\033[K${CYAN}%s${NC} %s" "$frame" "$message"
+      i=$(( i % 10 + 1 ))
+      sleep 0.1
+    done
+    printf "\r\033[K"
+
+    wait $pid 2>/dev/null
+    return $?
+  }
+
   echo ""
-  
+  echo -e "${BOLD}Zen Update${NC}"
+  echo "─────────────────────────────────────"
+
   # Try to find Zen directory
   if [ -n "$ZEN_SETUP_DIR" ] && [ -d "$ZEN_SETUP_DIR" ]; then
     setup_dir="$ZEN_SETUP_DIR"
   elif [ -d "$HOME/.local/share/zen-setup" ]; then
     setup_dir="$HOME/.local/share/zen-setup"
   else
-    echo "❌ Zen directory not found!"
+    echo -e "${RED}✗${NC} Zen directory not found"
     echo ""
-    echo "💡 Checked:"
-    echo "   - \$ZEN_SETUP_DIR (not set or doesn't exist)"
-    echo "   - ~/.local/share/zen-setup (not found)"
-    echo ""
-    echo "🔧 To set your Zen directory location, use zsetdir:"
-    echo ""
-    echo "   # If you have it installed elsewhere:"
-    echo "   zsetdir /path/to/your/zen"
-    echo ""
-    echo "   # Example:"
-    echo "   zsetdir ~/projects/zen"
-    echo ""
-    echo "📥 Or install fresh:"
-    echo "   curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash"
+    echo -e "${DIM}Run: zsetdir /path/to/zen${NC}"
     return 1
   fi
-  
-  echo "📂 Using setup directory: $setup_dir"
+
+  echo -e "${DIM}Directory: $setup_dir${NC}"
   echo ""
-  
-  cd "$setup_dir" || return 1
-  
-  # Pull latest changes
-  echo "📥 Pulling latest changes from git..."
-  local git_output
-  git_output=$(git pull 2>&1)
-  local git_exit=$?
-  
-  if [ $git_exit -ne 0 ]; then
-    echo "$git_output"
-    echo "❌ Failed to pull changes"
+
+  # Save current directory (pushd is silent with -q in zsh, use redirect for bash)
+  pushd "$setup_dir" > /dev/null 2>&1 || return 1
+
+  # Create log file
+  local _log_file="$setup_dir/logs/update-$(date +%Y%m%d_%H%M%S).log"
+  mkdir -p "$setup_dir/logs"
+
+  # Check for updates
+  if ! _run_silent "Checking for updates..." git fetch origin; then
+    echo -e "${RED}✗${NC} Failed to check for updates"
+    popd > /dev/null 2>&1
     return 1
   fi
-  
-  echo "$git_output"
-  
-  # Check if already up to date
-  if echo "$git_output" | grep -q "Already up to date"; then
+
+  # Check if there are changes
+  local local_rev=$(git rev-parse HEAD 2>/dev/null)
+  local remote_rev=$(git rev-parse origin/main 2>/dev/null || git rev-parse origin/master 2>/dev/null)
+
+  if [ "$local_rev" = "$remote_rev" ]; then
+    echo -e "${GREEN}✓${NC} Already up to date"
     echo ""
-    echo "✅ Already up to date! No updates to install."
-    echo "💡 To force reinstall anyway, run:"
-    echo "   cd $setup_dir && ./bootstrap.sh"
+    echo -e "${DIM}To force reinstall: zsetup${NC}"
+    popd > /dev/null 2>&1
     return 0
   fi
-  
-  echo ""
-  echo "🚀 Running Ansible playbook..."
-  
-  # Build ansible command
-  local cmd="ansible-playbook playbook.yml"
-  
-  # Add tags if provided
-  if [ -n "$tags" ]; then
-    cmd="$cmd --tags $tags"
-    echo "📦 Updating: $tags"
-  else
-    echo "📦 Updating: all components"
+
+  # Pull changes
+  if ! _run_silent "Downloading updates..." git pull; then
+    echo -e "${RED}✗${NC} Failed to pull changes"
+    echo -e "${DIM}Check: $_log_file${NC}"
+    popd > /dev/null 2>&1
+    return 1
   fi
-  
-  # Add --ask-become-pass for Linux
+  echo -e "${GREEN}✓${NC} Updates downloaded"
+
+  # Get sudo password on Linux
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    cmd="$cmd --ask-become-pass"
+    echo ""
+    echo -n "Enter sudo password: "
+    read -s BECOME_PASS
+    echo ""
+    export ANSIBLE_BECOME_PASS="$BECOME_PASS"
   fi
-  
-  echo ""
-  eval "$cmd"
-  
+
+  # Suppress Ansible output
+  export ANSIBLE_STDOUT_CALLBACK=minimal
+  export ANSIBLE_DISPLAY_SKIPPED_HOSTS=false
+  export ANSIBLE_DISPLAY_OK_HOSTS=false
+  export ANSIBLE_NOCOLOR=1
+  export ANSIBLE_NOCOWS=1
+
+  # Run Ansible with spinner
+  if [ -n "$tags" ]; then
+    echo -e "${DIM}Components: $tags${NC}"
+    _run_silent "Installing updates..." ansible-playbook playbook.yml --tags "$tags"
+  else
+    _run_silent "Installing updates..." ansible-playbook playbook.yml
+  fi
   local exit_code=$?
-  
+
+  # Restore original directory
+  popd > /dev/null 2>&1
+
   echo ""
   if [ $exit_code -eq 0 ]; then
-    echo "✅ Zen updated successfully!"
+    echo -e "${GREEN}✓${NC} Update complete"
     echo ""
-    echo "🔄 Reload your shell to apply changes:"
     if [[ "$OSTYPE" == "darwin"* ]]; then
-      echo "   source ~/.zshrc"
+      echo -e "Run: ${BOLD}source ~/.zshrc${NC}"
     else
-      echo "   source ~/.bashrc"
+      echo -e "Run: ${BOLD}source ~/.bashrc${NC}"
     fi
   else
-    echo "❌ Update failed with exit code: $exit_code"
+    echo -e "${RED}✗${NC} Update failed"
+    echo -e "${DIM}Check: $_log_file${NC}"
     return $exit_code
   fi
 }

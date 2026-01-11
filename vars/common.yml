@@ -7,8 +7,10 @@ local_bin_dir: "{{ ansible_env.HOME }}/.local/bin"
 local_share_dir: "{{ ansible_env.HOME }}/.local/share"
 
 # Shell configuration
-shell_name: bash
-shell_rc_file: "{{ ansible_env.HOME }}/.bashrc"
+# macOS = zsh, Linux = bash (simplified assumption)
+shell_name: "{{ 'zsh' if ansible_os_family == 'Darwin' else 'bash' }}"
+shell_rc_file: "{{ ansible_env.HOME }}/.{{ shell_name }}rc"
+shell_config_dir: "{{ ansible_env.HOME }}/.{{ shell_name }}"
 
 # Git configuration
 git_user_name: ""  # Set this or configure manually after install
@@ -35,6 +37,9 @@ nvidia_driver_version: "580"             # Used when nvidia_install_method is 'm
 # Prompt configuration
 use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
 
+# Shell enhancements
+install_blesh: true  # ble.sh for bash: syntax highlighting + autosuggestions (like zsh plugins)
+
 # Tool versions (fallback when GitHub API is rate-limited)
 # Update periodically from: https://github.com/<project>/releases
 tool_versions:
@@ -42,5 +47,7 @@ tool_versions:
   btop: "1.4.6"
   fastfetch: "2.56.1"
   neovim: "0.11.5"
+  delta: "0.18.2"
+  gum: "0.14.5"
 
-# Last updated: 2026-01-04
+# Last updated: 2026-01-10

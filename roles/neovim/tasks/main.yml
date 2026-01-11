@@ -5,8 +5,8 @@
 
 - name: Backup existing neovim config
   shell: |
-    [ -d {{ config_dir }}/nvim ] && mv {{ config_dir }}/nvim {{ config_dir }}/nvim.backup.$(date +%Y%m%d_%H%M%S) || true
-    [ -d {{ local_share_dir }}/nvim ] && mv {{ local_share_dir }}/nvim {{ local_share_dir }}/nvim.backup.$(date +%Y%m%d_%H%M%S) || true
+    [ -d "{{ config_dir }}/nvim" ] && mv "{{ config_dir }}/nvim" "{{ config_dir }}/nvim.backup.$(date +%Y%m%d_%H%M%S)" || true
+    [ -d "{{ local_share_dir }}/nvim" ] && mv "{{ local_share_dir }}/nvim" "{{ local_share_dir }}/nvim.backup.$(date +%Y%m%d_%H%M%S)" || true
   args:
     executable: /bin/bash
   changed_when: false

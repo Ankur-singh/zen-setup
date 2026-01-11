@@ -1,67 +1,114 @@
 #!/bin/bash
 # One-liner installer for Zen - Complete Terminal Environment
 # Usage: curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
+#
+# Options (passed to bootstrap.sh):
+#   --minimal           Lightweight setup (no neovim, docker)
+#   -i, --interactive   Choose components interactively
+#   -v, --verbose       Show detailed output
+#   --dry-run           Show what would be installed
+#   -h, --help          Show help
+
+set -e
 
 REPO_URL="https://github.com/Ankur-singh/zen-setup.git"
 INSTALL_DIR="${ZEN_SETUP_DIR:-$HOME/.local/share/zen-setup}"
 
-echo "🧘 Zen - Terminal Environment Installer"
-echo "=============================================="
+# Colors
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+BOLD='\033[1m'
+DIM='\033[2m'
+NC='\033[0m'
+
+# Show help and exit if requested
+for arg in "$@"; do
+  if [[ "$arg" == "-h" ]] || [[ "$arg" == "--help" ]]; then
+    echo "Zen - Complete Terminal Environment"
+    echo ""
+    echo "Usage: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash -s -- [OPTIONS]"
+    echo ""
+    echo "Profiles:"
+    echo "  (default)       Full setup: shell, cli-tools, tmux, neovim, git, docker, python"
+    echo "  --minimal       Lightweight: shell, cli-tools, tmux, git, python (no neovim, docker)"
+    echo ""
+    echo "Options:"
+    echo "  -i, --interactive   Choose components interactively"
+    echo "  -v, --verbose       Show detailed output"
+    echo "  --dry-run           Show what would be installed"
+    echo "  -h, --help          Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  curl ... | bash                    # Install everything (default)"
+    echo "  curl ... | bash -s -- --minimal    # Install minimal profile"
+    echo "  curl ... | bash -s -- --interactive # Choose components"
+    exit 0
+  fi
+done
+
+# Print banner
+echo -e "${CYAN}"
+cat << 'EOF'
+ ______
+|___  /
+   / / ___ _ __
+  / / / _ \ '_ \
+ / /_|  __/ | | |
+/_____\___|_| |_|
+EOF
+echo -e "${NC}"
+echo -e "${DIM}Complete Terminal Environment${NC}"
 echo ""
-echo "📍 Installing to: $INSTALL_DIR"
+
+echo -e "Installing to: ${BOLD}$INSTALL_DIR${NC}"
 echo ""
 
 # Ensure parent directory exists
 mkdir -p "$(dirname "$INSTALL_DIR")"
 
-# Clone repository if not exists
+# Clone or update repository
 if [ -d "$INSTALL_DIR" ]; then
-    echo "⚠️  Directory $INSTALL_DIR already exists"
-    if [ -n "$ZSH_VERSION" ]; then
-        # Zsh syntax
-        echo -n "Update existing installation? (y/N) "
-        read -r REPLY
-    else
-        # Bash syntax
-        read -p "Update existing installation? (y/N) " -n 1 -r REPLY
-        echo
-    fi
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd "$INSTALL_DIR"
-        echo "📥 Pulling latest changes..."
-        if ! git pull; then
-            echo ""
-            echo "❌ Git pull failed!"
-            echo "💡 You can retry by running: bash $INSTALL_DIR/bootstrap.sh"
-            exit 1
-        fi
-    else
-        echo "❌ Installation cancelled"
-        exit 1
-    fi
-else
-    echo "📥 Cloning repository..."
-    if ! git clone "$REPO_URL" "$INSTALL_DIR"; then
-        echo ""
-        echo "❌ Git clone failed!"
-        echo "💡 Please check your internet connection and try again."
-        exit 1
-    fi
+  echo -e "${YELLOW}Directory already exists${NC}"
+  if [ -n "$ZSH_VERSION" ]; then
+    echo -n "Update existing installation? (y/N) "
+    read -r REPLY
+  else
+    read -p "Update existing installation? (y/N) " -n 1 -r REPLY
+    echo
+  fi
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     cd "$INSTALL_DIR"
-fi
-
-echo ""
-echo "🎯 Running bootstrap script..."
-echo ""
-
-# Run bootstrap with error handling
-if ! bash "$INSTALL_DIR/bootstrap.sh" "$@"; then
-    echo ""
-    echo "❌ Installation failed!"
-    echo "💡 You can retry by running: bash $INSTALL_DIR/bootstrap.sh"
+    echo -e "${CYAN}Pulling latest changes...${NC}"
+    if ! git pull; then
+      echo ""
+      echo -e "${RED}Git pull failed!${NC}"
+      echo -e "You can retry by running: ${DIM}bash $INSTALL_DIR/bootstrap.sh${NC}"
+      exit 1
+    fi
+  else
+    echo -e "${RED}Installation cancelled${NC}"
     exit 1
+  fi
+else
+  echo -e "${CYAN}Cloning repository...${NC}"
+  if ! git clone "$REPO_URL" "$INSTALL_DIR"; then
+    echo ""
+    echo -e "${RED}Git clone failed!${NC}"
+    echo -e "Please check your internet connection and try again."
+    exit 1
+  fi
+  cd "$INSTALL_DIR"
 fi
 
 echo ""
-echo "💡 Tip: Run 'zupdate' in the future to update your setup!"
 
+# Run bootstrap with all arguments
+if ! bash "$INSTALL_DIR/bootstrap.sh" "$@"; then
+  echo ""
+  echo -e "${RED}Installation failed!${NC}"
+  echo -e "Check the log file in ${DIM}$INSTALL_DIR/logs/${NC}"
+  echo -e "Retry with: ${DIM}bash $INSTALL_DIR/bootstrap.sh${NC}"
+  exit 1
+fi

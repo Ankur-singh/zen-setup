@@ -1,5 +1,12 @@
 ---
 - name: reload shell
   debug:
-    msg: "Shell configuration updated. Run 'source ~/.bashrc' to apply changes."
+    msg: |
+      Shell configuration updated!
 
+      To apply changes, run:
+      {% if ansible_os_family == 'Darwin' %}
+        source ~/.zshrc
+      {% else %}
+        source ~/.bashrc
+      {% endif %}

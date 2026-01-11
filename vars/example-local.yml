@@ -26,6 +26,10 @@ neovim_config_type: lazyvim  # Options: lazyvim, kickstart, minimal
 # Prompt configuration
 use_starship_prompt: false  # Set to true to use Starship instead of custom prompt
 
+# Shell configuration (auto-detected by default)
+# Uncomment to override:
+# shell_name: zsh  # Options: bash, zsh
+
 # Optional: Override tool versions
 # uv_version: "0.1.0"
 

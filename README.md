@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-blue" alt="Platform">
-  <img src="https://img.shields.io/badge/Shell-Zsh%20%7C%20Bash-green" alt="Shell">
+  <img src="https://img.shields.io/badge/macOS-Zsh-blue" alt="macOS: Zsh">
+  <img src="https://img.shields.io/badge/Linux-Bash-orange" alt="Linux: Bash">
   <a href="https://deepwiki.com/Ankur-singh/zen-setup"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
@@ -42,6 +42,7 @@ Zen provides a single, tested, reproducible setup that transforms a fresh system
 
 **Why Choose Zen:**
 - ✨ **Works identically** on macOS and Linux
+- 🐚 **Platform-native shells** - Zsh on macOS, Bash on Linux
 - 🚀 **Installs in ~5 minutes** with one command
 - 🔄 **Updates easily** with `zupdate`
 - 🎯 **Includes 50+ curated tools** and configurations
@@ -51,18 +52,37 @@ Zen provides a single, tested, reproducible setup that transforms a fresh system
 
 ## 🚀 Quick Start
 
-### Installation (30 seconds)
+### Installation
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 ```
 
-That's it! ☕ Grab a coffee while it installs (~5 minutes).
+That's it! Grab a coffee while it installs (~5 minutes).
+
+### Installation Options
+
+```bash
+# Full setup (default) - everything included
+curl ... | bash
+
+# Minimal setup - no neovim, no docker
+curl ... | bash -s -- --minimal
+
+# Interactive - choose what to install
+curl ... | bash -s -- --interactive
+```
+
+| Profile | What's Included |
+|---------|-----------------|
+| Default | Shell, CLI tools, tmux, neovim, git, docker, python |
+| `--minimal` | Shell, CLI tools, tmux, git, python *(no neovim, docker)* |
 
 ### First Commands After Install
 
 ```bash
 zhelp      # See all available commands
+zdoctor    # Health check your installation
 lzg        # Try LazyGit (visual git interface)
 ff         # Fuzzy find files with preview
 nvim       # Open Neovim with LazyVim
@@ -70,7 +90,7 @@ btop       # Beautiful system monitor
 ```
 
 <details>
-<summary><b>📚 Other installation methods</b></summary>
+<summary><b>Manual installation</b></summary>
 
 ### Clone and Customize
 
@@ -82,16 +102,10 @@ cd ~/.local/share/zen-setup
 nvim vars/common.yml
 
 # Install
-./bootstrap.sh
-```
-
-### Using Makefile
-
-```bash
-make install              # Install everything
-make install-shell        # Shell only
-make install-tools        # CLI tools only
-make install-nvidia       # NVIDIA GPU support (Linux)
+./bootstrap.sh              # Full setup (default)
+./bootstrap.sh --minimal    # Minimal (no neovim, docker)
+./bootstrap.sh --interactive # Choose components
+./bootstrap.sh --dry-run    # Preview what will install
 ```
 
 ### Advanced Options
@@ -100,7 +114,8 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 - Remote VM deployment
 - Selective installation with tags
 - Custom install locations
-- Manual Ansible usage
+
+For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile commands and Ansible usage.
 
 </details>
 
@@ -123,14 +138,24 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 
 | Component | What You Get |
 |-----------|-------------|
-| **Shell** | Zsh (macOS) / Bash (Linux) with 50+ aliases, 30+ functions, custom/Starship prompt |
+| **Shell** | **Zsh** (macOS) / **Bash** (Linux) with syntax highlighting, autosuggestions, 50+ aliases, 30+ functions |
 | **CLI Tools** | 15+ modern tools: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch |
 | **Tmux** | Pre-configured with 6 plugins, custom keybindings, session persistence |
 | **Neovim** | LazyVim with LSP, treesitter, auto-completion, beautiful UI |
-| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs (macOS) |
+| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs, lumen *(macOS only)* |
 | **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
 | **Python** | UV package manager (100x faster than pip), Python 3.12 |
-| **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI workloads (Linux, optional) |
+| **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI *(Linux only)* |
+
+### Platform-Specific Features
+
+| Feature | macOS | Linux |
+|---------|:-----:|:-----:|
+| Shell | Zsh | Bash |
+| git-delta (beautiful diffs) | Yes | Yes |
+| lumen (AI-powered diffs) | Yes | - |
+| NVIDIA GPU support | - | Yes |
+| ble.sh (bash enhancements) | - | Yes |
 
 ### What Makes Zen Different
 
@@ -148,12 +173,20 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 <details>
 <summary><b>Shell Configuration</b></summary>
 
-- Custom prompt with git integration (zsh on macOS, bash on Linux)
-- Optional Starship prompt support
-- 50+ useful aliases (shared between shells)
-- 30+ helpful functions (shared between shells)
+**Platform-native shells:**
+| Platform | Shell | Config File |
+|----------|-------|-------------|
+| macOS | Zsh | `~/.zshrc` |
+| Linux | Bash | `~/.bashrc` |
+
+**Features:**
+- Custom prompt with git integration
+- Optional [Starship](https://starship.rs/) prompt support
+- 50+ useful aliases (shared across platforms)
+- 30+ helpful functions (shared across platforms)
+- Zsh plugins: autosuggestions, syntax-highlighting, completions (macOS)
+- Bash enhancements: ble.sh for syntax-highlighting + autosuggestions (Linux)
 - Better readline configuration (inputrc for bash)
-- Command-line productivity shortcuts
 
 </details>
 
@@ -172,8 +205,8 @@ See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
 | **lazydocker** | Terminal UI for docker | - |
 | **btop** | Beautiful process monitor | top/htop |
 | **fastfetch** | System info display | neofetch |
-| **git-delta** | Beautiful git diffs (macOS) | diff |
-| **lumen** | AI-powered diff tool (macOS) | diff |
+| **git-delta** | Beautiful git diffs | diff |
+| **lumen** | AI-powered diff tool *(macOS only)* | diff |
 
 Plus: jq, tree, tldr, and more!
 
@@ -228,13 +261,21 @@ Plus: jq, tree, tldr, and more!
 </details>
 
 <details>
-<summary><b>NVIDIA GPU Support (Optional, Linux only)</b></summary>
+<summary><b>NVIDIA GPU Support (Linux only, optional)</b></summary>
+
+> **Note:** NVIDIA support is only available on Linux (Ubuntu/Debian). It is automatically skipped on macOS.
 
 - NVIDIA drivers (auto-detected or specific version)
 - NVIDIA CUDA Toolkit (nvcc compiler and libraries)
 - NVIDIA utilities (nvidia-settings, nvidia-prime)
 - NVIDIA Container Toolkit (only installed if Docker is present)
 - Docker configured with GPU runtime
+
+**Enable with:**
+```bash
+# In vars/common.yml, set:
+install_nvidia: true
+```
 
 See [NVIDIA Setup Guide](docs/INSTALLATION.md#nvidia-gpu-support) for details.
 
@@ -387,6 +428,16 @@ Not officially tested, but it should work on WSL2 with Ubuntu. Follow the Linux 
 </details>
 
 <details>
+<summary><b>Why Zsh on macOS and Bash on Linux?</b></summary>
+
+Zen uses the **platform-native default shell** for each OS:
+- **macOS**: Zsh has been the default since Catalina (2019)
+- **Linux**: Bash is the default on Ubuntu/Debian
+
+This simplifies the codebase and matches what 95%+ of users already have. Both shells get the same aliases, functions, and features (syntax highlighting, autosuggestions).
+</details>
+
+<details>
 <summary><b>Can I use this with Starship prompt?</b></summary>
 
 Yes! Set `use_starship_prompt: true` in `vars/common.yml` before installing. See [Starship Guide](docs/STARSHIP.md).
@@ -453,6 +504,8 @@ localip     # Show local IP (copies to clipboard)
 # Zen Management
 zhelp       # Show all commands
 zupdate     # Update Zen
+zdoctor     # Health check installation
+zsetup      # Run setup again
 zcleanup    # Clean backup files
 ```
 

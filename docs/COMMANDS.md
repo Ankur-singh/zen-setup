@@ -13,6 +13,46 @@ Show quick command reference.
 zhelp
 ```
 
+### `zsetup [options]`
+Run Zen setup with options.
+
+```bash
+# Full setup (default)
+zsetup
+
+# Minimal setup (no neovim, docker)
+zsetup --minimal
+
+# Interactive mode - choose components
+zsetup --interactive
+
+# Preview what will be installed
+zsetup --dry-run
+
+# Verbose output
+zsetup --verbose
+```
+
+### `zdoctor`
+Health check your Zen installation.
+
+```bash
+# Check all tools and configurations
+zdoctor
+
+# Show help
+zdoctor --help
+```
+
+**What it checks:**
+- Core tools (git, ansible, homebrew)
+- CLI tools (eza, bat, fzf, etc.)
+- Development tools (neovim, tmux, python, docker)
+- Shell configuration (rc file, plugins)
+- Tmux configuration (plugins, config)
+- Neovim configuration (LazyVim)
+- Zen installation status
+
 ### `zupdate [tags]`
 Update Zen from the repository.
 
@@ -110,7 +150,7 @@ gcam "msg"  # git commit -a -m "message"
 ```bash
 gp          # git push
 gpl         # git pull
-gd          # git diff (uses git-delta on macOS for beautiful output)
+gd          # git diff (uses git-delta for beautiful output)
 gds         # git diff --staged (with git-delta)
 gco         # git checkout
 gb          # git branch
@@ -118,7 +158,7 @@ gl          # git log (pretty)
 gla         # git log --all (pretty)
 ```
 
-**Note:** On macOS, `git diff` automatically uses git-delta for syntax-highlighted, side-by-side diffs.
+**Note:** `git diff` automatically uses git-delta for syntax-highlighted, side-by-side diffs.
 
 ### Git Functions
 ```bash

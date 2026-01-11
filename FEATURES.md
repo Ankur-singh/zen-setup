@@ -12,10 +12,11 @@ Quick overview of what's included in Zen - your complete terminal environment.
 
 ## 🛠️ Core Components
 
-**Shell**
-- Zsh (macOS) or Bash (Linux)
-- Starship prompt support
-- 50+ aliases, 30+ functions
+**Shell** (platform-native)
+- **macOS**: Zsh with autosuggestions, syntax-highlighting, completions
+- **Linux**: Bash with ble.sh (autosuggestions, syntax-highlighting)
+- Optional Starship prompt support
+- 50+ aliases, 30+ functions (shared across platforms)
 
 
 **CLI Tools** (15+ modern utilities)
@@ -32,8 +33,8 @@ Quick overview of what's included in Zen - your complete terminal environment.
 | lazydocker | Terminal UI for docker |
 | btop | Beautiful process monitor |
 | fastfetch | System info display |
-| git-delta | Beautiful git diffs (macOS) |
-| lumen | AI-powered diff tool (macOS) |
+| git-delta | Beautiful git diffs |
+| lumen | AI-powered diff tool *(macOS only)* |
 | jq, tree, tldr | Common utilities |
 
 **Tmux**
@@ -65,7 +66,17 @@ Quick overview of what's included in Zen - your complete terminal environment.
 |----------|-------|-----------------|--------|
 | macOS | Zsh | Homebrew | Desktop |
 | Linux | Bash | APT | Engine |
-| Remote VMs | ✅ | ✅ | ✅ |
+| Remote VMs | Bash | APT | Engine |
+
+### Platform-Specific Features
+
+| Feature | macOS | Linux |
+|---------|:-----:|:-----:|
+| Zsh + plugins (autosuggestions, syntax-highlighting) | Yes | - |
+| Bash + ble.sh (autosuggestions, syntax-highlighting) | - | Yes |
+| git-delta (beautiful diffs) | Yes | Yes |
+| lumen (AI-powered diffs) | Yes | - |
+| NVIDIA GPU support | - | Yes |
 
 **Requirements:**
 - macOS 10.15+ or Ubuntu 20.04+ / Debian 11+
@@ -106,11 +117,14 @@ Potential additions:
 
 ## 💡 Customization
 
-Easily customize via variables:
+Easily customize via variables in `vars/common.yml`:
 
-1. **Shell**: Override default shell per platform
-2. **Prompt**: Switch between custom and Starship
-3. **Tools**: Enable/disable optional tools
-4. **Languages**: Extend Python role for other languages
-5. **Theme**: Modify tmux/neovim colors
-6. **Versions**: Pin specific tool versions
+| Setting | Description |
+|---------|-------------|
+| `use_starship_prompt` | Use Starship instead of custom prompt |
+| `install_nvidia` | Enable NVIDIA GPU support *(Linux only)* |
+| `install_blesh` | Enable ble.sh for bash *(Linux only)* |
+| `install_lazygit` | Install lazygit TUI |
+| `install_lazydocker` | Install lazydocker TUI |
+| `install_btop` | Install btop system monitor |
+| `python_version` | Python version to install (default: 3.12) |

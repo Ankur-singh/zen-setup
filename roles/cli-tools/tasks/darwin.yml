@@ -34,6 +34,20 @@
     name: jnsahaj/lumen/lumen
     state: present
 
+- name: Check if Docker is installed (for lazydocker)
+  command: which docker
+  register: docker_check
+  failed_when: false
+  changed_when: false
+
+- name: Install lazydocker (only if Docker is installed)
+  homebrew:
+    name: lazydocker
+    state: present
+  when:
+    - install_lazydocker | default(true)
+    - docker_check.rc == 0
+
 - name: Configure lazygit to use delta
   block:
     - name: Check if delta is installed
@@ -41,13 +55,13 @@
       register: delta_installed
       failed_when: false
       changed_when: false
-    
+
     - name: Ensure lazygit config directory exists (macOS)
       file:
         path: "{{ ansible_env.HOME }}/Library/Application Support/lazygit"
         state: directory
         mode: '0755'
-    
+
     - name: Copy lazygit config with delta integration
       copy:
         src: lazygit-config.yml

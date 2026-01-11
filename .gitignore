@@ -29,6 +29,7 @@ group_vars/
 
 # Logs
 *.log
+logs/
 
 # Local customizations (not tracked)
 inventory.local.yml

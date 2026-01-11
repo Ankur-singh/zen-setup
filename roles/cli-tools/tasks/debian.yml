@@ -114,13 +114,21 @@
         creates: "{{ local_bin_dir }}/lazygit"
   when: install_lazygit | default(true)
 
-- name: Install lazydocker
+- name: Check if Docker is installed
+  command: which docker
+  register: docker_check
+  failed_when: false
+  changed_when: false
+
+- name: Install lazydocker (only if Docker is installed)
   shell: |
     curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
   args:
     executable: /bin/bash
     creates: "{{ local_bin_dir }}/lazydocker"
-  when: install_lazydocker | default(true)
+  when:
+    - install_lazydocker | default(true)
+    - docker_check.rc == 0
 
 - name: Install btop
   block:
@@ -182,4 +190,84 @@
         creates: /usr/bin/fastfetch
       become: yes
   when: install_fastfetch | default(true)
+
+- name: Install git-delta (beautiful git diffs)
+  block:
+    - name: Try to get latest delta version from GitHub
+      uri:
+        url: https://api.github.com/repos/dandavison/delta/releases/latest
+        return_content: yes
+        timeout: 10
+      register: delta_latest_check
+      failed_when: false
+      changed_when: false
+
+    - name: Set delta version (latest or fallback)
+      set_fact:
+        delta_version: "{{ delta_latest_check.json.tag_name if delta_latest_check.status == 200 else tool_versions.delta }}"
+
+    - name: Display delta version being installed
+      debug:
+        msg: "Installing git-delta version {{ delta_version }} {{ '(latest)' if delta_latest_check.status == 200 else '(fallback - GitHub API unavailable)' }}"
+
+    - name: Download and install git-delta
+      shell: |
+        wget -qO delta.deb "https://github.com/dandavison/delta/releases/download/{{ delta_version }}/git-delta_{{ delta_version }}_amd64.deb"
+        dpkg -i delta.deb || apt-get install -f -y
+        rm -f delta.deb
+      args:
+        executable: /bin/bash
+        creates: /usr/bin/delta
+      become: yes
+
+- name: Configure lazygit to use delta (Linux)
+  block:
+    - name: Check if delta is installed
+      command: which delta
+      register: delta_installed
+      failed_when: false
+      changed_when: false
+
+    - name: Ensure lazygit config directory exists
+      file:
+        path: "{{ config_dir }}/lazygit"
+        state: directory
+        mode: '0755'
+
+    - name: Copy lazygit config with delta integration
+      copy:
+        src: lazygit-config.yml
+        dest: "{{ config_dir }}/lazygit/config.yml"
+        mode: '0644'
+      when: delta_installed.rc == 0
+  when: install_lazygit | default(true)
+
+- name: Install gum (TUI for interactive mode)
+  block:
+    - name: Try to get latest gum version from GitHub
+      uri:
+        url: https://api.github.com/repos/charmbracelet/gum/releases/latest
+        return_content: yes
+        timeout: 10
+      register: gum_latest_check
+      failed_when: false
+      changed_when: false
+
+    - name: Set gum version (latest or fallback)
+      set_fact:
+        gum_version: "{{ gum_latest_check.json.tag_name | regex_replace('^v', '') if gum_latest_check.status == 200 else tool_versions.gum }}"
+
+    - name: Display gum version being installed
+      debug:
+        msg: "Installing gum version {{ gum_version }} {{ '(latest)' if gum_latest_check.status == 200 else '(fallback - GitHub API unavailable)' }}"
+
+    - name: Download and install gum
+      shell: |
+        wget -qO gum.deb "https://github.com/charmbracelet/gum/releases/download/v{{ gum_version }}/gum_{{ gum_version }}_amd64.deb"
+        dpkg -i gum.deb || apt-get install -f -y
+        rm -f gum.deb
+      args:
+        executable: /bin/bash
+        creates: /usr/bin/gum
+      become: yes
 

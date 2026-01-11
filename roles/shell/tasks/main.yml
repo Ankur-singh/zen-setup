@@ -1,4 +1,7 @@
 ---
+# Shell configuration
+# macOS = zsh, Linux (Debian/Ubuntu) = bash
+
 - name: Ensure .local/bin directory exists
   file:
     path: "{{ local_bin_dir }}"
@@ -7,85 +10,126 @@
 
 - name: Create shell configuration directory
   file:
-    path: "{{ ansible_env.HOME }}/.{{ shell_name }}"
+    path: "{{ shell_config_dir }}"
     state: directory
     mode: '0755'
 
 - name: Copy shell aliases
   copy:
     src: bash_aliases
-    dest: "{{ ansible_env.HOME }}/.{{ shell_name }}/aliases"
+    dest: "{{ shell_config_dir }}/aliases"
     mode: '0644'
   notify: reload shell
 
 - name: Copy shell functions
   copy:
     src: bash_functions
-    dest: "{{ ansible_env.HOME }}/.{{ shell_name }}/functions"
+    dest: "{{ shell_config_dir }}/functions"
     mode: '0644'
   notify: reload shell
 
-- name: Copy shell prompt (bash)
-  copy:
-    src: bash_prompt
-    dest: "{{ ansible_env.HOME }}/.bash/prompt"
-    mode: '0644'
-  when: 
-    - shell_name == "bash"
-    - not use_starship_prompt | default(false)
-  notify: reload shell
-
-- name: Copy shell prompt (zsh)
+# macOS: zsh configuration
+- name: Copy zsh prompt (macOS)
   copy:
     src: zsh_prompt
-    dest: "{{ ansible_env.HOME }}/.zsh/prompt"
+    dest: "{{ shell_config_dir }}/prompt"
     mode: '0644'
-  when: 
-    - shell_name == "zsh"
+  when:
+    - ansible_os_family == "Darwin"
     - not use_starship_prompt | default(false)
   notify: reload shell
 
-- name: Install and configure Starship prompt
-  include_tasks: starship.yml
-  when: use_starship_prompt | default(false)
-
-- name: Generate shell RC file (bash)
-  template:
-    src: bashrc.j2
-    dest: "{{ shell_rc_file }}"
-    mode: '0644'
-    backup: yes
-  when: shell_name == "bash"
-  notify: reload shell
-
-- name: Generate shell RC file (zsh)
+- name: Generate zshrc (macOS)
   template:
     src: zshrc.j2
     dest: "{{ shell_rc_file }}"
     mode: '0644'
     backup: yes
-  when: shell_name == "zsh"
+  when: ansible_os_family == "Darwin"
   notify: reload shell
 
-- name: Configure inputrc for better readline behavior (bash only)
+# Linux: bash configuration
+- name: Copy bash prompt (Linux)
+  copy:
+    src: bash_prompt
+    dest: "{{ shell_config_dir }}/prompt"
+    mode: '0644'
+  when:
+    - ansible_os_family == "Debian"
+    - not use_starship_prompt | default(false)
+  notify: reload shell
+
+- name: Generate bashrc (Linux)
+  template:
+    src: bashrc.j2
+    dest: "{{ shell_rc_file }}"
+    mode: '0644'
+    backup: yes
+  when: ansible_os_family == "Debian"
+  notify: reload shell
+
+- name: Configure inputrc for better readline behavior (Linux)
   copy:
     src: inputrc
     dest: "{{ ansible_env.HOME }}/.inputrc"
     mode: '0644'
-  when: shell_name == "bash"
+  when: ansible_os_family == "Debian"
 
+# Starship prompt (optional, both platforms)
+- name: Install and configure Starship prompt
+  include_tasks: starship.yml
+  when: use_starship_prompt | default(false)
+
+# ble.sh - Bash Line Editor (syntax highlighting + autosuggestions for bash)
+- name: Install ble.sh for bash enhancements (Linux)
+  block:
+    - name: Check if ble.sh is already installed
+      stat:
+        path: "{{ ansible_env.HOME }}/.local/share/blesh/ble.sh"
+      register: blesh_installed
+
+    - name: Clone ble.sh repository
+      git:
+        repo: https://github.com/akinomyoga/ble.sh.git
+        dest: "{{ ansible_env.HOME }}/.local/src/ble.sh"
+        depth: 1
+        recursive: yes
+        version: master
+      when: not blesh_installed.stat.exists
+
+    - name: Build and install ble.sh
+      shell: |
+        cd "{{ ansible_env.HOME }}/.local/src/ble.sh"
+        make install PREFIX="{{ ansible_env.HOME }}/.local"
+      args:
+        creates: "{{ ansible_env.HOME }}/.local/share/blesh/ble.sh"
+      when: not blesh_installed.stat.exists
+  when:
+    - ansible_os_family == "Debian"
+    - install_blesh | default(true)
+
+# Common tasks - Zen commands
 - name: Create zhelp script
   copy:
     src: zhelp
     dest: "{{ local_bin_dir }}/zhelp"
     mode: '0755'
 
-- name: Ensure .local/bin is in PATH
-  lineinfile:
-    path: "{{ shell_rc_file }}"
-    line: 'export PATH="$HOME/.local/bin:$PATH"'
-    create: yes
-  notify: reload shell
+- name: Get Zen setup directory
+  set_fact:
+    zen_setup_dir: "{{ playbook_dir }}"
+
+- name: Create zsetup script
+  template:
+    src: zsetup.j2
+    dest: "{{ local_bin_dir }}/zsetup"
+    mode: '0755'
+
+- name: Create zdoctor script
+  template:
+    src: zdoctor.j2
+    dest: "{{ local_bin_dir }}/zdoctor"
+    mode: '0755'
 
 - name: Create .hushlogin to suppress login messages (macOS)
   file:
@@ -93,4 +137,3 @@
     state: touch
     mode: '0644'
   when: ansible_os_family == "Darwin"
-
