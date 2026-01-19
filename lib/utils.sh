@@ -29,7 +29,12 @@ run_with_spinner() {
   local pid
 
   # Run command in background, suppress all output
-  "$@" >> "${LOG_FILE:-/dev/null}" 2>&1 &
+  # Use 'script' on Linux to provide pseudo-TTY (needed for sudo/ansible become)
+  if [[ "$OSTYPE" == "linux-gnu"* ]] && command -v script &>/dev/null; then
+    script -q -c "$(printf '%q ' "$@")" /dev/null >> "${LOG_FILE:-/dev/null}" 2>&1 &
+  else
+    "$@" >> "${LOG_FILE:-/dev/null}" 2>&1 &
+  fi
   pid=$!
 
   # Display spinner while command runs
