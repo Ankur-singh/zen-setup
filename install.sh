@@ -73,9 +73,9 @@ if [ -d "$INSTALL_DIR" ]; then
   echo -e "${YELLOW}Directory already exists${NC}"
   if [ -n "$ZSH_VERSION" ]; then
     echo -n "Update existing installation? (y/N) "
-    read -r REPLY
+    read -r REPLY < /dev/tty
   else
-    read -p "Update existing installation? (y/N) " -n 1 -r REPLY
+    read -p "Update existing installation? (y/N) " -n 1 -r REPLY < /dev/tty
     echo
   fi
   if [[ $REPLY =~ ^[Yy]$ ]]; then

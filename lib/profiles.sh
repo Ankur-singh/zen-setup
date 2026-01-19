@@ -86,7 +86,7 @@ select_components_interactive() {
     echo ""
     echo "Enter components to install (space separated):"
     echo "Default: shell cli-tools tmux neovim git python"
-    read -r user_input
+    read -r user_input < /dev/tty
     if [[ -z "$user_input" ]]; then
       echo "shell cli-tools tmux neovim git python"
     else

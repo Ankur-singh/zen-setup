@@ -134,7 +134,7 @@ prompt_sudo_password() {
   if [[ "$os" != "macOS" ]]; then
     echo ""
     echo -n "Enter sudo password: "
-    read -s BECOME_PASS
+    read -s BECOME_PASS < /dev/tty
     echo ""
     export ANSIBLE_BECOME_PASS="$BECOME_PASS"
   fi

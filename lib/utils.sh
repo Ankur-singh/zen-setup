@@ -155,7 +155,7 @@ check_not_root() {
     warn "Running as root is not recommended"
     warn "Some tools may not work correctly"
     echo ""
-    read -p "Continue anyway? [y/N] " -n 1 -r
+    read -p "Continue anyway? [y/N] " -n 1 -r < /dev/tty
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
       exit 1
