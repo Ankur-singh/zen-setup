@@ -1,0 +1,33 @@
+# ~/.blerc - ble.sh configuration
+# Bash Line Editor - syntax highlighting & autosuggestions
+
+# Enable auto-complete (autosuggestions from history)
+bleopt complete_auto_complete=1
+
+# Delay before showing suggestions (ms) - lower = faster
+bleopt complete_auto_delay=100
+
+# Show suggestions from command history
+bleopt complete_auto_history=1
+
+# Menu style completion
+bleopt complete_menu_style=dense
+
+# Syntax highlighting colors (uses terminal colors)
+# Auto-suggestion style - dimmed text
+ble-face auto_complete='fg=242'
+
+# Correct command = green, incorrect = red
+ble-face syntax_error='fg=203'
+ble-face command_function='fg=120'
+ble-face command_builtin='fg=120'
+ble-face command_file='fg=120'
+ble-face command_alias='fg=120'
+ble-face command_directory='fg=69,underline'
+
+# String colors
+ble-face syntax_quoted='fg=215'
+ble-face syntax_expr='fg=141'
+
+# Comment color
+ble-face syntax_comment='fg=242,italic'

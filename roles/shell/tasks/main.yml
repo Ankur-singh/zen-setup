@@ -104,6 +104,12 @@
       args:
         creates: "{{ ansible_env.HOME }}/.local/share/blesh/ble.sh"
       when: not blesh_installed.stat.exists
+
+    - name: Copy ble.sh configuration
+      copy:
+        src: blerc
+        dest: "{{ ansible_env.HOME }}/.blerc"
+        mode: '0644'
   when:
     - ansible_os_family == "Debian"
     - install_blesh | default(true)
