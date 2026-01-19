@@ -1,7 +1,30 @@
 ---
-- name: Ensure Neovim is installed
-  debug:
-    msg: "Neovim should be installed via cli-tools role"
+# Install Neovim
+- name: Install Neovim (macOS)
+  homebrew:
+    name: neovim
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Install Neovim (Linux)
+  block:
+    - name: Add Neovim PPA
+      apt_repository:
+        repo: ppa:neovim-ppa/unstable
+        state: present
+      become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+
+    - name: Install Neovim from PPA
+      apt:
+        name: neovim
+        state: present
+        update_cache: yes
+      become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+  when: ansible_os_family == "Debian"
 
 - name: Backup existing neovim config
   shell: |

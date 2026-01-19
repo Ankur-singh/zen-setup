@@ -1,28 +1,49 @@
 ---
+- name: Set non-interactive frontend for apt
+  set_fact:
+    ansible_env_apt: "{{ ansible_env | combine({'DEBIAN_FRONTEND': 'noninteractive'}) }}"
+
 - name: Update apt cache
   apt:
     update_cache: yes
     cache_valid_time: 3600
   become: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
 
 - name: Install APT packages
   apt:
     name: "{{ apt_packages }}"
     state: present
   become: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
   when: apt_packages is defined
 
 - name: Install eza (modern ls replacement)
   block:
+    - name: Create apt keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      become: yes
+
     - name: Add eza GPG key
       shell: |
-        sudo mkdir -p /etc/apt/keyrings
-        wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-        echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-        sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+        wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        chmod 644 /etc/apt/keyrings/gierens.gpg
       args:
         executable: /bin/bash
-        creates: /etc/apt/sources.list.d/gierens.list
+        creates: /etc/apt/keyrings/gierens.gpg
+      become: yes
+
+    - name: Add eza repository
+      copy:
+        content: "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main"
+        dest: /etc/apt/sources.list.d/gierens.list
+        mode: '0644'
+      become: yes
 
     - name: Install eza
       apt:
@@ -30,12 +51,16 @@
         state: present
         update_cache: yes
       become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
 
 - name: Install bat (better cat)
   apt:
     name: bat
     state: present
   become: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
 
 - name: Create bat symlink (batcat -> bat)
   file:
@@ -54,7 +79,7 @@
         version: master
       
     - name: Install fzf
-      shell: "{{ ansible_env.HOME }}/.fzf/install --key-bindings --completion --no-update-rc --no-bash"
+      shell: "yes | {{ ansible_env.HOME }}/.fzf/install --key-bindings --completion --no-update-rc --no-bash"
       args:
         executable: /bin/bash
         creates: "{{ ansible_env.HOME }}/.fzf.bash"
@@ -65,24 +90,6 @@
   args:
     executable: /bin/bash
     creates: "{{ local_bin_dir }}/zoxide"
-
-- name: Install neovim (latest stable)
-  block:
-    - name: Add Neovim PPA
-      shell: |
-        sudo add-apt-repository -y ppa:neovim-ppa/unstable
-        sudo apt update
-      args:
-        executable: /bin/bash
-      become: yes
-      changed_when: false
-
-    - name: Install Neovim from PPA
-      apt:
-        name: neovim
-        state: present
-        update_cache: yes
-      become: yes
 
 - name: Install lazygit
   block:

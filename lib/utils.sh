@@ -30,15 +30,10 @@ run_with_spinner() {
   local exit_status
 
   # Disable job control messages
-  set +m
+  set +m 2>/dev/null || true
 
   # Run command in background, suppress all output
-  # Use 'script' on Linux to provide pseudo-TTY (needed for sudo/ansible become)
-  if [[ "$OSTYPE" == "linux-gnu"* ]] && command -v script &>/dev/null; then
-    script -q -c "$(printf '%q ' "$@")" /dev/null >> "${LOG_FILE:-/dev/null}" 2>&1 &
-  else
-    "$@" >> "${LOG_FILE:-/dev/null}" 2>&1 &
-  fi
+  "$@" >> "${LOG_FILE:-/dev/null}" 2>&1 &
   pid=$!
 
   # Display spinner while command runs
@@ -55,7 +50,7 @@ run_with_spinner() {
   exit_status=$?
 
   # Re-enable job control
-  set -m
+  set -m 2>/dev/null || true
 
   return $exit_status
 }
