@@ -88,19 +88,17 @@
         path: "{{ ansible_env.HOME }}/.local/share/blesh/ble.sh"
       register: blesh_installed
 
-    - name: Clone ble.sh repository
-      git:
-        repo: https://github.com/akinomyoga/ble.sh.git
-        dest: "{{ ansible_env.HOME }}/.local/src/ble.sh"
-        depth: 1
-        recursive: yes
-        version: master
+    - name: Create blesh directory
+      file:
+        path: "{{ ansible_env.HOME }}/.local/share/blesh"
+        state: directory
+        mode: '0755'
       when: not blesh_installed.stat.exists
 
-    - name: Build and install ble.sh
+    - name: Download and install ble.sh (pre-built nightly)
       shell: |
-        cd "{{ ansible_env.HOME }}/.local/src/ble.sh"
-        make install PREFIX="{{ ansible_env.HOME }}/.local"
+        curl -fsSL https://github.com/akinomyoga/ble.sh/releases/download/nightly/ble-nightly.tar.xz | \
+        tar xJf - -C "{{ ansible_env.HOME }}/.local/share/blesh" --strip-components=1
       args:
         creates: "{{ ansible_env.HOME }}/.local/share/blesh/ble.sh"
       when: not blesh_installed.stat.exists

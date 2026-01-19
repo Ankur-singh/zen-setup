@@ -27,6 +27,10 @@ run_with_spinner() {
   local spin='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
   local i=0
   local pid
+  local exit_status
+
+  # Disable job control messages
+  set +m
 
   # Run command in background, suppress all output
   # Use 'script' on Linux to provide pseudo-TTY (needed for sudo/ansible become)
@@ -47,8 +51,13 @@ run_with_spinner() {
   printf "\r\033[K"
 
   # Check exit status
-  wait $pid
-  return $?
+  wait $pid 2>/dev/null
+  exit_status=$?
+
+  # Re-enable job control
+  set -m
+
+  return $exit_status
 }
 
 # Run command and show status
