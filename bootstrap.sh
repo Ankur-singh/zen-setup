@@ -160,6 +160,12 @@ install_components() {
   export ANSIBLE_FORCE_COLOR=0
   export ANSIBLE_NOCOWS=1
 
+  # Pass become password explicitly (more reliable than env var in background processes)
+  local become_args=""
+  if [[ -n "$ANSIBLE_BECOME_PASS" ]]; then
+    become_args="-e ansible_become_pass=$ANSIBLE_BECOME_PASS"
+  fi
+
   for component in "${components[@]}"; do
     ((current++))
     local progress="[$current/$total]"
@@ -174,14 +180,14 @@ install_components() {
 
     if [[ "$VERBOSE" == "true" ]]; then
       echo -e "${BLUE}→${NC} $message"
-      if ansible-playbook "$playbook" --tags "$component" "${EXTRA_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"; then
+      if ansible-playbook "$playbook" --tags "$component" $become_args "${EXTRA_ARGS[@]}" 2>&1 | tee -a "$LOG_FILE"; then
         success "$component"
       else
         error "$component failed"
         failed+=("$component")
       fi
     else
-      if run_with_spinner "$message" ansible-playbook "$playbook" --tags "$component" "${EXTRA_ARGS[@]}"; then
+      if run_with_spinner "$message" ansible-playbook "$playbook" --tags "$component" $become_args "${EXTRA_ARGS[@]}"; then
         success "$component"
       else
         error "$component failed (check $LOG_FILE)"
