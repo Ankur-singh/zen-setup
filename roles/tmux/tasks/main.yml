@@ -40,6 +40,6 @@
   debug:
     msg: |
       Tmux installed! 
-      - Press prefix + I (Ctrl-a + Shift-i) to install plugins when you first start tmux
-      - Prefix key is Ctrl-a (not Ctrl-b)
+      - Press prefix + I (Ctrl-Space + Shift-i) to install plugins when you first start tmux
+      - Prefix key is Ctrl-Space (not Ctrl-b)
 
