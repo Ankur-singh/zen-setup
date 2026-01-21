@@ -79,14 +79,14 @@
         version: master
       
     - name: Install fzf
-      shell: "yes | {{ ansible_env.HOME }}/.fzf/install --key-bindings --completion --no-update-rc --no-bash"
+      shell: "{{ ansible_env.HOME }}/.fzf/install --key-bindings --completion --no-update-rc --no-bash --bin"
       args:
         executable: /bin/bash
-        creates: "{{ ansible_env.HOME }}/.fzf.bash"
+        creates: "{{ ansible_env.HOME }}/.fzf/bin/fzf"
 
 - name: Install zoxide (smart cd)
   shell: |
-    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
   args:
     executable: /bin/bash
     creates: "{{ local_bin_dir }}/zoxide"
@@ -165,7 +165,6 @@
       args:
         executable: /bin/bash
         creates: "{{ local_bin_dir }}/btop"
-      become: yes
   when: install_btop | default(true)
 
 - name: Install fastfetch
@@ -190,12 +189,14 @@
     - name: Download and install fastfetch
       shell: |
         wget -qO fastfetch.deb "https://github.com/fastfetch-cli/fastfetch/releases/download/{{ fastfetch_version }}/fastfetch-linux-amd64.deb"
-        dpkg -i fastfetch.deb || apt-get install -f -y
+        DEBIAN_FRONTEND=noninteractive dpkg -i fastfetch.deb || DEBIAN_FRONTEND=noninteractive apt-get install -f -y
         rm -f fastfetch.deb
       args:
         executable: /bin/bash
         creates: /usr/bin/fastfetch
       become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
   when: install_fastfetch | default(true)
 
 - name: Install git-delta (beautiful git diffs)
@@ -220,12 +221,14 @@
     - name: Download and install git-delta
       shell: |
         wget -qO delta.deb "https://github.com/dandavison/delta/releases/download/{{ delta_version }}/git-delta_{{ delta_version }}_amd64.deb"
-        dpkg -i delta.deb || apt-get install -f -y
+        DEBIAN_FRONTEND=noninteractive dpkg -i delta.deb || DEBIAN_FRONTEND=noninteractive apt-get install -f -y
         rm -f delta.deb
       args:
         executable: /bin/bash
         creates: /usr/bin/delta
       become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
 
 - name: Configure lazygit to use delta (Linux)
   block:
@@ -271,10 +274,12 @@
     - name: Download and install gum
       shell: |
         wget -qO gum.deb "https://github.com/charmbracelet/gum/releases/download/v{{ gum_version }}/gum_{{ gum_version }}_amd64.deb"
-        dpkg -i gum.deb || apt-get install -f -y
+        DEBIAN_FRONTEND=noninteractive dpkg -i gum.deb || DEBIAN_FRONTEND=noninteractive apt-get install -f -y
         rm -f gum.deb
       args:
         executable: /bin/bash
         creates: /usr/bin/gum
       become: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
 
