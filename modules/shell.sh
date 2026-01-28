@@ -442,6 +442,14 @@ copy_shell_configs() {
 
 # Main installation function
 install_shell() {
+    # Safety check: Skip shell configuration for core profile
+    local profile="${PROFILE:-enhanced}"
+
+    if [[ "$profile" == "core" ]]; then
+        info "⏭️  Skipping shell configuration (core profile - packages only)"
+        return 0
+    fi
+
     print_section "🐚 Installing Shell Configuration"
 
     # Install platform-specific shell enhancements

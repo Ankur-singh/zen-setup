@@ -63,11 +63,11 @@ That's it! Grab a coffee while it installs (~5 minutes).
 ### Installation Options
 
 ```bash
-# Enhanced setup (default) - complete experience with all enhancements
+# Core setup (default) - essential packages only, NO shell configuration
 curl ... | bash
 
-# Core setup - essential tools only (no built-in replacements, no docker)
-curl ... | bash -s -- --core
+# Enhanced setup - packages + shell config + aliases + functions
+curl ... | bash -s -- --enhanced
 
 # Custom components - install only what you need
 curl ... | bash -s -- --components shell,cli-tools-enhanced,git,docker
@@ -75,8 +75,10 @@ curl ... | bash -s -- --components shell,cli-tools-enhanced,git,docker
 
 | Profile | What's Included |
 |---------|-----------------|
-| **Enhanced** (default) | Shell customizations, enhanced CLI tools (with built-in replacements), custom git/tmux configs, docker, python, nvidia |
-| **Core** (`--core`) | Shell customizations, core CLI tools only (no replacements), custom git/tmux configs, python *(no docker)* |
+| **Core** (default) | **Packages ONLY** (core CLI tools + git + tmux + python) - **NO shell configuration, NO aliases** |
+| **Enhanced** (`--enhanced`) | Shell configuration + aliases + functions + enhanced CLI tools + docker + python + nvidia |
+
+> **See [docs/PROFILES.md](docs/PROFILES.md) for detailed profile comparison and testing guide**
 
 ### First Commands After Install
 
@@ -98,8 +100,8 @@ git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
 cd ~/.local/share/zen-setup
 
 # Install
-./setup.sh               # Enhanced profile (default)
-./setup.sh --core        # Core profile (essential tools only)
+./setup.sh               # Core profile (default - packages only)
+./setup.sh --enhanced    # Enhanced profile (packages + shell config)
 ./setup.sh --components shell,cli-tools-enhanced,git,docker  # Custom components
 ```
 
@@ -301,19 +303,22 @@ venv                    # Create and activate venv (function)
 Use the built-in `zupdate` command:
 
 ```bash
-# Update everything
+# Update everything (automatically uses your saved profile)
 zupdate
 
-# Update specific components
+# Update specific components (respects your profile)
 zupdate shell
 zupdate "shell,cli-tools-enhanced"
 ```
 
 **Features:**
 - Auto-detects Zen directory
+- **Respects your profile choice** (core or enhanced)
 - Stops if already up to date (no unnecessary reinstalls)
 - Platform-aware (handles macOS/Linux differences)
 - Shows what changed
+
+> **Profile Persistence:** Your profile is automatically saved during installation. Running `zupdate` will use the same profile you originally chose, so core stays core and enhanced stays enhanced.
 
 ## 📚 Documentation
 
@@ -358,8 +363,8 @@ Absolutely! Use the `--components` flag to install only what you need:
 ./setup.sh --components shell,cli-tools-core,git
 
 # Or choose a profile
-./setup.sh --core      # Essential tools only
-./setup.sh             # Full experience (default)
+./setup.sh             # Core profile (default - packages only)
+./setup.sh --enhanced  # Enhanced profile (full experience)
 ```
 
 Available components: `shell`, `cli-tools-core`, `cli-tools-enhanced`, `git`, `tmux`, `docker`, `python`, `nvidia`

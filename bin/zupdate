@@ -5,6 +5,16 @@ set -e
 
 ZEN_DIR="${ZEN_SETUP_DIR:-$HOME/.local/share/zen-setup}"
 COMPONENTS="${1:-all}"
+PROFILE_FILE="$HOME/.local/share/zen-setup/.profile"
+
+# Read stored profile preference (defaults to core if not found)
+if [[ -f "$PROFILE_FILE" ]]; then
+    STORED_PROFILE=$(cat "$PROFILE_FILE")
+    echo "📋 Using saved profile: $STORED_PROFILE"
+else
+    STORED_PROFILE="core"
+    echo "📋 No saved profile found, using default: core"
+fi
 
 # Change to Zen directory
 if [[ ! -d "$ZEN_DIR" ]]; then
@@ -45,9 +55,21 @@ git pull origin main
 
 # Reinstall
 echo ""
-echo "Reinstalling components..."
+echo "Reinstalling components with profile: $STORED_PROFILE"
+
+# Build setup command with profile
 if [[ "$COMPONENTS" == "all" ]]; then
-    exec "$ZEN_DIR/setup.sh"
+    # Use stored profile for full reinstall
+    if [[ "$STORED_PROFILE" == "enhanced" ]]; then
+        exec "$ZEN_DIR/setup.sh" --enhanced
+    else
+        exec "$ZEN_DIR/setup.sh" --core
+    fi
 else
-    exec "$ZEN_DIR/setup.sh" --components "$COMPONENTS"
+    # For specific components, still use stored profile
+    if [[ "$STORED_PROFILE" == "enhanced" ]]; then
+        exec "$ZEN_DIR/setup.sh" --enhanced --components "$COMPONENTS"
+    else
+        exec "$ZEN_DIR/setup.sh" --core --components "$COMPONENTS"
+    fi
 fi

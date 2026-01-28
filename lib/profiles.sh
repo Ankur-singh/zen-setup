@@ -4,8 +4,8 @@
 # Profile definitions
 # Each profile is a space-separated list of component tags
 
-# Core: Shell essentials only (no docker, no replacement tools)
-PROFILE_CORE="shell cli-tools-core tmux git python"
+# Core: Essential packages only (NO shell configuration)
+PROFILE_CORE="cli-tools-core tmux git python"
 
 # Enhanced: Full development setup (default)
 PROFILE_ENHANCED="shell cli-tools-enhanced tmux git docker python"
@@ -22,7 +22,7 @@ get_profile_components() {
 # Get component description
 get_component_desc() {
   case "$1" in
-    shell)               echo "Shell configuration (zsh/bash with plugins)" ;;
+    shell)               echo "Shell configuration with aliases, functions, prompts (enhanced-only)" ;;
     cli-tools-core)      echo "Core CLI tools (lazygit, lazydocker, jq, htop, tree, gum)" ;;
     cli-tools-enhanced)  echo "Enhanced CLI tools (core + eza, bat, fzf, zoxide, ripgrep, fd, btop, mosh, tldr, delta)" ;;
     tmux)                echo "Tmux terminal multiplexer" ;;

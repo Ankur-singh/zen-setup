@@ -36,6 +36,51 @@ docker run --rm --gpus all nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
 cat /etc/docker/daemon.json  # Should contain nvidia runtime config
 ```
 
+## 📋 Profile Issues
+
+### Aliases and functions not working
+
+If commands like `ll`, `gs`, `z`, or custom functions don't work, you likely installed the **core profile** which only installs packages without shell configuration.
+
+**Check which profile you have:**
+```bash
+# Check if shell config was installed
+ls ~/.bash/aliases ~/.zsh/aliases 2>/dev/null
+
+# Check for enhanced tools
+which eza bat fzf zoxide
+```
+
+**Solutions:**
+
+1. **If you want shell customization:** Run setup with enhanced profile
+   ```bash
+   ./setup.sh --enhanced
+   # or
+   zsetup --enhanced
+   ```
+
+2. **If you prefer core profile:** This is expected behavior. Core profile installs packages only.
+
+> See [PROFILES.md](PROFILES.md) for detailed profile comparison
+
+### Upgrading from Core to Enhanced
+
+You can upgrade at any time:
+
+```bash
+# From core (packages only)
+./setup.sh --core
+
+# Upgrade to enhanced (adds shell config)
+./setup.sh --enhanced
+```
+
+This will:
+- Keep all existing packages
+- Install additional enhanced tools (eza, bat, fzf, etc.)
+- Apply shell configuration (aliases, functions, prompts)
+
 ## 🐚 Shell Issues
 
 ### Shell changes not applied

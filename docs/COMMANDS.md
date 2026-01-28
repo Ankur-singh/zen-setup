@@ -4,6 +4,8 @@ Complete reference for all commands available in Zen.
 
 > **Tip:** Run `zhelp` in your terminal for a quick reference.
 
+> **Profile Note:** Most commands listed here (aliases, functions, shortcuts) are only available with the **enhanced profile**. The **core profile** installs packages only without shell configuration. See [PROFILES.md](PROFILES.md) for details.
+
 ## 🧘 Zen Commands
 
 ### `zhelp`
@@ -17,21 +19,20 @@ zhelp
 Run Zen setup with options.
 
 ```bash
-# Full setup (default)
+# Core setup (default) - packages ONLY (NO shell config, NO aliases, NO functions)
 zsetup
 
-# Core setup (essential tools only, no docker)
-zsetup --core
+# Enhanced setup - full experience with shell config
+zsetup --enhanced
 
-# Interactive mode - choose components
-zsetup --interactive
-
-# Preview what will be installed
-zsetup --dry-run
+# Custom components
+zsetup --components shell,cli-tools-enhanced,git
 
 # Verbose output
 zsetup --verbose
 ```
+
+> **See [PROFILES.md](PROFILES.md) for detailed profile comparison**
 
 ### `zdoctor`
 Health check your Zen installation.
@@ -46,21 +47,23 @@ zdoctor --help
 
 **What it checks:**
 - Core tools (git, homebrew/apt)
-- CLI tools (lazygit, lazydocker, jq, htop, etc.)
-- Enhanced tools (eza, bat, fzf, zoxide, ripgrep, fd)
-- Development tools (tmux, python, docker)
-- Shell configuration (rc file, plugins)
+- CLI tools (jq, htop, lazygit, lazydocker, tree, gum)
+- Enhanced tools (eza, bat, fzf, zoxide, ripgrep, fd, btop, delta) - if installed
+- Development tools (tmux, python, docker) - if installed
+- Shell configuration (rc file, plugins) - if installed
 - Tmux configuration (plugins, config)
 - Zen installation status
+
+> **Note:** Checks only verify installed components based on your profile (core/enhanced)
 
 ### `zupdate [tags]`
 Update Zen from the repository.
 
 ```bash
-# Update everything
+# Update everything (uses saved profile)
 zupdate
 
-# Update specific components
+# Update specific components (uses saved profile)
 zupdate shell
 zupdate cli-tools-enhanced
 zupdate "shell,cli-tools-enhanced"
@@ -70,8 +73,11 @@ zupdate "shell,cli-tools-enhanced"
 - Auto-detects Zen directory
 - Pulls latest changes from git
 - Stops if already up to date
+- **Automatically uses your saved profile** (core or enhanced)
 - Runs setup script with changes
 - Shows what was updated
+
+> **Profile Persistence:** Your profile choice is automatically saved during installation and respected by `zupdate`. If you installed with `--enhanced`, updates will use enhanced. If you used core (default), updates will use core.
 
 ### `zsetdir [path]`
 Set or show Zen directory location.

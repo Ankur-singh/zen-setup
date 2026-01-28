@@ -13,7 +13,7 @@ source "$SCRIPT_DIR/lib/sudo.sh"
 source "$SCRIPT_DIR/lib/backup.sh"
 
 # Default values
-PROFILE="enhanced"
+PROFILE="core"  # Changed to core as default (packages only, no shell config)
 COMPONENTS=()
 VERBOSE=false
 SKIP_BACKUP=false
@@ -63,8 +63,8 @@ Zen Setup - Complete Terminal Environment
 Usage: ./setup.sh [OPTIONS]
 
 Options:
-  --enhanced          Install enhanced profile with all enhancements (default)
-  --core              Install core profile - essential tools only, no docker
+  --core              Install core profile - packages ONLY, no shell config (default)
+  --enhanced          Install enhanced profile - packages + shell config + aliases + functions
   --components LIST   Install specific components (comma-separated)
                       Available: shell,cli-tools-core,cli-tools-enhanced,git,tmux,docker,python,nvidia
   --verbose, -v       Enable verbose output
@@ -72,12 +72,12 @@ Options:
   --help, -h          Show this help message
 
 Profiles:
-  enhanced (default)  Complete experience: shell + cli-tools-enhanced + custom git/tmux configs + docker
-  core                Essential tools only: cli-tools-core, no docker, no built-in replacements
+  core (default)      Essential packages ONLY: NO shell configuration, NO aliases, NO customizations
+  enhanced            Complete experience: packages + shell configuration + aliases + functions + prompts
 
 Examples:
-  ./setup.sh                                      # Install enhanced profile (default)
-  ./setup.sh --core                               # Install core profile (essential tools only)
+  ./setup.sh                                      # Install core profile (default - packages only)
+  ./setup.sh --enhanced                           # Install enhanced profile (packages + shell config)
   ./setup.sh --components shell,cli-tools-core    # Install specific components
 
 EOF
@@ -89,12 +89,12 @@ get_profile_components() {
 
     case "$profile" in
         core)
-            # Core: Essential tools only - no docker, no built-in replacements
+            # Core: Essential packages ONLY - NO shell configuration, no docker, no built-in replacements
             # cli-tools-core installs lazygit, lazydocker, jq, htop, tree, gum
-            echo "shell cli-tools-core tmux git python"
+            echo "cli-tools-core tmux git python"
             ;;
         enhanced)
-            # Enhanced: Complete Zen experience with all enhancements
+            # Enhanced: Complete Zen experience with all enhancements + shell configuration
             # cli-tools-enhanced includes core + replacements (eza, bat, fzf, etc.) + extras (btop, mosh, tldr, delta)
             echo "shell cli-tools-enhanced git tmux docker python nvidia"
             ;;
@@ -236,6 +236,9 @@ main() {
         COMPONENTS=($(get_profile_components "$PROFILE"))
     fi
 
+    # Export PROFILE so modules can access it
+    export PROFILE
+
     echo ""
     info "Profile:    $PROFILE"
     info "Components: ${COMPONENTS[*]}"
@@ -281,6 +284,12 @@ main() {
 
     # Export Zen setup directory for future use
     echo "export ZEN_SETUP_DIR=\"$SCRIPT_DIR\"" >> "$(get_shell_rc)"
+
+    # Store profile preference for zupdate
+    local profile_file="$HOME/.local/share/zen-setup/.profile"
+    mkdir -p "$(dirname "$profile_file")"
+    echo "$PROFILE" > "$profile_file"
+    info "Profile preference saved: $PROFILE"
 
     success "Setup complete! 🎉"
 }

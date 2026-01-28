@@ -3,7 +3,8 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 #
 # Options (passed to setup.sh):
-#   --core              Core profile - essential tools only, no docker (cli-tools-core, git, tmux, python)
+#   (default)           Core profile - packages ONLY, NO shell config, NO aliases, NO functions
+#   --enhanced          Enhanced profile - packages + shell config + aliases + functions
 #   --components LIST   Install specific components
 #   -v, --verbose       Show detailed output
 #   -h, --help          Show help
@@ -30,8 +31,8 @@ for arg in "$@"; do
     echo "Usage: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash -s -- [OPTIONS]"
     echo ""
     echo "Profiles:"
-    echo "  (default)       Enhanced - all enhancements: shell + cli-tools-enhanced + custom configs + docker"
-    echo "  --core          Core - essential tools only: cli-tools-core, no docker, no replacements"
+    echo "  (default)       Core - packages ONLY (NO shell config, NO aliases, NO customizations)"
+    echo "  --enhanced      Enhanced - packages + shell config + aliases + functions + prompts"
     echo ""
     echo "Options:"
     echo "  --components    Install specific components (comma-separated)"
@@ -40,8 +41,8 @@ for arg in "$@"; do
     echo "  -h, --help      Show this help message"
     echo ""
     echo "Examples:"
-    echo "  curl ... | bash                                # Install enhanced profile (default)"
-    echo "  curl ... | bash -s -- --core                   # Install core profile (essential tools only)"
+    echo "  curl ... | bash                                # Install core profile (default - packages only)"
+    echo "  curl ... | bash -s -- --enhanced               # Install enhanced profile (packages + shell config)"
     echo "  curl ... | bash -s -- --components shell,cli-tools-core,git   # Install specific components"
     exit 0
   fi
