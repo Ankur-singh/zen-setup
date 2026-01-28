@@ -53,11 +53,6 @@ venv        - Create and activate venv with UV
 uv-init     - Create venv and activate
 uv-activate - Activate existing venv
 
-EDITOR
-------
-v, vim, n   - Open neovim
-nvim .      - Open neovim in current directory
-
 TMUX
 ----
 t           - tmux

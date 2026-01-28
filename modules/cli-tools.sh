@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/cli-tools.sh - CLI tools installation module
-# Replaces roles/cli-tools/ Ansible role
 # Installs 15+ modern CLI tools via package managers and GitHub releases
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

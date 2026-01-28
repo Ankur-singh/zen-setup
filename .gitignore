@@ -1,11 +1,3 @@
-# Ansible
-*.retry
-.ansible/
-
-# Host-specific files
-host_vars/
-group_vars/
-
 # Backup files
 *.backup
 *.bak
@@ -30,10 +22,6 @@ group_vars/
 # Logs
 *.log
 logs/
-
-# Local customizations (not tracked)
-inventory.local.yml
-vars/local.yml
 
 # Python
 __pycache__/

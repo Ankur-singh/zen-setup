@@ -71,39 +71,6 @@ echo $PATH | grep ".local/bin"
 # Linux: source ~/.bashrc
 ```
 
-## 📝 Neovim Issues
-
-### Neovim plugins not installed
-
-LazyVim will auto-install plugins on first run. If they don't install:
-```bash
-nvim
-# Then press: Space (leader key) → Lazy (plugin manager) → I (install)
-```
-
-### LSP servers not working
-
-Install LSP servers using Mason:
-```bash
-nvim
-# Press: Space → Mason → Install your desired LSP servers
-```
-
-## 🔧 Ansible Issues
-
-### Ansible fails with "permission denied"
-
-Make sure you have:
-- Sudo privileges on the target machine
-- Proper SSH key authentication for remote VMs
-- Correct `ansible_user` in inventory.yml
-
-### "local_bin_dir is undefined" error
-
-This means variables aren't loading. Make sure you're running the full playbook or the pre_tasks are tagged with `always`.
-
-Fixed in latest version - update with `zupdate`.
-
 ## 🐍 Python Issues
 
 ### UV not found after installation
@@ -162,16 +129,6 @@ brew install --cask font-fira-code-nerd-font
 
 Then set your terminal to use the Nerd Font.
 
-### Starship prompt not working
-
-Make sure Starship is installed:
-```bash
-which starship
-starship --version
-```
-
-Check that `use_starship_prompt: true` in `vars/common.yml`.
-
 ## 🧹 Cleanup Issues
 
 ### `zcleanup` shows errors on macOS
@@ -187,9 +144,9 @@ zupdate
 
 ### Check Logs
 ```bash
-# Ansible logs
+# Setup logs
 cd ~/.local/share/zen-setup
-ansible-playbook playbook.yml -vvv  # Verbose mode
+./setup.sh --verbose  # Verbose mode
 
 # System logs (Linux)
 journalctl -xe
@@ -198,7 +155,7 @@ journalctl -xe
 ### Verify Installation
 ```bash
 # Check what's installed
-which eza bat fzf zoxide rg fd lazygit nvim tmux
+which eza bat fzf zoxide rg fd lazygit tmux
 
 # Check versions
 eza --version

@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/docker.sh - Docker installation module
-# Replaces roles/docker/ Ansible role
 # Installs Docker Desktop (macOS) or Docker Engine (Linux)
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -4,11 +4,11 @@
 # Profile definitions
 # Each profile is a space-separated list of component tags
 
-# Minimal: Shell essentials only (no editor, docker)
+# Minimal: Shell essentials only (no docker)
 PROFILE_MINIMAL="shell cli-tools tmux git python"
 
 # Standard: Full development setup (default)
-PROFILE_STANDARD="shell cli-tools tmux neovim git docker python"
+PROFILE_STANDARD="shell cli-tools tmux git docker python"
 
 # Get components for a profile
 get_profile_components() {
@@ -25,7 +25,6 @@ get_component_desc() {
     shell)     echo "Shell configuration (zsh/bash with plugins)" ;;
     cli-tools) echo "CLI tools (eza, bat, fzf, ripgrep, etc.)" ;;
     tmux)      echo "Tmux terminal multiplexer" ;;
-    neovim)    echo "Neovim with LazyVim configuration" ;;
     git)       echo "Git + GitHub CLI + git-delta" ;;
     docker)    echo "Docker Engine + Compose" ;;
     python)    echo "Python + UV package manager" ;;
@@ -36,7 +35,7 @@ get_component_desc() {
 
 # Get all available components
 get_all_components() {
-  echo "shell cli-tools tmux neovim git docker python nvidia"
+  echo "shell cli-tools tmux git docker python nvidia"
 }
 
 # Filter components based on platform
@@ -66,7 +65,7 @@ select_components_interactive() {
     local selected
     selected=$(gum choose --no-limit \
       --header "Select components to install:" \
-      --selected="shell,cli-tools,tmux,neovim,git,python" \
+      --selected="shell,cli-tools,tmux,git,python" \
       $available)
     echo "$selected" | tr '\n' ' '
   elif command_exists fzf; then
@@ -85,10 +84,10 @@ select_components_interactive() {
     done
     echo ""
     echo "Enter components to install (space separated):"
-    echo "Default: shell cli-tools tmux neovim git python"
+    echo "Default: shell cli-tools tmux git python"
     read -r user_input < /dev/tty
     if [[ -z "$user_input" ]]; then
-      echo "shell cli-tools tmux neovim git python"
+      echo "shell cli-tools tmux git python"
     else
       echo "$user_input"
     fi

@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/shell.sh - Shell configuration module
-# Replaces roles/shell/ Ansible role
 # Installs shell config, plugins, and prompts (NO Starship)
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -110,8 +109,14 @@ shopt -s dirspell
 shopt -s globstar
 
 # Environment variables
-export EDITOR=nvim
-export VISUAL=nvim
+# Use nvim if available, otherwise fall back to vi
+if command -v nvim &> /dev/null; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+else
+  export EDITOR=vi
+  export VISUAL=vi
+fi
 export PAGER=less
 export TERM=xterm-256color
 
@@ -230,8 +235,14 @@ setopt EXTENDED_GLOB
 setopt NOMATCH
 
 # Environment variables
-export EDITOR=nvim
-export VISUAL=nvim
+# Use nvim if available, otherwise fall back to vi
+if command -v nvim &> /dev/null; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+else
+  export EDITOR=vi
+  export VISUAL=vi
+fi
 export PAGER=less
 export TERM=xterm-256color
 

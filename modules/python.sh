@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/python.sh - Python tooling installation module
-# Replaces roles/python/ Ansible role
 # Installs UV (modern Python package manager)
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

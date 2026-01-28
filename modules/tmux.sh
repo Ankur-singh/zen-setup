@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/tmux.sh - Tmux configuration module
-# Replaces roles/tmux/ Ansible role
 # Installs tmux with TPM (Tmux Plugin Manager) and plugins
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

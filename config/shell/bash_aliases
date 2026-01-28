@@ -22,9 +22,16 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
 # Common tools shortcuts
-alias v='nvim'
-alias vim='nvim'
-alias n='nvim .'
+# Editor aliases - use nvim if available, otherwise use system default
+if command -v nvim &> /dev/null; then
+  alias v='nvim'
+  alias vim='nvim'
+  alias n='nvim .'
+else
+  alias v='$EDITOR'
+  alias vim='$EDITOR'
+  alias n='$EDITOR .'
+fi
 alias g='git'
 alias d='docker'
 alias dc='docker-compose'
@@ -77,10 +84,10 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 # Quick edits (shell-agnostic)
-alias editrc='nvim ${ZDOTDIR:-$HOME}/.${SHELL##*/}rc && exec ${SHELL##*/}'
-alias aliases='nvim ~/.${SHELL##*/}/aliases && exec ${SHELL##*/}'
-alias functions='nvim ~/.${SHELL##*/}/functions && exec ${SHELL##*/}'
-alias tmuxconf='nvim ~/.tmux.conf'
+alias editrc='$EDITOR ${ZDOTDIR:-$HOME}/.${SHELL##*/}rc && exec ${SHELL##*/}'
+alias aliases='$EDITOR ~/.${SHELL##*/}/aliases && exec ${SHELL##*/}'
+alias functions='$EDITOR ~/.${SHELL##*/}/functions && exec ${SHELL##*/}'
+alias tmuxconf='$EDITOR ~/.tmux.conf'
 
 # Network - platform-aware port listing
 # macOS uses lsof, Linux uses netstat

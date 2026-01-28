@@ -20,7 +20,7 @@ Run Zen setup with options.
 # Full setup (default)
 zsetup
 
-# Minimal setup (no neovim, docker)
+# Minimal setup (no docker)
 zsetup --minimal
 
 # Interactive mode - choose components
@@ -45,12 +45,11 @@ zdoctor --help
 ```
 
 **What it checks:**
-- Core tools (git, ansible, homebrew)
+- Core tools (git, homebrew/apt)
 - CLI tools (eza, bat, fzf, etc.)
-- Development tools (neovim, tmux, python, docker)
+- Development tools (tmux, python, docker)
 - Shell configuration (rc file, plugins)
 - Tmux configuration (plugins, config)
-- Neovim configuration (LazyVim)
 - Zen installation status
 
 ### `zupdate [tags]`
@@ -70,7 +69,7 @@ zupdate "shell,cli-tools"
 - Auto-detects Zen directory
 - Pulls latest changes from git
 - Stops if already up to date
-- Runs Ansible playbook with changes
+- Runs setup script with changes
 - Shows what was updated
 
 ### `zsetdir [path]`
@@ -243,22 +242,6 @@ Shift + Arrow     # Switch windows (no prefix!)
 ```
 
 ## ✏️ Editor Commands
-
-```bash
-v           # nvim
-vim         # nvim
-n           # nvim . (open current directory)
-```
-
-### Neovim Key Bindings
-```bash
-Space       # Leader key (shows command menu)
-:Lazy       # Plugin manager
-:Mason      # Install LSP servers, formatters
-Space + e   # File explorer
-Space + ff  # Find files
-Space + /   # Search in project
-```
 
 ## 🖥️ System Commands
 

@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/git.sh - Git configuration module
-# Replaces roles/git/ Ansible role
 # Installs git tools and configures aliases (NO user.name/user.email setup)
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

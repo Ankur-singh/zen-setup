@@ -1,6 +1,5 @@
 #!/bin/bash
 # modules/nvidia.sh - NVIDIA GPU support module
-# Replaces roles/nvidia/ Ansible role
 # Installs NVIDIA drivers, CUDA toolkit, and Container Toolkit (Linux only)
 
 _MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

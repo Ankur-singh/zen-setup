@@ -31,7 +31,7 @@ is_macos() {
 
 # Prompt for sudo password with multiple fallback strategies
 # This function tries multiple approaches to get the sudo password:
-# 1. Environment variable (ANSIBLE_BECOME_PASS)
+# 1. Environment variable (ZEN_SUDO_PASS or SUDO_PASSWORD)
 # 2. /dev/tty if available (works in most interactive terminals)
 # 3. stdin if terminal is attached
 # 4. ssh-askpass if available (GUI fallback)
@@ -52,9 +52,9 @@ prompt_sudo_password() {
     echo ""
 
     # Strategy 1: Try environment variable first
-    if [[ -n "$ANSIBLE_BECOME_PASS" ]]; then
-        SUDO_PASSWORD="$ANSIBLE_BECOME_PASS"
-        info "Using sudo password from ANSIBLE_BECOME_PASS environment variable"
+    if [[ -n "$ZEN_SUDO_PASS" ]]; then
+        SUDO_PASSWORD="$ZEN_SUDO_PASS"
+        info "Using sudo password from ZEN_SUDO_PASS environment variable"
         return 0
     fi
 
@@ -93,7 +93,7 @@ prompt_sudo_password() {
     error "Cannot read sudo password. Please use one of these options:"
     echo ""
     echo "  Option 1: Set environment variable before running:"
-    echo "    export ANSIBLE_BECOME_PASS='your_password'"
+    echo "    export ZEN_SUDO_PASS='your_password'"
     echo "    ./install.sh"
     echo ""
     echo "  Option 2: Configure NOPASSWD for sudo (add to /etc/sudoers.d/zen-setup):"

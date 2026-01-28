@@ -1,6 +1,5 @@
 #!/bin/bash
 # setup.sh - Main orchestrator for Zen setup
-# Replaces bootstrap.sh + playbook.yml
 
 set -e  # Exit on error
 

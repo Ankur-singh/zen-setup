@@ -350,28 +350,12 @@ zupdate() {
   fi
   echo -e "${GREEN}✓${NC} Updates downloaded"
 
-  # Get sudo password on Linux
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo ""
-    echo -n "Enter sudo password: "
-    read -s BECOME_PASS
-    echo ""
-    export ANSIBLE_BECOME_PASS="$BECOME_PASS"
-  fi
-
-  # Suppress Ansible output
-  export ANSIBLE_STDOUT_CALLBACK=minimal
-  export ANSIBLE_DISPLAY_SKIPPED_HOSTS=false
-  export ANSIBLE_DISPLAY_OK_HOSTS=false
-  export ANSIBLE_NOCOLOR=1
-  export ANSIBLE_NOCOWS=1
-
-  # Run Ansible with spinner
+  # Run setup.sh with spinner
   if [ -n "$tags" ]; then
     echo -e "${DIM}Components: $tags${NC}"
-    _run_silent "Installing updates..." ansible-playbook playbook.yml --tags "$tags"
+    _run_silent "Installing updates..." ./setup.sh --components "$tags"
   else
-    _run_silent "Installing updates..." ansible-playbook playbook.yml
+    _run_silent "Installing updates..." ./setup.sh
   fi
   local exit_code=$?
 
@@ -513,9 +497,9 @@ zsetdir() {
   fi
   
   # Check if it's actually a Zen repository
-  if [ ! -f "$new_dir/playbook.yml" ]; then
+  if [ ! -f "$new_dir/setup.sh" ]; then
     echo "⚠️  Warning: $new_dir doesn't look like a Zen repository"
-    echo "   (playbook.yml not found)"
+    echo "   (setup.sh not found)"
     if [ -n "$ZSH_VERSION" ]; then
       # Zsh syntax
       echo -n "Continue anyway? (y/N) "

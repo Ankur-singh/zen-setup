@@ -151,7 +151,7 @@ See documentation for:
 ### What Makes Zen Different
 
 - ✅ **Cross-platform**: Works identically on macOS and Linux
-- ✅ **Simple**: Pure bash scripts, no complex dependencies
+- ✅ **Simple**: Pure bash scripts, no complex dependencies (no Ansible, no Python required)
 - ✅ **Idempotent**: Safe to run multiple times
 - ✅ **Modular**: Install everything or pick specific components
 - ✅ **Terminal-only**: No desktop apps, perfect for servers and SSH
@@ -283,7 +283,6 @@ venv                    # Create and activate venv (function)
 - Want to learn by configuring everything manually from scratch
 - Use Windows (WSL might work, but not officially tested)
 - Already have a heavily customized setup you're deeply attached to
-- Don't want Ansible managing your configs
 
 
 ## 🔄 Updating
@@ -396,15 +395,9 @@ This simplifies the codebase and matches what 95%+ of users already have. Both s
 </details>
 
 <details>
-<summary><b>Can I use this with Starship prompt?</b></summary>
+<summary><b>Will this work with my existing tmux setup?</b></summary>
 
-Yes! Set `use_starship_prompt: true` in `vars/common.yml` before installing. See [Starship Guide](docs/STARSHIP.md).
-</details>
-
-<details>
-<summary><b>Will this work with my existing tmux/vim setup?</b></summary>
-
-Your existing configs are backed up first. Zen installs LazyVim (a Neovim distribution) and a custom tmux config. You can switch back to your backups anytime.
+Your existing configs are backed up first. Zen installs a custom tmux config with useful plugins. You can switch back to your backups anytime.
 </details>
 
 <details>
@@ -425,7 +418,7 @@ It auto-detects the installation location, pulls updates, and only reinstalls if
 2. **Check troubleshooting** - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 3. **File an issue** - https://github.com/Ankur-singh/zen-setup/issues
 
-The playbook is idempotent, so you can safely re-run it anytime.
+The setup scripts are idempotent, so you can safely re-run them anytime.
 </details>
 
 
@@ -485,12 +478,6 @@ source ~/.zshrc  # macOS
 source ~/.bashrc # Linux
 ```
 
-**Neovim plugins not loading?**
-```bash
-nvim
-# Press: Space → Lazy → I (install)
-```
-
 For more solutions, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## 📝 License
@@ -500,8 +487,7 @@ MIT License - feel free to use and modify as needed.
 ## 🙏 Acknowledgments
 
 - Inspired by [Omakub](https://github.com/basecamp/omakub) by DHH
-- Built with [Ansible](https://www.ansible.com/)
-- Uses [LazyVim](https://www.lazyvim.org/) for Neovim configuration
+- Built with pure bash scripts for simplicity and speed
 - Powered by modern CLI tools from the open-source community
 
 ---
