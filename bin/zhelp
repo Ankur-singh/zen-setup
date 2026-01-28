@@ -1,0 +1,87 @@
+#!/bin/bash
+# bin/zhelp - Show Zen command reference
+
+cat <<'EOF'
+╔═══════════════════════════════════════════╗
+║   禅  Zen Setup - Command Reference  全   ║
+╚═══════════════════════════════════════════╝
+
+INSTALLATION & MANAGEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+  zsetup              Run Zen installation
+  zsetup --minimal    Install minimal profile
+  zsetup --components shell,cli-tools,git
+                      Install specific components
+  zupdate             Update Zen and reinstall
+  zdoctor             Health check installation
+  zhelp               Show this help
+
+MOST COMMON COMMANDS
+━━━━━━━━━━━━━━━━━━━━
+  z <name>            Jump to directory (zoxide)
+  ff                  Fuzzy find files (fzf)
+  ..                  Go up one directory
+  cd -                Return to previous directory
+
+FILE OPERATIONS
+━━━━━━━━━━━━━━━
+  ls, ll, lt          Modern file listing (eza)
+  cat <file>          Syntax-highlighted cat (bat)
+  search "text"       Fast text search (ripgrep)
+  tree                Show directory tree
+
+GIT COMMANDS
+━━━━━━━━━━━━
+  lzg                 LazyGit (visual interface)
+  gs                  git status
+  gp                  git push
+  gc                  git commit
+  gd                  git diff (with delta)
+  gl                  git log (graph)
+
+DOCKER COMMANDS
+━━━━━━━━━━━━━━━
+  lzd                 LazyDocker (visual interface)
+  dps                 docker ps (running containers)
+  denter <id>         Enter container shell
+  docker compose up   Start services
+
+SYSTEM MONITORING
+━━━━━━━━━━━━━━━━━
+  btop                System monitor (top replacement)
+  fastfetch           System information
+  myip                Show public IP address
+  localip             Show local IP address
+
+PYTHON
+━━━━━━
+  uv venv             Create virtual environment
+  uv pip install      Install package
+  uv python list      List Python versions
+
+NAVIGATION SHORTCUTS
+━━━━━━━━━━━━━━━━━━━━
+  ..                  cd ..
+  ...                 cd ../..
+  ....                cd ../../..
+  z <partial-name>    Jump to frequently used directory
+
+SHELL SHORTCUTS
+━━━━━━━━━━━━━━━
+  Ctrl+R              Search command history (fzf)
+  Ctrl+T              Fuzzy find files
+  Alt+C               Fuzzy change directory
+
+TMUX SHORTCUTS (Prefix: Ctrl-a)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  prefix + |          Split vertically
+  prefix + -          Split horizontally
+  prefix + h/j/k/l    Navigate panes
+  prefix + r          Reload config
+  Shift+Left/Right    Switch windows
+
+For more information:
+  Documentation: https://github.com/Ankur-singh/zen-setup
+  Issues:        https://github.com/Ankur-singh/zen-setup/issues
+
+EOF

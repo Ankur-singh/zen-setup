@@ -1,0 +1,53 @@
+#!/bin/bash
+# bin/zupdate - Update Zen setup and reinstall components
+
+set -e
+
+ZEN_DIR="${ZEN_SETUP_DIR:-$HOME/.local/share/zen-setup}"
+COMPONENTS="${1:-all}"
+
+# Change to Zen directory
+if [[ ! -d "$ZEN_DIR" ]]; then
+    echo "❌ Zen setup directory not found: $ZEN_DIR"
+    echo "Set ZEN_SETUP_DIR environment variable to the correct path"
+    exit 1
+fi
+
+cd "$ZEN_DIR" || exit 1
+
+# Check for updates
+echo "Checking for updates..."
+git fetch origin
+
+if [[ $(git rev-parse HEAD) == $(git rev-parse origin/main) ]]; then
+    echo "✅ Already up to date"
+    exit 0
+fi
+
+# Show what changed
+echo ""
+echo "Updates available:"
+git log --oneline --graph HEAD..origin/main | head -10
+echo ""
+
+# Ask for confirmation
+read -p "Update Zen setup? (y/N): " -n 1 -r
+echo ""
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Update cancelled"
+    exit 0
+fi
+
+# Pull updates
+echo "Pulling updates..."
+git pull origin main
+
+# Reinstall
+echo ""
+echo "Reinstalling components..."
+if [[ "$COMPONENTS" == "all" ]]; then
+    exec "$ZEN_DIR/setup.sh"
+else
+    exec "$ZEN_DIR/setup.sh" --components "$COMPONENTS"
+fi

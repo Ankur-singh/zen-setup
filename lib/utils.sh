@@ -114,20 +114,20 @@ print_completion() {
   echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 }
 
-# Detect OS
+# Note: detect_os and detect_shell are now in lib/platform.sh
+# Keeping these here for backward compatibility with existing code
 detect_os() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "macOS"
+    echo "macos"
   elif [[ -f /etc/debian_version ]]; then
-    echo "Debian/Ubuntu"
+    echo "debian"
   elif [[ -f /etc/redhat-release ]]; then
-    echo "RHEL/CentOS"
+    echo "rhel"
   else
-    echo "Unknown"
+    echo "unknown"
   fi
 }
 
-# Detect shell
 detect_shell() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
     echo "zsh"

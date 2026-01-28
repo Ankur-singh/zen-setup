@@ -63,20 +63,20 @@ That's it! Grab a coffee while it installs (~5 minutes).
 ### Installation Options
 
 ```bash
-# Full setup (default) - everything included
+# Enhanced setup (default) - complete experience
 curl ... | bash
 
-# Minimal setup - no neovim, no docker
-curl ... | bash -s -- --minimal
+# Core setup - essential dev tools only (no shell customizations)
+curl ... | bash -s -- --core
 
-# Interactive - choose what to install
-curl ... | bash -s -- --interactive
+# Custom components - install only what you need
+curl ... | bash -s -- --components shell,git,docker
 ```
 
 | Profile | What's Included |
 |---------|-----------------|
-| Default | Shell, CLI tools, tmux, neovim, git, docker, python |
-| `--minimal` | Shell, CLI tools, tmux, git, python *(no neovim, docker)* |
+| **Enhanced** (default) | Shell customizations, CLI tools, custom git/tmux configs, docker, python, nvidia |
+| **Core** (`--core`) | CLI tools (git, tmux, etc.) with **system defaults**, docker, python, nvidia *(no custom configs)* |
 
 ### First Commands After Install
 
@@ -85,7 +85,6 @@ zhelp      # See all available commands
 zdoctor    # Health check your installation
 lzg        # Try LazyGit (visual git interface)
 ff         # Fuzzy find files with preview
-nvim       # Open Neovim with LazyVim
 btop       # Beautiful system monitor
 ```
 
@@ -98,24 +97,18 @@ btop       # Beautiful system monitor
 git clone https://github.com/Ankur-singh/zen-setup.git ~/.local/share/zen-setup
 cd ~/.local/share/zen-setup
 
-# Customize variables (optional)
-nvim vars/common.yml
-
 # Install
-./bootstrap.sh              # Full setup (default)
-./bootstrap.sh --minimal    # Minimal (no neovim, docker)
-./bootstrap.sh --interactive # Choose components
-./bootstrap.sh --dry-run    # Preview what will install
+./setup.sh               # Enhanced profile (default)
+./setup.sh --core        # Core profile (no shell customizations)
+./setup.sh --components shell,git,docker  # Custom components
 ```
 
 ### Advanced Options
 
-See [docs/INSTALLATION.md](docs/INSTALLATION.md) for:
-- Remote VM deployment
-- Selective installation with tags
-- Custom install locations
-
-For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile commands and Ansible usage.
+See documentation for:
+- Component-specific installation
+- Custom installation paths
+- Troubleshooting common issues
 
 </details>
 
@@ -140,9 +133,8 @@ For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile comm
 |-----------|-------------|
 | **Shell** | **Zsh** (macOS) / **Bash** (Linux) with syntax highlighting, autosuggestions, 50+ aliases, 30+ functions |
 | **CLI Tools** | 15+ modern tools: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch |
-| **Tmux** | Pre-configured with 6 plugins, custom keybindings, session persistence |
-| **Neovim** | LazyVim with LSP, treesitter, auto-completion, beautiful UI |
-| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs, lumen *(macOS only)* |
+| **Tmux** | TPM plugin manager + 5 plugins (resurrect, continuum, yank, vim-navigator, sensible) |
+| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs |
 | **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
 | **Python** | UV package manager (100x faster than pip), Python 3.12 |
 | **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI *(Linux only)* |
@@ -153,17 +145,15 @@ For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile comm
 |---------|:-----:|:-----:|
 | Shell | Zsh | Bash |
 | git-delta (beautiful diffs) | Yes | Yes |
-| lumen (AI-powered diffs) | Yes | - |
 | NVIDIA GPU support | - | Yes |
 | ble.sh (bash enhancements) | - | Yes |
 
 ### What Makes Zen Different
 
-- ✅ **Cross-platform**: Single playbook works on macOS and Linux
-- ✅ **Remote-ready**: Deploy to unlimited VMs from inventory
+- ✅ **Cross-platform**: Works identically on macOS and Linux
+- ✅ **Simple**: Pure bash scripts, no complex dependencies
 - ✅ **Idempotent**: Safe to run multiple times
-- ✅ **Modular**: Install everything or pick components with tags
-- ✅ **Customizable**: Variables for easy configuration
+- ✅ **Modular**: Install everything or pick specific components
 - ✅ **Terminal-only**: No desktop apps, perfect for servers and SSH
 - ✅ **Smart updates**: `zupdate` keeps everything current
 - ✅ **Backup-safe**: All configs backed up before changes
@@ -181,7 +171,6 @@ For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile comm
 
 **Features:**
 - Custom prompt with git integration
-- Optional [Starship](https://starship.rs/) prompt support
 - 50+ useful aliases (shared across platforms)
 - 30+ helpful functions (shared across platforms)
 - Zsh plugins: autosuggestions, syntax-highlighting, completions (macOS)
@@ -206,7 +195,6 @@ For developers: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for Makefile comm
 | **btop** | Beautiful process monitor | top/htop |
 | **fastfetch** | System info display | neofetch |
 | **git-delta** | Beautiful git diffs | diff |
-| **lumen** | AI-powered diff tool *(macOS only)* | diff |
 
 Plus: jq, tree, tldr, and more!
 
@@ -215,38 +203,22 @@ Plus: jq, tree, tldr, and more!
 <details>
 <summary><b>Tmux Setup</b></summary>
 
-**Prefix:** `Ctrl-a` (instead of default Ctrl-b)
+**Prefix:** `Ctrl-Space` (instead of default Ctrl-b)
 
 **Plugins:**
-- TPM (Plugin Manager)
-- tmux-sensible (sensible defaults)
-- tmux-resurrect (save/restore sessions)
-- tmux-continuum (auto-save sessions)
-- tmux-yank (better copy/paste)
-- vim-tmux-navigator (seamless vim/tmux navigation)
+- TPM (Tmux Plugin Manager)
+- tmux-sensible - Sensible defaults
+- tmux-resurrect - Save/restore sessions
+- tmux-continuum - Auto-save sessions (every 15 min)
+- tmux-yank - Better copy/paste
+- vim-tmux-navigator - Seamless vim/tmux navigation
 
 **Key Bindings:**
 - `Prefix + |` - Split horizontally
 - `Prefix + -` - Split vertically
 - `Prefix + r` - Reload config
-- `Alt + Arrow` - Switch panes (no prefix!)
+- `Prefix + h/j/k/l` - Navigate panes (vim-style)
 - `Shift + Arrow` - Switch windows (no prefix!)
-
-</details>
-
-<details>
-<summary><b>Neovim with LazyVim</b></summary>
-
-- LSP support for multiple languages
-- Treesitter for better syntax highlighting
-- Auto-completion
-- File explorer, fuzzy finder, git integration
-- Beautiful UI with modern theme
-
-**Key Bindings:**
-- `Space` - Leader key (shows menu)
-- `:Lazy` - Plugin manager
-- `:Mason` - LSP/formatter installer
 
 </details>
 
@@ -271,13 +243,11 @@ Plus: jq, tree, tldr, and more!
 - NVIDIA Container Toolkit (only installed if Docker is present)
 - Docker configured with GPU runtime
 
-**Enable with:**
-```bash
-# In vars/common.yml, set:
-install_nvidia: true
-```
+**NVIDIA is automatically installed** when:
+- Running on Linux with detected NVIDIA GPU
+- Installing with enhanced or core profiles (both include nvidia component)
 
-See [NVIDIA Setup Guide](docs/INSTALLATION.md#nvidia-gpu-support) for details.
+NVIDIA installation is skipped on macOS and Linux systems without NVIDIA GPUs.
 
 </details>
 
@@ -335,35 +305,25 @@ zupdate "shell,cli-tools"
 - Platform-aware (handles macOS/Linux differences)
 - Shows what changed
 
-See [Update Guide](docs/INSTALLATION.md#updating) for details.
-
 ## 📚 Documentation
 
-- **[Installation Guide](docs/INSTALLATION.md)** - Detailed install options, remote deployment
-- **[Commands Reference](docs/COMMANDS.md)** - Complete command list and usage
-- **[Customization Guide](docs/CUSTOMIZATION.md)** - Variables, tags, local configs
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
-- **[Features Overview](FEATURES.md)** - Quick feature reference
-- **[Starship Prompt](docs/STARSHIP.md)** - Starship configuration guide
+- **Quick Commands:** Run `zhelp` in your terminal for a complete command reference
+- **Health Check:** Run `zdoctor` to verify your installation
+- **Update:** Run `zupdate` to get the latest version
 
 ## ❓ FAQ
 
 <details>
 <summary><b>Can I use this on my remote servers?</b></summary>
 
-Yes! Add them to `inventory.yml` and deploy with Ansible. Perfect for managing multiple servers with identical configurations.
+Yes! Simply SSH into your server and run the installation command:
 
 ```bash
-# Add to inventory.yml
-remote_vms:
-  hosts:
-    vm1:
-      ansible_host: 192.168.1.100
-      ansible_user: ubuntu
-
-# Deploy
-ansible-playbook playbook.yml --limit remote_vms
+ssh user@remote-server
+curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 ```
+
+The setup works identically on remote servers as it does locally.
 </details>
 
 <details>
@@ -373,28 +333,26 @@ All existing configs are automatically backed up with timestamps before any chan
 - `~/.bashrc` → `~/.bashrc.backup.YYYYMMDD_HHMMSS`
 - `~/.zshrc` → `~/.zshrc.backup.YYYYMMDD_HHMMSS`
 - `~/.tmux.conf` → `~/.tmux.conf.backup.YYYYMMDD_HHMMSS`
-- `~/.config/nvim/` → `~/.config/nvim.backup.YYYYMMDD_HHMMSS`
+- `~/.gitconfig` → `~/.gitconfig.backup.YYYYMMDD_HHMMSS`
 
-You can restore anytime or clean up with `zcleanup`.
+You can restore from backups anytime.
 </details>
 
 <details>
 <summary><b>Can I customize what gets installed?</b></summary>
 
-Absolutely! Several ways:
+Absolutely! Use the `--components` flag to install only what you need:
 
-1. **Edit variables** before installing (`vars/common.yml`)
-2. **Use tags** to install specific components:
-   ```bash
-   ansible-playbook playbook.yml --tags "shell,cli-tools"
-   ```
-3. **Use make targets** for selective installation:
-   ```bash
-   make install-shell
-   make install-docker
-   ```
+```bash
+# Install only specific components
+./setup.sh --components shell,cli-tools,git
 
-See [Customization Guide](docs/CUSTOMIZATION.md) for details.
+# Or choose a profile
+./setup.sh --core      # Minimal dev tools
+./setup.sh --enhanced  # Full experience (default)
+```
+
+Available components: `shell`, `cli-tools`, `git`, `tmux`, `docker`, `python`, `nvidia`
 </details>
 
 <details>
@@ -403,21 +361,21 @@ See [Customization Guide](docs/CUSTOMIZATION.md) for details.
 1. **Restore backups:**
    ```bash
    cp ~/.zshrc.backup.YYYYMMDD_HHMMSS ~/.zshrc
-   cp ~/.config/nvim.backup.YYYYMMDD_HHMMSS ~/.config/nvim -r
+   cp ~/.tmux.conf.backup.YYYYMMDD_HHMMSS ~/.tmux.conf
    ```
 
-2. **Remove installed tools** (optional - they won't hurt):
+2. **Remove installed tools** (optional):
    ```bash
    # macOS
-   brew uninstall eza bat fzf ...
-   
+   brew uninstall eza bat fzf zoxide ripgrep fd lazygit btop
+
    # Linux
-   sudo apt remove eza bat ...
+   sudo apt remove eza bat fzf zoxide ripgrep fd-find lazygit btop
    ```
 
-3. **Clean up backups:**
+3. **Remove Zen directory:**
    ```bash
-   zcleanup --force
+   rm -rf ~/.local/share/zen-setup
    ```
 </details>
 

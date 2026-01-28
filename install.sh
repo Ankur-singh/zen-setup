@@ -2,11 +2,11 @@
 # One-liner installer for Zen - Complete Terminal Environment
 # Usage: curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 #
-# Options (passed to bootstrap.sh):
-#   --minimal           Lightweight setup (no neovim, docker)
-#   -i, --interactive   Choose components interactively
+# Options (passed to setup.sh):
+#   --core              Core dev tools with system defaults (cli-tools, docker, python, nvidia)
+#   --enhanced          Enhanced profile with shell customizations (default)
+#   --components LIST   Install specific components
 #   -v, --verbose       Show detailed output
-#   --dry-run           Show what would be installed
 #   -h, --help          Show help
 
 set -e
@@ -31,19 +31,19 @@ for arg in "$@"; do
     echo "Usage: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash -s -- [OPTIONS]"
     echo ""
     echo "Profiles:"
-    echo "  (default)       Full setup: shell, cli-tools, tmux, neovim, git, docker, python"
-    echo "  --minimal       Lightweight: shell, cli-tools, tmux, git, python (no neovim, docker)"
+    echo "  --enhanced      Complete experience: shell + cli-tools + custom git/tmux configs (default)"
+    echo "  --core          Tools only: cli-tools, docker, python, nvidia (system default configs)"
     echo ""
     echo "Options:"
-    echo "  -i, --interactive   Choose components interactively"
-    echo "  -v, --verbose       Show detailed output"
-    echo "  --dry-run           Show what would be installed"
-    echo "  -h, --help          Show this help message"
+    echo "  --components    Install specific components (comma-separated)"
+    echo "                  Available: shell,cli-tools,git,tmux,docker,python,nvidia"
+    echo "  -v, --verbose   Show detailed output"
+    echo "  -h, --help      Show this help message"
     echo ""
     echo "Examples:"
-    echo "  curl ... | bash                    # Install everything (default)"
-    echo "  curl ... | bash -s -- --minimal    # Install minimal profile"
-    echo "  curl ... | bash -s -- --interactive # Choose components"
+    echo "  curl ... | bash                                # Install enhanced profile (default)"
+    echo "  curl ... | bash -s -- --core                   # Install core profile (tools only)"
+    echo "  curl ... | bash -s -- --components shell,git   # Install specific components"
     exit 0
   fi
 done
@@ -84,7 +84,7 @@ if [ -d "$INSTALL_DIR" ]; then
     if ! git pull; then
       echo ""
       echo -e "${RED}Git pull failed!${NC}"
-      echo -e "You can retry by running: ${DIM}bash $INSTALL_DIR/bootstrap.sh${NC}"
+      echo -e "You can retry by running: ${DIM}bash $INSTALL_DIR/setup.sh${NC}"
       exit 1
     fi
   else
@@ -104,11 +104,11 @@ fi
 
 echo ""
 
-# Run bootstrap with all arguments
-if ! bash "$INSTALL_DIR/bootstrap.sh" "$@"; then
+# Run setup with all arguments
+if ! bash "$INSTALL_DIR/setup.sh" "$@"; then
   echo ""
   echo -e "${RED}Installation failed!${NC}"
-  echo -e "Check the log file in ${DIM}$INSTALL_DIR/logs/${NC}"
-  echo -e "Retry with: ${DIM}bash $INSTALL_DIR/bootstrap.sh${NC}"
+  echo -e "Check the log file in ${DIM}$HOME/.local/share/zen-setup/logs/${NC}"
+  echo -e "Retry with: ${DIM}bash $INSTALL_DIR/setup.sh${NC}"
   exit 1
 fi
