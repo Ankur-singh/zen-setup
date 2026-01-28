@@ -63,22 +63,22 @@ Zen Setup - Complete Terminal Environment
 Usage: ./setup.sh [OPTIONS]
 
 Options:
-  --enhanced          Install enhanced profile with shell customizations (default)
-  --core              Install core dev tools with default configs (cli-tools, docker, python, nvidia)
+  --enhanced          Install enhanced profile with all enhancements (default)
+  --core              Install core profile - essential tools only, no docker
   --components LIST   Install specific components (comma-separated)
-                      Available: shell,cli-tools,git,tmux,docker,python,nvidia
+                      Available: shell,cli-tools-core,cli-tools-enhanced,git,tmux,docker,python,nvidia
   --verbose, -v       Enable verbose output
   --skip-backup       Skip backing up existing dotfiles
   --help, -h          Show this help message
 
 Profiles:
-  enhanced (default)  Complete experience: shell + cli-tools + custom git/tmux configs
-  core                Tools only: cli-tools (git, tmux, etc.) with system defaults
+  enhanced (default)  Complete experience: shell + cli-tools-enhanced + custom git/tmux configs + docker
+  core                Essential tools only: cli-tools-core, no docker, no built-in replacements
 
 Examples:
-  ./setup.sh                               # Install enhanced profile (default)
-  ./setup.sh --core                        # Install core profile (tools only, no custom configs)
-  ./setup.sh --components shell,cli-tools  # Install specific components
+  ./setup.sh                                      # Install enhanced profile (default)
+  ./setup.sh --core                               # Install core profile (essential tools only)
+  ./setup.sh --components shell,cli-tools-core    # Install specific components
 
 EOF
 }
@@ -89,14 +89,14 @@ get_profile_components() {
 
     case "$profile" in
         core)
-            # Core: Essential dev tools with default configurations only
-            # cli-tools installs git, gh, tmux, etc. but no custom configs
-            echo "cli-tools docker python nvidia"
+            # Core: Essential tools only - no docker, no built-in replacements
+            # cli-tools-core installs lazygit, lazydocker, jq, htop, tree, gum
+            echo "shell cli-tools-core tmux git python"
             ;;
         enhanced)
-            # Enhanced: Complete Zen experience with shell customizations
-            # Adds shell config + git/tmux custom configurations
-            echo "shell cli-tools git tmux docker python nvidia"
+            # Enhanced: Complete Zen experience with all enhancements
+            # cli-tools-enhanced includes core + replacements (eza, bat, fzf, etc.) + extras (btop, mosh, tldr, delta)
+            echo "shell cli-tools-enhanced git tmux docker python nvidia"
             ;;
         *)
             error "Unknown profile: $profile (use --core or --enhanced)"

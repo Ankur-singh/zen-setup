@@ -214,9 +214,9 @@ install_tmux_plugins() {
 install_tmux() {
     print_section "📺 Configuring Tmux"
 
-    # Note: tmux is already installed by cli-tools module
+    # Note: tmux is already installed by cli-tools-core or cli-tools-enhanced module
     if ! command -v tmux &>/dev/null; then
-        error "tmux not found. Install cli-tools module first."
+        error "tmux not found. Install cli-tools-core or cli-tools-enhanced module first."
         return 1
     fi
 

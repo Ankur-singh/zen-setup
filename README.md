@@ -63,20 +63,20 @@ That's it! Grab a coffee while it installs (~5 minutes).
 ### Installation Options
 
 ```bash
-# Enhanced setup (default) - complete experience
+# Enhanced setup (default) - complete experience with all enhancements
 curl ... | bash
 
-# Core setup - essential dev tools only (no shell customizations)
+# Core setup - essential tools only (no built-in replacements, no docker)
 curl ... | bash -s -- --core
 
 # Custom components - install only what you need
-curl ... | bash -s -- --components shell,git,docker
+curl ... | bash -s -- --components shell,cli-tools-enhanced,git,docker
 ```
 
 | Profile | What's Included |
 |---------|-----------------|
-| **Enhanced** (default) | Shell customizations, CLI tools, custom git/tmux configs, docker, python, nvidia |
-| **Core** (`--core`) | CLI tools (git, tmux, etc.) with **system defaults**, docker, python, nvidia *(no custom configs)* |
+| **Enhanced** (default) | Shell customizations, enhanced CLI tools (with built-in replacements), custom git/tmux configs, docker, python, nvidia |
+| **Core** (`--core`) | Shell customizations, core CLI tools only (no replacements), custom git/tmux configs, python *(no docker)* |
 
 ### First Commands After Install
 
@@ -99,8 +99,8 @@ cd ~/.local/share/zen-setup
 
 # Install
 ./setup.sh               # Enhanced profile (default)
-./setup.sh --core        # Core profile (no shell customizations)
-./setup.sh --components shell,git,docker  # Custom components
+./setup.sh --core        # Core profile (essential tools only)
+./setup.sh --components shell,cli-tools-enhanced,git,docker  # Custom components
 ```
 
 ### Advanced Options
@@ -132,9 +132,10 @@ See documentation for:
 | Component | What You Get |
 |-----------|-------------|
 | **Shell** | **Zsh** (macOS) / **Bash** (Linux) with syntax highlighting, autosuggestions, 50+ aliases, 30+ functions |
-| **CLI Tools** | 15+ modern tools: eza, bat, fzf, zoxide, ripgrep, fd, lazygit, btop, fastfetch |
+| **CLI Tools (Core)** | Essential tools: lazygit, lazydocker, jq, htop, tree, gum, gh |
+| **CLI Tools (Enhanced)** | Core tools + replacements: eza, bat, fzf, zoxide, ripgrep, fd + extras: btop, fastfetch, mosh, tldr, git-delta |
 | **Tmux** | TPM plugin manager + 5 plugins (resurrect, continuum, yank, vim-navigator, sensible) |
-| **Git** | GitHub CLI, useful aliases, git-delta for beautiful diffs |
+| **Git** | GitHub CLI, useful aliases |
 | **Docker** | Engine + Compose, user in docker group, BuildKit enabled |
 | **Python** | UV package manager (100x faster than pip), Python 3.12 |
 | **NVIDIA** | GPU drivers + CUDA Toolkit + Container Toolkit for ML/AI *(Linux only)* |
@@ -182,21 +183,31 @@ See documentation for:
 <details>
 <summary><b>Modern CLI Tools</b></summary>
 
-| Tool | Purpose | Replaces |
-|------|---------|----------|
-| **eza** | Modern ls with icons | ls |
-| **bat** | Syntax highlighting cat | cat |
-| **fzf** | Fuzzy finder | grep/find |
-| **zoxide** | Smart directory jumper | cd |
-| **ripgrep** | Fast recursive search | grep |
-| **fd** | Fast file finder | find |
-| **lazygit** | Terminal UI for git | - |
-| **lazydocker** | Terminal UI for docker | - |
-| **btop** | Beautiful process monitor | top/htop |
-| **fastfetch** | System info display | neofetch |
-| **git-delta** | Beautiful git diffs | diff |
+**Core Tools (always installed):**
+- **lazygit** - Terminal UI for git
+- **lazydocker** - Terminal UI for docker
+- **jq** - JSON processor
+- **htop** - Process viewer
+- **tree** - Directory tree viewer
+- **gum** - TUI builder
+- **gh** - GitHub CLI
 
-Plus: jq, tree, tldr, and more!
+**Enhanced Tools (enhanced profile only):**
+
+Built-in Replacements:
+- **eza** → replaces `ls`
+- **bat** → replaces `cat`
+- **fzf** → fuzzy finder
+- **zoxide** → replaces `cd`
+- **ripgrep** → replaces `grep`
+- **fd** → replaces `find`
+
+Nice-to-haves:
+- **btop** - Beautiful process monitor
+- **fastfetch** - System info display
+- **mosh** - Mobile shell
+- **tldr** - Simplified man pages
+- **git-delta** - Beautiful git diffs
 
 </details>
 
@@ -295,7 +306,7 @@ zupdate
 
 # Update specific components
 zupdate shell
-zupdate "shell,cli-tools"
+zupdate "shell,cli-tools-enhanced"
 ```
 
 **Features:**
@@ -344,14 +355,14 @@ Absolutely! Use the `--components` flag to install only what you need:
 
 ```bash
 # Install only specific components
-./setup.sh --components shell,cli-tools,git
+./setup.sh --components shell,cli-tools-core,git
 
 # Or choose a profile
-./setup.sh --core      # Minimal dev tools
-./setup.sh --enhanced  # Full experience (default)
+./setup.sh --core      # Essential tools only
+./setup.sh             # Full experience (default)
 ```
 
-Available components: `shell`, `cli-tools`, `git`, `tmux`, `docker`, `python`, `nvidia`
+Available components: `shell`, `cli-tools-core`, `cli-tools-enhanced`, `git`, `tmux`, `docker`, `python`, `nvidia`
 </details>
 
 <details>

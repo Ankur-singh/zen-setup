@@ -4,38 +4,39 @@
 # Profile definitions
 # Each profile is a space-separated list of component tags
 
-# Minimal: Shell essentials only (no docker)
-PROFILE_MINIMAL="shell cli-tools tmux git python"
+# Core: Shell essentials only (no docker, no replacement tools)
+PROFILE_CORE="shell cli-tools-core tmux git python"
 
-# Standard: Full development setup (default)
-PROFILE_STANDARD="shell cli-tools tmux git docker python"
+# Enhanced: Full development setup (default)
+PROFILE_ENHANCED="shell cli-tools-enhanced tmux git docker python"
 
 # Get components for a profile
 get_profile_components() {
   local profile="$1"
   case "$profile" in
-    minimal) echo "$PROFILE_MINIMAL" ;;
-    *)       echo "$PROFILE_STANDARD" ;;
+    core) echo "$PROFILE_CORE" ;;
+    *)    echo "$PROFILE_ENHANCED" ;;
   esac
 }
 
 # Get component description
 get_component_desc() {
   case "$1" in
-    shell)     echo "Shell configuration (zsh/bash with plugins)" ;;
-    cli-tools) echo "CLI tools (eza, bat, fzf, ripgrep, etc.)" ;;
-    tmux)      echo "Tmux terminal multiplexer" ;;
-    git)       echo "Git + GitHub CLI + git-delta" ;;
-    docker)    echo "Docker Engine + Compose" ;;
-    python)    echo "Python + UV package manager" ;;
-    nvidia)    echo "NVIDIA drivers + Container Toolkit (Linux only)" ;;
-    *)         echo "Unknown component" ;;
+    shell)               echo "Shell configuration (zsh/bash with plugins)" ;;
+    cli-tools-core)      echo "Core CLI tools (lazygit, lazydocker, jq, htop, tree, gum)" ;;
+    cli-tools-enhanced)  echo "Enhanced CLI tools (core + eza, bat, fzf, zoxide, ripgrep, fd, btop, mosh, tldr, delta)" ;;
+    tmux)                echo "Tmux terminal multiplexer" ;;
+    git)                 echo "Git + GitHub CLI" ;;
+    docker)              echo "Docker Engine + Compose" ;;
+    python)              echo "Python + UV package manager" ;;
+    nvidia)              echo "NVIDIA drivers + Container Toolkit (Linux only)" ;;
+    *)                   echo "Unknown component" ;;
   esac
 }
 
 # Get all available components
 get_all_components() {
-  echo "shell cli-tools tmux git docker python nvidia"
+  echo "shell cli-tools-core cli-tools-enhanced tmux git docker python nvidia"
 }
 
 # Filter components based on platform
@@ -65,7 +66,7 @@ select_components_interactive() {
     local selected
     selected=$(gum choose --no-limit \
       --header "Select components to install:" \
-      --selected="shell,cli-tools,tmux,git,python" \
+      --selected="shell,cli-tools-core,tmux,git,python" \
       $available)
     echo "$selected" | tr '\n' ' '
   elif command_exists fzf; then
@@ -84,10 +85,10 @@ select_components_interactive() {
     done
     echo ""
     echo "Enter components to install (space separated):"
-    echo "Default: shell cli-tools tmux git python"
+    echo "Default: shell cli-tools-core tmux git python"
     read -r user_input < /dev/tty
     if [[ -z "$user_input" ]]; then
-      echo "shell cli-tools tmux git python"
+      echo "shell cli-tools-core tmux git python"
     else
       echo "$user_input"
     fi

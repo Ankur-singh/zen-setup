@@ -3,8 +3,7 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 #
 # Options (passed to setup.sh):
-#   --core              Core dev tools with system defaults (cli-tools, docker, python, nvidia)
-#   --enhanced          Enhanced profile with shell customizations (default)
+#   --core              Core profile - essential tools only, no docker (cli-tools-core, git, tmux, python)
 #   --components LIST   Install specific components
 #   -v, --verbose       Show detailed output
 #   -h, --help          Show help
@@ -31,19 +30,19 @@ for arg in "$@"; do
     echo "Usage: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash -s -- [OPTIONS]"
     echo ""
     echo "Profiles:"
-    echo "  --enhanced      Complete experience: shell + cli-tools + custom git/tmux configs (default)"
-    echo "  --core          Tools only: cli-tools, docker, python, nvidia (system default configs)"
+    echo "  (default)       Enhanced - all enhancements: shell + cli-tools-enhanced + custom configs + docker"
+    echo "  --core          Core - essential tools only: cli-tools-core, no docker, no replacements"
     echo ""
     echo "Options:"
     echo "  --components    Install specific components (comma-separated)"
-    echo "                  Available: shell,cli-tools,git,tmux,docker,python,nvidia"
+    echo "                  Available: shell,cli-tools-core,cli-tools-enhanced,git,tmux,docker,python,nvidia"
     echo "  -v, --verbose   Show detailed output"
     echo "  -h, --help      Show this help message"
     echo ""
     echo "Examples:"
     echo "  curl ... | bash                                # Install enhanced profile (default)"
-    echo "  curl ... | bash -s -- --core                   # Install core profile (tools only)"
-    echo "  curl ... | bash -s -- --components shell,git   # Install specific components"
+    echo "  curl ... | bash -s -- --core                   # Install core profile (essential tools only)"
+    echo "  curl ... | bash -s -- --components shell,cli-tools-core,git   # Install specific components"
     exit 0
   fi
 done

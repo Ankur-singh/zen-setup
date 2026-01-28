@@ -20,8 +20,8 @@ Run Zen setup with options.
 # Full setup (default)
 zsetup
 
-# Minimal setup (no docker)
-zsetup --minimal
+# Core setup (essential tools only, no docker)
+zsetup --core
 
 # Interactive mode - choose components
 zsetup --interactive
@@ -46,7 +46,8 @@ zdoctor --help
 
 **What it checks:**
 - Core tools (git, homebrew/apt)
-- CLI tools (eza, bat, fzf, etc.)
+- CLI tools (lazygit, lazydocker, jq, htop, etc.)
+- Enhanced tools (eza, bat, fzf, zoxide, ripgrep, fd)
 - Development tools (tmux, python, docker)
 - Shell configuration (rc file, plugins)
 - Tmux configuration (plugins, config)
@@ -61,8 +62,8 @@ zupdate
 
 # Update specific components
 zupdate shell
-zupdate cli-tools
-zupdate "shell,cli-tools"
+zupdate cli-tools-enhanced
+zupdate "shell,cli-tools-enhanced"
 ```
 
 **What it does:**

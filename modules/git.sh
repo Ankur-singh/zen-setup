@@ -94,11 +94,11 @@ print_git_message() {
 install_git() {
     print_section "🔧 Configuring Git"
 
-    # Note: git and gh are already installed by cli-tools module
+    # Note: git and gh are already installed by cli-tools-core or cli-tools-enhanced module
     # This module only handles git configuration
 
     if ! command -v git &>/dev/null; then
-        error "git not found. Install cli-tools module first."
+        error "git not found. Install cli-tools-core or cli-tools-enhanced module first."
         return 1
     fi
 
