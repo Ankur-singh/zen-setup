@@ -287,6 +287,14 @@ main() {
 
     print_summary "${COMPONENTS[@]}"
 
+    # Install zen command scripts to ~/.local/bin
+    mkdir -p "$HOME/.local/bin"
+    for script in "$SCRIPT_DIR/bin"/*; do
+        if [[ -f "$script" || -L "$script" ]]; then
+            cp -f "$script" "$HOME/.local/bin/"
+        fi
+    done
+
     # Export Zen setup directory for future use
     echo "export ZEN_SETUP_DIR=\"$SCRIPT_DIR\"" >> "$(get_shell_rc)"
 
