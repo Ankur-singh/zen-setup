@@ -30,24 +30,35 @@ backup_file() {
 }
 
 # Backup dotfiles based on components being installed
-# Usage: backup_dotfiles_for_components component1 component2 ...
+# Usage: backup_dotfiles_for_components PROFILE component1 component2 ...
 backup_dotfiles_for_components() {
+    local profile="$1"
+    shift
     local components=("$@")
     local timestamp=$(get_backup_timestamp)
     local backed_up=()
     local files_to_backup=()
 
-    # Determine which files need backup based on components
+    # Determine which files need backup based on components AND profile
     for component in "${components[@]}"; do
         case "$component" in
             shell)
-                files_to_backup+=("$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.zprofile" "$HOME/.inputrc")
+                # Shell only installs in enhanced profile
+                if [[ "$profile" == "enhanced" ]]; then
+                    files_to_backup+=("$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.zprofile" "$HOME/.inputrc")
+                fi
                 ;;
             tmux)
-                files_to_backup+=("$HOME/.tmux.conf")
+                # Tmux only modifies config in enhanced profile
+                if [[ "$profile" == "enhanced" ]]; then
+                    files_to_backup+=("$HOME/.tmux.conf")
+                fi
                 ;;
             git)
-                files_to_backup+=("$HOME/.gitconfig")
+                # Git only modifies config in enhanced profile
+                if [[ "$profile" == "enhanced" ]]; then
+                    files_to_backup+=("$HOME/.gitconfig")
+                fi
                 ;;
         esac
     done

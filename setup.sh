@@ -237,6 +237,10 @@ main() {
         COMPONENTS=($(get_profile_components "$PROFILE"))
     fi
 
+    # Filter components for platform (removes nvidia on macOS, etc.)
+    source "$SCRIPT_DIR/lib/profiles.sh"
+    COMPONENTS=($(filter_components_for_platform "${COMPONENTS[@]}"))
+
     # Export PROFILE so modules can access it
     export PROFILE
 
@@ -247,7 +251,7 @@ main() {
 
     # Backup dotfiles (only for components that modify configs)
     if [[ "$SKIP_BACKUP" == false ]]; then
-        backup_dotfiles_for_components "${COMPONENTS[@]}"
+        backup_dotfiles_for_components "$PROFILE" "${COMPONENTS[@]}"
     fi
 
     # Install prerequisites
