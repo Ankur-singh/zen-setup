@@ -4,76 +4,151 @@ Zen Setup offers two installation profiles to match your needs: **core** (defaul
 
 > **Default Changed:** As of the latest version, **core** is now the default profile. This provides a safer, less invasive installation that only installs packages without modifying your shell configuration. Opt-in to enhanced with `--enhanced` for the full experience.
 
-## Core Profile
+## Core vs Enhanced: The Difference
 
-**Philosophy:** Essential packages ONLY, zero configuration changes.
+### Core Profile (Default)
+**Philosophy**: Install all essential tools, but NO customizations
 
-The core profile installs useful CLI tools without modifying your shell configuration. Your bashrc, zshrc, aliases, functions, and prompt remain untouched.
+**What Gets Installed**:
+- ✅ Core CLI tools: jq, htop, lazygit, lazydocker, tree, gum, gh
+- ✅ tmux (package only)
+- ✅ git + gh (packages only)
+- ✅ Docker + Docker Compose
+- ✅ Python + UV package manager
+- ✅ NVIDIA drivers + CUDA + Container Toolkit (Debian/Ubuntu only, if GPU detected)
 
-### What's Included
+**What Does NOT Get Applied**:
+- ❌ NO shell configuration (no aliases, no functions, no custom prompt)
+- ❌ NO tmux configuration (no ~/.tmux.conf, no TPM, no plugins)
+- ❌ NO git configuration (no aliases, no delta integration)
+- ❌ NO fancy replacement tools (no eza, bat, fzf, zoxide, ripgrep, fd, btop, delta, fastfetch)
 
-**Packages:**
-- `jq` - JSON processor
-- `htop` - Interactive process viewer
-- `curl`, `wget` - HTTP clients
-- `git` - Version control
-- `gh` - GitHub CLI
-- `tmux` - Terminal multiplexer (with custom config)
-- `lazygit` - Terminal UI for git
-- `lazydocker` - Terminal UI for docker
-- `tree` - Directory tree viewer
-- `gum` - Shell script styling
-- `python` + `uv` - Python with fast package manager
+**Config Files Modified**: NONE
 
-**Configuration:**
-- Custom tmux configuration (`.tmux.conf`)
-- Custom git configuration (`.gitconfig`)
-- **NO shell configuration changes**
-- **NO aliases** (no `ls` → `eza`, `cat` → `bat`, etc.)
-- **NO functions** (no `mkcd`, `search`, `extract`, etc.)
-- **NO prompt customization**
-- **NO bashrc/zshrc modifications**
+**Use Case**:
+- Installing on servers where you want tools but not personal customizations
+- Giving to other people who want packages without your config preferences
+- Testing packages without config interference
+- You prefer to configure your own shell environment
 
-### When to Use Core
+### Enhanced Profile
+**Philosophy**: Complete personal setup with all customizations
 
-- You want tools but prefer your own shell configuration
-- You're installing on a server or shared environment
-- You want minimal system changes
-- You plan to customize your shell yourself
-- You're testing Zen Setup before committing to full setup
+**What Gets Installed**:
+- ✅ Everything from core profile, PLUS:
+- ✅ Shell plugins: ble.sh (Linux) or zsh plugins (macOS)
+- ✅ Fancy CLI replacements:
+  - eza (replaces ls)
+  - bat (replaces cat)
+  - fzf (fuzzy finder)
+  - zoxide (smart cd)
+  - ripgrep (fast grep)
+  - fd (fast find)
+  - btop (system monitor)
+  - delta (beautiful git diffs)
+  - fastfetch (system info)
+  - mosh (mobile shell)
+  - tldr (quick man pages)
 
-### Installation
+**What Gets Applied**:
+- ✅ Full shell configuration (~/.bashrc or ~/.zshrc)
+  - Custom aliases (ll, ls → eza, cat → bat, etc.)
+  - Useful functions (mkcd, search, extract, etc.)
+  - Custom colorized prompt with git integration
+- ✅ Tmux configuration (~/.tmux.conf)
+  - TPM plugin manager
+  - 5 plugins (tmux-sensible, tmux-resurrect, tmux-continuum, tmux-yank, vim-tmux-navigator)
+  - Custom keybindings (prefix = Ctrl-Space)
+  - Catppuccin colors
+- ✅ Git configuration (~/.gitconfig)
+  - Convenient aliases (st, co, br, lg, amend, etc.)
+  - Delta integration for beautiful diffs
+  - Sensible defaults
 
+**Config Files Modified**:
+- ~/.bashrc or ~/.zshrc
+- ~/.tmux.conf
+- ~/.gitconfig
+
+**Use Case**:
+- Your personal development machine
+- Complete terminal experience with all the goodies
+- Modern tools with opinionated configurations
+
+---
+
+## Installation
+
+### Core Profile (Default)
 ```bash
 ./setup.sh            # Core is now the default
 ./setup.sh --core     # Explicit flag (optional)
 ```
 
+### Enhanced Profile
+```bash
+./setup.sh --enhanced  # Opt-in to full experience
+```
+
 ---
 
-## Enhanced Profile
+## Comparison Table
 
-**Philosophy:** Complete terminal experience with modern tools and full shell customization.
+| Profile | Packages Installed | Customizations Applied |
+|---------|-------------------|------------------------|
+| **Core** (default) | cli-tools-core + tmux + git + docker + python + nvidia | NONE (vanilla packages) |
+| **Enhanced** | core + cli-tools-enhanced (eza, bat, fzf, zoxide, etc.) | Shell + Tmux + Git configs |
 
-The enhanced profile includes all core tools PLUS modern replacements and a fully customized shell environment with aliases, functions, and prompts.
+**Core**: All the tools, none of the customizations (packages only)
 
-### What's Included
+**Enhanced**: All the tools + fancy replacements + full customizations (complete personal setup)
 
-**All Core Packages PLUS:**
-- `eza` - Modern replacement for `ls`
-- `bat` - Modern replacement for `cat`
-- `fzf` - Fuzzy finder
-- `zoxide` - Smart `cd` replacement
-- `ripgrep` - Fast search tool
+---
+
+## What Each Profile Installs
+
+### Core Profile Components
+
+**CLI Tools (cli-tools-core)**:
+- `jq` - JSON processor
+- `htop` - Interactive process viewer
+- `curl`, `wget` - HTTP clients
+- `lazygit` - Terminal UI for git
+- `lazydocker` - Terminal UI for docker
+- `tree` - Directory tree viewer
+- `gum` - Shell script styling
+
+**Development Tools**:
+- `git` + `gh` - Version control + GitHub CLI (packages only, NO aliases)
+- `tmux` - Terminal multiplexer (package only, NO config)
+- `docker` + `docker-compose` - Container platform
+- `python` + `uv` - Python with fast package manager
+- `nvidia` - NVIDIA drivers + CUDA + Container Toolkit (Debian/Ubuntu only, if GPU detected)
+
+**NO Customizations**:
+- Your shell remains untouched
+- No ~/.tmux.conf created
+- No git aliases added
+- No fancy replacement tools installed
+
+### Enhanced Profile Components
+
+**Everything from Core PLUS:**
+
+**Fancy CLI Replacements (cli-tools-enhanced)**:
+- `eza` - Modern replacement for `ls` with colors and icons
+- `bat` - Modern replacement for `cat` with syntax highlighting
+- `fzf` - Fuzzy finder for interactive filtering
+- `zoxide` - Smart `cd` replacement that learns your habits
+- `ripgrep` - Blazingly fast search tool (replaces grep)
 - `fd` - Modern `find` replacement
-- `btop` - Modern system monitor
-- `delta` - Beautiful git diffs
-- `fastfetch` - System info display
-- `mosh` - Mobile shell
-- `tldr` - Simplified man pages
-- `docker` - Container platform
+- `btop` - Beautiful system monitor
+- `delta` - Beautiful git diffs with syntax highlighting
+- `fastfetch` - Fast system info display
+- `mosh` - Mobile shell (better than ssh over unreliable connections)
+- `tldr` - Simplified, community-driven man pages
 
-**Full Shell Configuration:**
+**Shell Customizations (shell module)**:
 - Custom bashrc/zshrc with plugins
 - Bash: `ble.sh` (syntax highlighting, autosuggestions)
 - Zsh: `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zsh-completions`
@@ -84,7 +159,9 @@ The enhanced profile includes all core tools PLUS modern replacements and a full
 - Zoxide integration for smart directory jumping
 - Fastfetch welcome message
 
-### Aliases Examples
+---
+
+## Aliases Examples (Enhanced Only)
 
 ```bash
 # Modern tool replacements
@@ -99,7 +176,9 @@ grep  → rg (ripgrep)
 find  → fd
 ```
 
-### Functions Examples
+---
+
+## Functions Examples (Enhanced Only)
 
 ```bash
 mkcd dirname          # Create and cd into directory
@@ -109,39 +188,6 @@ gcom "commit message" # Git add all + commit
 gp                    # Git push
 gs                    # Git status
 ```
-
-### When to Use Enhanced
-
-- You want the complete Zen experience
-- You're setting up your personal development machine
-- You want modern CLI tools with sensible defaults
-- You appreciate batteries-included configurations
-- You want a beautiful, productive terminal
-
-### Installation
-
-```bash
-./setup.sh --enhanced  # Explicit flag required (not default anymore)
-```
-
----
-
-## Comparison Table
-
-| Feature | Core | Enhanced |
-|---------|------|----------|
-| Essential CLI tools (jq, htop, tree, gum) | ✅ | ✅ |
-| Git + GitHub CLI | ✅ | ✅ |
-| Tmux with config | ✅ | ✅ |
-| Lazygit, Lazydocker | ✅ | ✅ |
-| Python + UV | ✅ | ✅ |
-| Modern replacements (eza, bat, fzf, etc.) | ❌ | ✅ |
-| Docker | ❌ | ✅ |
-| Shell configuration | ❌ | ✅ |
-| Aliases | ❌ | ✅ |
-| Functions | ❌ | ✅ |
-| Custom prompt | ❌ | ✅ |
-| Bashrc/Zshrc modifications | ❌ | ✅ |
 
 ---
 
@@ -158,10 +204,12 @@ You can upgrade from core to enhanced at any time:
 ```
 
 The enhanced installation will:
-- Install additional packages (eza, bat, fzf, etc.)
-- Apply shell configuration
-- Add aliases, functions, and prompts
-- Configure modern tool integrations
+- Install additional packages (eza, bat, fzf, zoxide, ripgrep, fd, btop, delta, fastfetch, mosh, tldr)
+- Apply shell configuration (aliases, functions, prompt)
+- Create tmux configuration (~/.tmux.conf with TPM and plugins)
+- Add git configuration (aliases, delta integration)
+
+---
 
 ## Profile Persistence with zupdate
 
@@ -170,18 +218,86 @@ Your profile choice is automatically saved and respected by `zupdate`:
 ```bash
 # Install with core profile
 ./setup.sh
+cat ~/.local/share/zen-setup/.profile  # Shows: core
 
 # Later run update - automatically uses core profile
-zupdate
+zupdate  # Maintains core (no customizations applied)
 
 # Install with enhanced profile
 ./setup.sh --enhanced
+cat ~/.local/share/zen-setup/.profile  # Shows: enhanced
 
 # Later run update - automatically uses enhanced profile
-zupdate
+zupdate  # Maintains enhanced (customizations preserved)
 ```
 
 Your profile preference is stored in `~/.local/share/zen-setup/.profile` so updates maintain your configuration choice. You can always change profiles by running setup again with a different flag.
+
+---
+
+## Testing Your Profile
+
+### Verify Core Profile
+
+After installing core profile, verify packages are installed but NO customizations applied:
+
+```bash
+# Packages ARE installed
+which jq htop lazygit lazydocker tree gum gh
+which git tmux docker python3 uv
+nvidia-smi  # Should work if GPU present
+
+# NO custom aliases (should show minimal/default aliases)
+alias  # Should NOT show 'ls' → 'eza'
+
+# NO custom functions (these should NOT exist)
+type mkcd search extract gcom  # Should fail
+
+# NO zen-setup customizations in shell config
+grep -i "zen" ~/.bashrc 2>/dev/null || echo "No zen customizations (correct)"
+
+# NO tmux config or plugins
+test ! -f ~/.tmux.conf || ! grep "TPM" ~/.tmux.conf || echo "No tmux config (correct)"
+
+# NO git aliases
+! git config --global alias.st || echo "Git aliases found (incorrect for core)"
+
+# Modern replacement tools should NOT exist
+! which eza bat fzf zoxide rg fd btop delta fastfetch || echo "Fancy tools found (incorrect for core)"
+```
+
+### Verify Enhanced Profile
+
+After installing enhanced profile:
+
+```bash
+# All packages installed (core + enhanced)
+which jq htop lazygit lazydocker tree gum gh git tmux docker python3 uv
+which eza bat fzf zoxide rg fd btop delta fastfetch mosh tldr
+
+# Custom aliases work
+alias ls   # Should show 'eza' alias
+alias cat  # Should show 'bat' alias
+
+# Custom functions exist
+type mkcd search extract gcom  # Should succeed
+
+# Zen customizations in shell config
+grep "Zen Configuration" ~/.bashrc || grep "Zen Configuration" ~/.zshrc
+
+# Tmux config with TPM
+grep "TPM" ~/.tmux.conf
+
+# Git aliases exist
+git config --global alias.st  # Should return "status"
+git config --global core.pager  # Should return "delta"
+
+# FZF preview uses bat
+echo $FZF_DEFAULT_OPTS | grep bat
+
+# Custom prompt (colorized with git info)
+echo $PS1  # Should show custom prompt
+```
 
 ---
 
@@ -190,85 +306,35 @@ Your profile preference is stored in `~/.local/share/zen-setup/.profile` so upda
 If neither profile fits your needs, install specific components:
 
 ```bash
-./setup.sh --components cli-tools-core,git,tmux
+./setup.sh --components cli-tools-core,git,tmux,docker
 ```
 
 Available components:
-- `shell` - Shell configuration (aliases, functions, prompts)
-- `cli-tools-core` - Essential CLI tools
-- `cli-tools-enhanced` - Modern tool replacements + extras
-- `git` - Git + GitHub CLI
-- `tmux` - Tmux terminal multiplexer
+- `shell` - Shell configuration (aliases, functions, prompts) - Enhanced only
+- `cli-tools-core` - Essential CLI tools (jq, htop, lazygit, lazydocker, tree, gum, gh)
+- `cli-tools-enhanced` - Fancy replacements (eza, bat, fzf, zoxide, ripgrep, fd, btop, delta, fastfetch, mosh, tldr)
+- `git` - Git + GitHub CLI (config only in enhanced)
+- `tmux` - Tmux terminal multiplexer (config only in enhanced)
 - `docker` - Docker Engine + Compose
 - `python` - Python + UV package manager
-- `nvidia` - NVIDIA drivers (Linux only)
-
----
-
-## Testing Your Profile
-
-### Verify Core Profile
-
-After installing core profile, verify it's truly minimal:
-
-```bash
-# NO custom aliases (should show minimal/default aliases)
-alias
-
-# NO custom functions (these should NOT exist)
-type mkcd search extract gcom
-
-# NO custom prompt (should be system default)
-echo $PS1
-
-# NO zen-setup customizations in bashrc/zshrc
-grep -i "zen" ~/.bashrc
-grep -i "zen" ~/.zshrc
-
-# But tools ARE installed
-which jq htop lazygit gh
-
-# Modern tools should NOT exist
-which eza bat fzf zoxide  # Should fail
-```
-
-### Verify Enhanced Profile
-
-After installing enhanced profile:
-
-```bash
-# Custom aliases work
-alias ls  # Should show 'eza' alias
-alias cat # Should show 'bat' alias
-
-# Custom functions exist
-type mkcd search extract
-
-# Custom prompt is active (colorized with git info)
-echo $PS1
-
-# Modern tools installed
-which eza bat fzf zoxide ripgrep fd btop
-
-# FZF preview uses bat
-echo $FZF_DEFAULT_OPTS | grep bat
-
-# Fastfetch runs on shell start
-fastfetch
-```
+- `nvidia` - NVIDIA drivers + CUDA + Container Toolkit (Debian/Ubuntu only)
 
 ---
 
 ## Philosophy
 
 **Core Profile:** "Give me the tools, I'll configure them myself"
-- Respects your existing shell setup
+- All essential packages installed (docker, nvidia, python, git, tmux, cli-tools)
+- Zero configuration changes
 - Zero assumptions about your preferences
 - Tools without opinions
+- Perfect for servers or sharing
 
 **Enhanced Profile:** "Give me the full experience"
+- All packages from core PLUS fancy replacements
 - Opinionated but sensible defaults
 - Modern tools with smart integrations
+- Full shell, tmux, and git customizations
 - Batteries included, ready to use
 
 Choose the profile that matches your needs. Both are valid approaches to a productive terminal environment.

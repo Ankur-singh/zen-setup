@@ -72,8 +72,8 @@ Options:
   --help, -h          Show this help message
 
 Profiles:
-  core (default)      Essential packages ONLY: NO shell configuration, NO aliases, NO customizations
-  enhanced            Complete experience: packages + shell configuration + aliases + functions + prompts
+  core (default)      All essential packages (including docker, nvidia) - NO customizations
+  enhanced            Core packages + fancy tools (eza, bat, fzf) + full customizations
 
 Examples:
   ./setup.sh                                      # Install core profile (default - packages only)
@@ -89,9 +89,10 @@ get_profile_components() {
 
     case "$profile" in
         core)
-            # Core: Essential packages ONLY - NO shell configuration, no docker, no built-in replacements
+            # Core: Essential packages ONLY - NO shell configuration, no fancy replacements
             # cli-tools-core installs lazygit, lazydocker, jq, htop, tree, gum
-            echo "cli-tools-core tmux git python"
+            # Includes docker, nvidia for complete tool set (but NO customizations)
+            echo "cli-tools-core tmux git docker python nvidia"
             ;;
         enhanced)
             # Enhanced: Complete Zen experience with all enhancements + shell configuration

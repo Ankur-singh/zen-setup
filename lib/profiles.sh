@@ -5,10 +5,10 @@
 # Each profile is a space-separated list of component tags
 
 # Core: Essential packages only (NO shell configuration)
-PROFILE_CORE="cli-tools-core tmux git python"
+PROFILE_CORE="cli-tools-core tmux git docker python nvidia"
 
 # Enhanced: Full development setup (default)
-PROFILE_ENHANCED="shell cli-tools-enhanced tmux git docker python"
+PROFILE_ENHANCED="shell cli-tools-enhanced tmux git docker python nvidia"
 
 # Get components for a profile
 get_profile_components() {
@@ -23,13 +23,13 @@ get_profile_components() {
 get_component_desc() {
   case "$1" in
     shell)               echo "Shell configuration with aliases, functions, prompts (enhanced-only)" ;;
-    cli-tools-core)      echo "Core CLI tools (lazygit, lazydocker, jq, htop, tree, gum)" ;;
-    cli-tools-enhanced)  echo "Enhanced CLI tools (core + eza, bat, fzf, zoxide, ripgrep, fd, btop, mosh, tldr, delta)" ;;
-    tmux)                echo "Tmux terminal multiplexer" ;;
-    git)                 echo "Git + GitHub CLI" ;;
+    cli-tools-core)      echo "Essential CLI tools (jq, htop, lazygit, lazydocker, tree, gum, gh)" ;;
+    cli-tools-enhanced)  echo "Fancy replacements (eza, bat, fzf, zoxide, ripgrep, fd, btop, delta, fastfetch, mosh, tldr)" ;;
+    tmux)                echo "Tmux terminal multiplexer (config only in enhanced)" ;;
+    git)                 echo "Git + GitHub CLI (aliases/delta only in enhanced)" ;;
     docker)              echo "Docker Engine + Compose" ;;
     python)              echo "Python + UV package manager" ;;
-    nvidia)              echo "NVIDIA drivers + Container Toolkit (Linux only)" ;;
+    nvidia)              echo "NVIDIA drivers + CUDA + Container Toolkit (Debian/Ubuntu only)" ;;
     *)                   echo "Unknown component" ;;
   esac
 }

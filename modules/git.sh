@@ -92,15 +92,46 @@ print_git_message() {
 
 # Main installation function
 install_git() {
-    print_section "🔧 Configuring Git"
+    local profile="${PROFILE:-enhanced}"
 
-    # Note: git and gh are already installed by cli-tools-core or cli-tools-enhanced module
-    # This module only handles git configuration
+    print_section "🔧 Installing Git"
 
-    if ! command -v git &>/dev/null; then
-        error "git not found. Install cli-tools-core or cli-tools-enhanced module first."
-        return 1
+    # Install git and gh packages
+    if is_macos; then
+        if ! brew list git &>/dev/null; then
+            brew install git >>"$LOG_FILE" 2>&1 && \
+                success "Installed git" || \
+                error "Failed to install git"
+        else
+            success "git already installed"
+        fi
+
+        if ! brew list gh &>/dev/null; then
+            brew install gh >>"$LOG_FILE" 2>&1 && \
+                success "Installed GitHub CLI (gh)" || \
+                error "Failed to install gh"
+        else
+            success "GitHub CLI already installed"
+        fi
+    elif is_linux; then
+        if ! command -v git &>/dev/null || ! command -v gh &>/dev/null; then
+            pkg_install git gh >>"$LOG_FILE" 2>&1 && \
+                success "Installed git and gh" || \
+                error "Failed to install git/gh"
+        else
+            success "git and gh already installed"
+        fi
     fi
+
+    # Skip configuration in core profile
+    if [[ "$profile" == "core" ]]; then
+        info "Skipping git configuration (core profile - no customizations)"
+        return 0
+    fi
+
+    # Enhanced profile - apply full configuration
+    print_section "🔧 Configuring Git"
+    info "Applying git configuration..."
 
     # Configure git
     configure_git

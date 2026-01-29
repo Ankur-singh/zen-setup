@@ -73,10 +73,10 @@ curl ... | bash -s -- --enhanced
 curl ... | bash -s -- --components shell,cli-tools-enhanced,git,docker
 ```
 
-| Profile | What's Included |
-|---------|-----------------|
-| **Core** (default) | **Packages ONLY** (core CLI tools + git + tmux + python) - **NO shell configuration, NO aliases** |
-| **Enhanced** (`--enhanced`) | Shell configuration + aliases + functions + enhanced CLI tools + docker + python + nvidia |
+| Profile | Packages Installed | Customizations Applied |
+|---------|-------------------|------------------------|
+| **Core** (default) | cli-tools-core + tmux + git + docker + python + nvidia | NONE (vanilla packages) |
+| **Enhanced** (`--enhanced`) | core + cli-tools-enhanced (eza, bat, fzf, zoxide, etc.) | Shell + Tmux + Git configs |
 
 > **See [docs/PROFILES.md](docs/PROFILES.md) for detailed profile comparison and testing guide**
 

@@ -3,8 +3,8 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/Ankur-singh/zen-setup/main/install.sh | bash
 #
 # Options (passed to setup.sh):
-#   (default)           Core profile - packages ONLY, NO shell config, NO aliases, NO functions
-#   --enhanced          Enhanced profile - packages + shell config + aliases + functions
+#   (default)           Core - All packages, NO customizations (for servers or sharing)
+#   --enhanced          Enhanced - Packages + fancy tools + full customizations (personal setup)
 #   --components LIST   Install specific components
 #   -v, --verbose       Show detailed output
 #   -h, --help          Show help
@@ -31,8 +31,8 @@ for arg in "$@"; do
     echo "Usage: curl -fsSL https://raw.githubusercontent.com/.../install.sh | bash -s -- [OPTIONS]"
     echo ""
     echo "Profiles:"
-    echo "  (default)       Core - packages ONLY (NO shell config, NO aliases, NO customizations)"
-    echo "  --enhanced      Enhanced - packages + shell config + aliases + functions + prompts"
+    echo "  (default)       Core - All packages, NO customizations (for servers or sharing)"
+    echo "  --enhanced      Enhanced - Packages + fancy tools + full customizations (personal setup)"
     echo ""
     echo "Options:"
     echo "  --components    Install specific components (comma-separated)"

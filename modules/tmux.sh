@@ -212,13 +212,38 @@ install_tmux_plugins() {
 
 # Main installation function
 install_tmux() {
-    print_section "📺 Configuring Tmux"
+    local profile="${PROFILE:-enhanced}"
 
-    # Note: tmux is already installed by cli-tools-core or cli-tools-enhanced module
-    if ! command -v tmux &>/dev/null; then
-        error "tmux not found. Install cli-tools-core or cli-tools-enhanced module first."
-        return 1
+    print_section "📺 Installing Tmux"
+
+    # Install tmux package
+    if is_macos; then
+        if ! brew list tmux &>/dev/null; then
+            brew install tmux >>"$LOG_FILE" 2>&1 && \
+                success "Installed tmux" || \
+                error "Failed to install tmux"
+        else
+            success "tmux already installed"
+        fi
+    elif is_linux; then
+        if ! command -v tmux &>/dev/null; then
+            pkg_install tmux >>"$LOG_FILE" 2>&1 && \
+                success "Installed tmux" || \
+                error "Failed to install tmux"
+        else
+            success "tmux already installed"
+        fi
     fi
+
+    # Skip configuration in core profile
+    if [[ "$profile" == "core" ]]; then
+        info "Skipping tmux configuration (core profile - no customizations)"
+        return 0
+    fi
+
+    # Enhanced profile - apply full configuration
+    print_section "📺 Configuring Tmux"
+    info "Applying tmux configuration..."
 
     # Install TPM (Tmux Plugin Manager)
     install_tpm
