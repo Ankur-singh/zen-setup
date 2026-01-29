@@ -3,8 +3,13 @@
 
 set -e  # Exit on error
 
-# Get script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Determine script directory - use ZEN_SETUP_DIR if set (for installed copy in ~/.local/bin)
+# Otherwise use actual script location (for direct execution from repo)
+if [[ -n "$ZEN_SETUP_DIR" ]] && [[ -f "$ZEN_SETUP_DIR/lib/utils.sh" ]]; then
+    SCRIPT_DIR="$ZEN_SETUP_DIR"
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # Source libraries
 source "$SCRIPT_DIR/lib/utils.sh"

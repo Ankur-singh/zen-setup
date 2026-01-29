@@ -8,27 +8,30 @@ cat <<'EOF'
 
 INSTALLATION & MANAGEMENT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-  zsetup              Run Zen installation
-  zsetup --minimal    Install minimal profile
-  zsetup --components shell,cli-tools,git
-                      Install specific components
+  zsetup              Run Zen installation (core profile - packages only)
+  zsetup --core       Install core profile - packages ONLY, no customizations
+  zsetup --enhanced   Install enhanced profile - packages + shell config + all features
+  zsetup --components cli-tools-core,git,tmux
+                      Install specific components only
   zupdate             Update Zen and reinstall
   zdoctor             Health check installation
   zhelp               Show this help
 
-MOST COMMON COMMANDS
-━━━━━━━━━━━━━━━━━━━━
+MOST COMMON COMMANDS (enhanced profile)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   z <name>            Jump to directory (zoxide)
   ff                  Fuzzy find files (fzf)
   ..                  Go up one directory
   cd -                Return to previous directory
 
-FILE OPERATIONS
-━━━━━━━━━━━━━━━
+FILE OPERATIONS (enhanced profile)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ls, ll, lt          Modern file listing (eza)
   cat <file>          Syntax-highlighted cat (bat)
   search "text"       Fast text search (ripgrep)
   tree                Show directory tree
+
+  Note: Core profile uses standard tools (ls, cat, grep)
 
 GIT COMMANDS
 ━━━━━━━━━━━━
