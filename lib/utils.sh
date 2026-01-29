@@ -185,7 +185,8 @@ array_contains() {
 
 # Check if running in interactive terminal
 is_interactive_terminal() {
-  [[ -t 0 ]] && [[ -r /dev/tty ]] && [[ -w /dev/tty ]]
+  # Check if stdin is a TTY
+  [[ -t 0 ]]
 }
 
 # Simple yes/no prompt (default No)
@@ -200,9 +201,9 @@ prompt_restart() {
     return 1
   fi
 
-  # Interactive: prompt user
-  read -p "$question (y/N) " -n 1 -r REPLY < /dev/tty
-  echo
+  # Interactive: show prompt and read response
+  read -p "$question (y/N) " -n 1 -r REPLY
+  echo  # Newline after input
 
   # Check response (default No)
   [[ $REPLY =~ ^[Yy]$ ]] && return 0 || return 1
