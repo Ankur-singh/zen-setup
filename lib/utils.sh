@@ -182,3 +182,28 @@ array_contains() {
   done
   return 1
 }
+
+# Check if running in interactive terminal
+is_interactive_terminal() {
+  [[ -t 0 ]] && [[ -r /dev/tty ]] && [[ -w /dev/tty ]]
+}
+
+# Simple yes/no prompt (default No)
+# Usage: prompt_restart "Question text"
+# Returns: 0 for yes, 1 for no
+prompt_restart() {
+  local question="$1"
+
+  # Non-interactive: just echo and treat as No
+  if ! is_interactive_terminal; then
+    echo "$question"
+    return 1
+  fi
+
+  # Interactive: prompt user
+  read -p "$question (y/N) " -n 1 -r REPLY < /dev/tty
+  echo
+
+  # Check response (default No)
+  [[ $REPLY =~ ^[Yy]$ ]] && return 0 || return 1
+}

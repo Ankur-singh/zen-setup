@@ -189,32 +189,41 @@ print_summary() {
     echo ""
     print_completion
     echo ""
-    info "Installation Summary:"
-    echo "  Components: ${components[*]}"
-    echo "  Shell:      $shell"
-    echo ""
 
+    # Show Docker warning if applicable
     if is_linux; then
-        warn "IMPORTANT: Reload your shell to apply changes"
-        echo "  exec $shell"
-        echo ""
         if echo "${components[@]}" | grep -q "docker"; then
             warn "For Docker: Log out and log back in (or run: newgrp docker)"
             echo ""
         fi
-        if echo "${components[@]}" | grep -q "nvidia"; then
-            if [[ ! -f /var/run/reboot-required ]] && ! nvidia-smi &>/dev/null; then
-                warn "For NVIDIA: Reboot required to activate drivers"
-                echo "  sudo reboot"
-                echo ""
+    fi
+
+    # Check if reboot needed (NVIDIA on Linux)
+    local needs_reboot=false
+    if is_linux && echo "${components[@]}" | grep -q "nvidia"; then
+        if ! nvidia-smi &>/dev/null; then
+            needs_reboot=true
+            if prompt_restart "Reboot required. Restart now?"; then
+                info "Rebooting..."
+                sleep 1
+                sudo reboot
+                exit 0
             fi
+            echo ""
         fi
-    elif is_macos; then
-        warn "Reload your shell to apply changes:"
-        echo "  exec $shell"
+    fi
+
+    # Always prompt for shell reload (if no reboot happening)
+    if [[ "$needs_reboot" == "false" ]]; then
+        if prompt_restart "Shell reload required. Reload now?"; then
+            info "Reloading shell..."
+            sleep 1
+            exec "$shell"
+        fi
         echo ""
     fi
 
+    # Show quick commands
     info "Quick commands:"
     echo "  zhelp     Show command reference"
     echo "  zdoctor   Health check installation"
